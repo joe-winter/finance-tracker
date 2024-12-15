@@ -1,6 +1,7 @@
 import { Request, Response } from "express-serve-static-core";
 import { CreateUserDto } from "../dtos/CreateUser.dto";
-import { User } from "../types/response";
+import { UserType } from "../types/response";
+import User from "../models/user";
 
 export function getUsers(req: Request, res: Response) {
   res.send([]);
@@ -12,11 +13,17 @@ export function getUserById(req: Request, res: Response) {
 
 export function createUser(
   req: Request<{}, {}, CreateUserDto>,
-  res: Response<User>
+  res: Response<UserType>
 ) {
-  res.status(201).send({
-    id: 1,
-    username: "joe",
-    email: "joe@email.com",
+  const email = req.body.email;
+  const password = req.body.password;
+  const firstname = req.body.firstname;
+  const lastname = req.body.lastname;
+
+  const user = new User({ email, password, firstname, lastname });
+
+  user.save().then((user) => {
+    console.log("User created, id:", user._id.toString());
+    res.status(201).json({ message: "OK" });
   });
 }
