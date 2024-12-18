@@ -11,7 +11,7 @@ export function getUserById(req: Request, res: Response) {
   res.send({});
 }
 
-export function createUser(
+export async function createUser(
   req: Request<{}, {}, CreateUserDto>,
   res: Response<UserType>
 ) {
@@ -19,11 +19,11 @@ export function createUser(
   const password = req.body.password;
   const firstname = req.body.firstname;
   const lastname = req.body.lastname;
-
+  
   const user = new User({ email, password, firstname, lastname });
 
-  user.save().then((user) => {
-    console.log("User created, id:", user._id.toString());
-    res.status(201).json({ message: "OK" });
-  });
+  await user.save()
+  
+  console.log("User created, id:", user._id.toString());
+  res.status(201).json({ message: "OK" });
 }
