@@ -12,10 +12,6 @@ export default class UsersController {
     req: Request<{}, {}, CreateUserDto>,
     res: Response<UserType>
   ) {
-    // const email = req.body.email;
-    // const password = req.body.password;
-    // const firstname = req.body.firstname;
-    // const lastname = req.body.lastname;
     const { email, password, firstname, lastname } = req.body;
 
     const user = new User({ email, password, firstname, lastname });
