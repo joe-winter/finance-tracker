@@ -1,7 +1,10 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 async function connectToDatabase() {
-  const mongoDbUrl = process.env.MONGODB_URL as string;
+  const mongoDbUrl = process.env.MONGODB_URL;
 
   if (!mongoDbUrl) {
     console.error(
@@ -11,10 +14,9 @@ async function connectToDatabase() {
   }
 
   try {
-    await mongoose.connect(mongoDbUrl)
-    console.log("Connected to MongoDB")
+    await mongoose.connect(mongoDbUrl);
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 
   await mongoose.connect(mongoDbUrl);
@@ -24,4 +26,4 @@ async function connectToDatabase() {
   }
 }
 
-export default connectToDatabase
+export default connectToDatabase;

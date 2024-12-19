@@ -11,4 +11,8 @@ describe("Login Page", () => {
 
     expect(headingEl).toBeInTheDocument()
   })
+
+  it("should have a login form", () => {
+    render(<Login/>)
+  })
 })
