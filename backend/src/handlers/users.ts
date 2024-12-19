@@ -4,10 +4,6 @@ import { UserType } from "../types/response";
 import User from "../models/user";
 
 export default class UsersController {
-  public static getUserById(req: Request, res: Response) {
-    res.send({});
-  }
-
   public static async createUser(
     req: Request<{}, {}, CreateUserDto>,
     res: Response<UserType>

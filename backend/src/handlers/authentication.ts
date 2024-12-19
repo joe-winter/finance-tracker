@@ -10,7 +10,6 @@ export default class AuthenticationHandler {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email: email });
-    console.log("user", user)
 
     if (!user) {
       res.status(401).json({ message: "User not found" });
