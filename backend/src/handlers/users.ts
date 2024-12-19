@@ -3,27 +3,26 @@ import { CreateUserDto } from "../dtos/CreateUser.dto";
 import { UserType } from "../types/response";
 import User from "../models/user";
 
-export function getUsers(req: Request, res: Response) {
-  res.send([]);
-}
+export default class UsersController {
+  public static getUserById(req: Request, res: Response) {
+    res.send({});
+  }
 
-export function getUserById(req: Request, res: Response) {
-  res.send({});
-}
+  public static async createUser(
+    req: Request<{}, {}, CreateUserDto>,
+    res: Response<UserType>
+  ) {
+    // const email = req.body.email;
+    // const password = req.body.password;
+    // const firstname = req.body.firstname;
+    // const lastname = req.body.lastname;
+    const { email, password, firstname, lastname } = req.body;
 
-export async function createUser(
-  req: Request<{}, {}, CreateUserDto>,
-  res: Response<UserType>
-) {
-  const email = req.body.email;
-  const password = req.body.password;
-  const firstname = req.body.firstname;
-  const lastname = req.body.lastname;
-  
-  const user = new User({ email, password, firstname, lastname });
+    const user = new User({ email, password, firstname, lastname });
 
-  await user.save()
-  
-  console.log("User created, id:", user._id.toString());
-  res.status(201).json({ message: "OK" });
+    await user.save();
+
+    console.log("User created, id:", user._id.toString());
+    res.status(201).json({ message: "OK" });
+  }
 }
