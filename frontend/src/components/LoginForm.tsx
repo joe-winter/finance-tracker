@@ -6,10 +6,16 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  function handleSubmit(e: FormEvent) {
+  
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    login(email, password);
-    navigate("/dashboard");
+    try {
+      await login(email, password);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error)
+      navigate("/login");
+    }
   }
 
   function handleEmailChange(e: ChangeEvent<HTMLInputElement>) {

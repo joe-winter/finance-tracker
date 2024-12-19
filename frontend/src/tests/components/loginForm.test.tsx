@@ -1,11 +1,10 @@
-import { describe, expect, it, vi } from "vitest";
+import { vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import LoginForm from "../../components/LoginForm";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { login } from "../../services/authentication";
-import {  useNavigate } from "react-router-dom"
-
+import { useNavigate } from "react-router-dom";
 vi.mock("react-router-dom", () => {
   const navigateMock = vi.fn();
   const useNavigateMock = () => navigateMock;
@@ -13,10 +12,11 @@ vi.mock("react-router-dom", () => {
 });
 
 vi.mock("../../services/authentication.ts", () => {
-  return {
-    login: vi.fn(),
-  };
-});
+  const loginMock = vi.fn()
+  return { login: loginMock}
+})
+
+const loginMock = login as ReturnType<typeof vi.fn>;
 
 async function completeLoginForm() {
   const user = userEvent.setup();
@@ -31,6 +31,9 @@ async function completeLoginForm() {
 }
 
 describe("Login Form Component", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
   it("should have input fields", () => {
     render(<LoginForm />);
 
@@ -78,16 +81,19 @@ describe("Login Form Component", () => {
   });
 
   it("should navigate to dashboard if login succesful", async () => {
-    render(
-      // <BrowserRouter>
-        <LoginForm />
-      // </BrowserRouter>q
-    );
+    render(<LoginForm />);
 
     await completeLoginForm();
 
     const navigateMock = useNavigate();
-
     expect(navigateMock).toHaveBeenCalledWith("/dashboard");
   });
+  it("navigates to /login if login unsuccesful", async () => {
+    render(<LoginForm />);
+    loginMock.mockRejectedValue(new Error("Error logging in"))
+    const navigateMock = useNavigate();
+    await completeLoginForm();
+    expect(navigateMock).toHaveBeenCalledWith("/login");
+  });
+
 });
