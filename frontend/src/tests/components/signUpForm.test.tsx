@@ -108,7 +108,6 @@ describe("Sign Up Component", () => {
     expect(signUp).toHaveBeenCalledWith(
       "someone@example.com",
       "password123",
-      "password123",
       "John",
       "Doe"
     );

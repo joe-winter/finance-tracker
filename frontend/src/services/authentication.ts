@@ -30,7 +30,32 @@ export async function login(email: string, password: string): Promise<string> {
 export async function signUp(
   email: string,
   password: string,
-  confirmPassword: string,
   firstName: string,
   lastName: string
-) {}
+) {
+  const payload = {
+    email: email,
+    password: password,
+    firstName: firstName,
+    lastName: lastName,
+  };
+
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  };
+
+  const response = await fetch(`${BACKEND_URL}/users`, requestOptions);
+
+  // docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/201
+  if (response.status === 201) {
+    return;
+  } else {
+    throw new Error(
+      `Received status ${response.status} when signing up. Expected 201`
+    );
+  }
+}
