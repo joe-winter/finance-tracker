@@ -30,7 +30,7 @@ export default function LoginForm() {
         <label htmlFor="email">Your Email</label>
         <input
           type="text"
-          name="password"
+          name="email"
           id="email"
           placeholder="johndoe@example.com"
           value={email}

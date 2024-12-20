@@ -13,7 +13,7 @@ export async function login(email: string, password: string): Promise<string> {
     },
     body: JSON.stringify(payload),
   };
-  console.log("URL", BACKEND_URL)
+  console.log("URL", BACKEND_URL);
   const response = await fetch(`${BACKEND_URL}/tokens`, requestOptions);
 
   // docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/201
@@ -26,3 +26,11 @@ export async function login(email: string, password: string): Promise<string> {
     );
   }
 }
+
+export async function signUp(
+  email: string,
+  password: string,
+  confirmPassword: string,
+  firstName: string,
+  lastName: string
+) {}
