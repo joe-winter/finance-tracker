@@ -2,7 +2,7 @@ import JWT from "jsonwebtoken";
 import dotenv from "dotenv";
 
 dotenv.config();
-const secret = process.env.JWT_SECRET as string;
+const secret = process.env.JWT_SECRET;
 
 /**
  * This function is used to generate a JWT authentication
@@ -10,11 +10,9 @@ const secret = process.env.JWT_SECRET as string;
  * JWTs in 100 Seconds: https://www.youtube.com/watch?v=UBUNrFtufWo
 */
 function generateToken(user_id: string): string {
-  
-  console.log(secret)
-  // if (!secret) {
-  //   throw new Error ("JWT_SECRET is not defined in environment variables")
-  // }
+  if (!secret) {
+    throw new Error ("JWT_SECRET is not defined in environment variables")
+  }
   if (user_id) {
     return JWT.sign(
       {
