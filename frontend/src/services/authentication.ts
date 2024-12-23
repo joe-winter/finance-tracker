@@ -32,7 +32,7 @@ export async function signUp(
   password: string,
   firstName: string,
   lastName: string
-) {
+): Promise<string> {
   const payload = {
     email: email,
     password: password,
@@ -52,7 +52,8 @@ export async function signUp(
 
   // docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/201
   if (response.status === 201) {
-    return;
+    const data = await response.json();
+    return data.token;
   } else {
     throw new Error(
       `Received status ${response.status} when signing up. Expected 201`

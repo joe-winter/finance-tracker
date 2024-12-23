@@ -2,11 +2,12 @@ import { Request, Response } from "express-serve-static-core";
 import { CreateUserDto } from "../dtos/CreateUser.dto";
 import { UserType } from "../types/response";
 import User from "../models/user";
+import { generateToken } from "../lib/token";
 
 export default class UsersController {
   public static async createUser(
     req: Request<{}, {}, CreateUserDto>,
-    res: Response<UserType>
+    res: Response<{ token?: string; message: string }>
   ) {
     const { email, password, firstname, lastname } = req.body;
 
@@ -15,6 +16,12 @@ export default class UsersController {
     await user.save();
 
     console.log("User created, id:", user._id.toString());
-    res.status(201).json({ message: "OK" });
+
+    if (!user) {
+      res.status(401).json({ message: "User not created" });
+    } else {
+      const token = generateToken(user.id);
+      res.status(201).json({ token: token, message: "OK" });
+    }
   }
 }

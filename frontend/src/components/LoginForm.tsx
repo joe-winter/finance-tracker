@@ -10,7 +10,8 @@ export default function LoginForm() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     try {
-      await login(email, password);
+      const token = await login(email, password);
+      localStorage.setItem("token", token);
       navigate("/dashboard");
     } catch (error) {
       console.error(error)

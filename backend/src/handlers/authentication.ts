@@ -17,7 +17,7 @@ export default class AuthenticationHandler {
       res.status(401).json({ message: "Password incorrect" });
     } else {
       const token = generateToken(user.id);
-      res.status(201).json({ token: "token", message: "OK" });
+      res.status(201).json({ token: token, message: "OK" });
     }
   }
 }

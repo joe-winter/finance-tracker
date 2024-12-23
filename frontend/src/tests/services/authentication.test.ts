@@ -70,7 +70,7 @@ describe("Authentication Service", () => {
       const testFirstName = "TestFirstName";
       const testLastName = "TestLastName";
 
-      fetchMock.mockResponseOnce("", {
+      fetchMock.mockResponseOnce(JSON.stringify({ token: "testToken" }), {
         status: 201,
       });
 
@@ -99,15 +99,17 @@ describe("Authentication Service", () => {
       expect(options.headers["Content-Type"]).toEqual("application/json");
     });
 
-    it("returns nothing if the signup request was a success", async () => {
+    it("returns token if the signup request was a success", async () => {
       const testEmail = "test@testEmail.com";
       const testPassword = "12345678";
       const testFirstName = "TestFirstName";
       const testLastName = "TestLastName";
 
-      fetchMock.mockResponseOnce(JSON.stringify(""), {
-        status: 201,
-      });
+  
+        fetchMock.mockResponseOnce(JSON.stringify({ token: "testToken" }), {
+          status: 201,
+        });
+
 
       const token = await signUp(
         testEmail,
@@ -115,7 +117,7 @@ describe("Authentication Service", () => {
         testFirstName,
         testLastName,
       );
-      expect(token).toEqual(undefined);
+      expect(token).toEqual("testToken");
     });
 
     it("throws an error if the request failed", async () => {

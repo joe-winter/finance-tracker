@@ -22,12 +22,13 @@ export default function SignUpForm() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     try {
-      await signUp(
+      const token = await signUp(
         formData.email,
         formData.password,
         formData.firstName,
         formData.lastName
       );
+      localStorage.setItem("token", token);
       navigate("/dashboard");
     } catch (error) {
       console.error(error);
