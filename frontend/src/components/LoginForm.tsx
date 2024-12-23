@@ -6,7 +6,7 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     try {
@@ -14,7 +14,7 @@ export default function LoginForm() {
       localStorage.setItem("token", token);
       navigate("/dashboard");
     } catch (error) {
-      console.error(error)
+      console.error(error);
       navigate("/login");
     }
   }
@@ -28,24 +28,28 @@ export default function LoginForm() {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="email">Your Email</label>
-        <input
-          type="text"
-          name="email"
-          id="email"
-          placeholder="johndoe@example.com"
-          value={email}
-          onChange={handleEmailChange}
-        />
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          name="password"
-          id="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={handlePasswordChange}
-        />
+        <div>
+          <label htmlFor="email">Your Email</label>
+          <input
+            type="text"
+            name="email"
+            id="email"
+            placeholder="johndoe@example.com"
+            value={email}
+            onChange={handleEmailChange}
+          />
+        </div>
+        <div>
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+        </div>
         <button type="submit">Log In</button>
       </form>
     </>

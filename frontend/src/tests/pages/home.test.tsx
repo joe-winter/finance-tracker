@@ -3,11 +3,15 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { useNavigate } from "react-router-dom";
+
+
 vi.mock("react-router-dom", () => {
   const navigateMock = vi.fn();
   const useNavigateMock = () => navigateMock;
   return { useNavigate: useNavigateMock, useParams: vi.fn() };
 });
+
+
 describe("Home Page", () => {
   it("should have a log in button", () => {
     render(
