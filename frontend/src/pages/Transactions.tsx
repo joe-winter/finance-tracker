@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Dashboard() {
+export default function Transactions() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   useEffect(() => {
@@ -11,7 +11,7 @@ export default function Dashboard() {
   }, [token, navigate]);
   return (
     <>
-      <div>Dashboard</div>
+      <div>Transactions</div>
       <button
         onClick={() => {
           localStorage.removeItem("token");

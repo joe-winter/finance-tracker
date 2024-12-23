@@ -40,6 +40,6 @@ test.describe("user signing up", () => {
   }) => {
     await Helpers.newUserSignsUp(page);
 
-    await expect(page.getByText("Welcome")).toBeVisible();
+    await expect(page.getByText("Dashboard")).toBeVisible();
   });
 });

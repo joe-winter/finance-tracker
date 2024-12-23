@@ -31,6 +31,6 @@ test.describe("user logging in", () => {
   });
   test("when loggin in, navigates to dashboard", async ({ page }) => {
     await Helpers.userLogsIn(page);
-    await expect(page.getByText("Welcome")).toBeVisible()
+    await expect(page.getByText("Dashboard")).toBeVisible()
   });
 });

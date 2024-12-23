@@ -29,10 +29,10 @@ async function seedDatabase(collectionName, data) {
 
 const users = [
   {
-    email: "test_user@email.com",
+    email: "johndoe@email.com",
     password: "password123",
     firstName: "John",
-    lastName: "Smith",
+    lastName: "Doe",
   },
 ]
 
