@@ -4,6 +4,7 @@ import "@testing-library/jest-dom/vitest"
 //setupVitest.js or similar file
 import createFetchMock from 'vitest-fetch-mock';
 import { vi } from 'vitest';
+import "@testing-library/jest-dom";
 
 const fetchMocker = createFetchMock(vi);
 
