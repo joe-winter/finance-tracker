@@ -3,13 +3,13 @@ import Helpers from "./utils/helpers";
 import { DatabaseHelper } from "./utils/db";
 
 test.describe("user signing up", () => {
-  test.beforeEach( async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     await page.goto("/signup");
-    await DatabaseHelper.clearDb("users")
+    await DatabaseHelper.clearDb("users");
   });
   test.afterAll(async () => {
-    await DatabaseHelper.clearDb("users")
-  })
+    await DatabaseHelper.clearDb("users");
+  });
   test("user fills in information", async ({ page }) => {
     // Fill out email field
     await page.getByLabel("Your Email").fill("test_user@email.com");
@@ -35,9 +35,11 @@ test.describe("user signing up", () => {
     await page.getByLabel("Last Name").fill("User");
     await expect(page.getByLabel("Last Name")).toHaveValue("User");
   });
-  test("a user creates an account and is navigated to dashboard", async ({ page }) => {
-    await Helpers.newUserSignsUp(page)
+  test("a user creates an account and is navigated to dashboard", async ({
+    page,
+  }) => {
+    await Helpers.newUserSignsUp(page);
 
-    await expect(page.getByText("Welcome")).toBeVisible()
+    await expect(page.getByText("Welcome")).toBeVisible();
   });
 });

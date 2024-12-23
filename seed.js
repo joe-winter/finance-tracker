@@ -27,4 +27,13 @@ async function seedDatabase(collectionName, data) {
   }
 }
 
-export {seedDatabase}
+const users = [
+  {
+    email: "test_user@email.com",
+    password: "password123",
+    firstName: "John",
+    lastName: "Smith",
+  },
+]
+
+seedDatabase("users", users)
