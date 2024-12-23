@@ -1,11 +1,10 @@
 import { test, expect } from "playwright/test";
 import { seedDatabase } from "../seed";
 import Helpers from "./utils/helpers";
+import { DatabaseHelper } from "./utils/db";
 test.describe("user logging in", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/login");
-  });
-  test.beforeAll(async () => {
     await seedDatabase("users", [
       {
         email: "test_user@email.com",
@@ -15,6 +14,9 @@ test.describe("user logging in", () => {
       },
     ]);
   });
+  test.afterAll(async () => {
+    await DatabaseHelper.clearDb("users")
+  })
   test("user fills in information", async ({ page }) => {
     // Fill out email field
     await page.getByLabel("Your Email").fill("test_user@email.com");

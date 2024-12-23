@@ -1,10 +1,15 @@
 import { test, expect } from "playwright/test";
 import Helpers from "./utils/helpers";
+import { DatabaseHelper } from "./utils/db";
 
 test.describe("user signing up", () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach( async ({ page }) => {
     await page.goto("/signup");
+    await DatabaseHelper.clearDb("users")
   });
+  test.afterAll(async () => {
+    await DatabaseHelper.clearDb("users")
+  })
   test("user fills in information", async ({ page }) => {
     // Fill out email field
     await page.getByLabel("Your Email").fill("test_user@email.com");
