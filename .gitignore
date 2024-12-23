@@ -38,3 +38,7 @@ coverage/
 *.lock
 *.bak
 *.old
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
