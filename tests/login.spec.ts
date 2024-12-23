@@ -1,8 +1,19 @@
 import { test, expect } from "playwright/test";
-
+import { seedDatabase } from "../seed";
+import Helpers from "./utils/helpers";
 test.describe("user logging in", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/login");
+  });
+  test.beforeAll(async () => {
+    await seedDatabase("users", [
+      {
+        email: "test_user@email.com",
+        password: "password123",
+        firstName: "John",
+        lastName: "Smith",
+      },
+    ]);
   });
   test("user fills in information", async ({ page }) => {
     // Fill out email field
@@ -16,9 +27,8 @@ test.describe("user logging in", () => {
     await page.getByLabel("Password").fill("password123");
     await expect(page.getByLabel("Password")).toHaveValue("password123");
   });
-  // test("when loggin in with correct details, navigates to dashboard", async ({
-  //   page,
-  // }) => {
-
-  // });
+  test("when loggin in, navigates to dashboard", async ({ page }) => {
+    await Helpers.userLogsIn(page);
+    await expect(page.getByText("Welcome")).toBeVisible()
+  });
 });

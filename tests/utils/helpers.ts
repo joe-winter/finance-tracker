@@ -28,4 +28,18 @@ export default class Helpers {
 
     await page.getByRole("button", {name: "Sign Up"}).click()
   }
+  public static async userLogsIn(page: Page) {
+    // Fill out email field
+    await page.getByLabel("Your Email").fill("test_user@email.com");
+    await expect(page.getByLabel("Your Email")).toHaveValue(
+      "test_user@email.com"
+    );
+    // Fill out password field
+    await page.getByLabel("Password", { exact: true }).fill("password123");
+    await expect(page.getByLabel("Password", { exact: true })).toHaveValue(
+      "password123"
+    );
+
+    await page.getByRole("button", {name: "Log In"}).click()
+  }
 }
