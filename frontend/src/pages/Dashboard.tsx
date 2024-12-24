@@ -1,7 +1,14 @@
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import MobileNavBar from "../components/MobileNavBar";
 
-export default function Dashboard() {
+type DashboardProps = {
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>
+}
+
+
+export default function Dashboard({isOpen, setIsOpen} : DashboardProps) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   useEffect(() => {
@@ -9,17 +16,42 @@ export default function Dashboard() {
       navigate("/login");
     }
   }, [token, navigate]);
+
   return (
     <>
-      <h2 className="p-60">Dashboard</h2>
+      <MobileNavBar isOpen={isOpen} setIsOpen={setIsOpen}/>
+
+
+      <h2 className={`flex justify-center text-2xl font-semibold whitespace-nowrap dark:text-white p-4 ${isOpen ? "mt-60": "mt-16"}`}>Dashboard</h2>
       <button
         onClick={() => {
           localStorage.removeItem("token");
           navigate("/login");
         }}
-      >
+        >
         Log Out
       </button>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
+      <div className="p-24">Hello</div>
     </>
   );
 }
