@@ -20,15 +20,15 @@ describe("User Model", () => {
   });
   it("has a firstname", () => {
     const user = new User({
-      firstname: "Joe",
+      firstName: "Joe",
     });
-    expect(user.firstname).toEqual("Joe");
+    expect(user.firstName).toEqual("Joe");
   });
   it("has a lastname", () => {
     const user = new User({
-      lastname: "Winter",
+      lastName: "Winter",
     });
-    expect(user.lastname).toEqual("Winter");
+    expect(user.lastName).toEqual("Winter");
   });
   it("can list all users", async () => {
     const users = await User.find();

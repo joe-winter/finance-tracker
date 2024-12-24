@@ -13,8 +13,8 @@ describe("/tokens", () => {
     const user = new User({
       email: "someone@example.com",
       password: "password123",
-      firstname: "Joe",
-      lastname: "Winter",
+      firstName: "Joe",
+      lastName: "Winter",
     });
     await user.save();
   });

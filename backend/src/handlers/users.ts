@@ -9,9 +9,9 @@ export default class UsersController {
     req: Request<{}, {}, CreateUserDto>,
     res: Response<{ token?: string; message: string }>
   ) {
-    const { email, password, firstname, lastname } = req.body;
+    const { email, password, firstName, lastName } = req.body;
 
-    const user = new User({ email, password, firstname, lastname });
+    const user = new User({ email, password, firstName, lastName });
 
     await user.save();
 

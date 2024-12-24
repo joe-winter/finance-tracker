@@ -17,47 +17,6 @@ export default function NavBar() {
   }, []);
   return (
     <>
-      {!isMobile && (
-        <nav className="bg-gray-50 border-gray-200 dark:bg-gray-900 shadow-lg fixed w-full top-0 z-50">
-          <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-            <button >
-              <div className="flex items-center space-x-reverse">
-                <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-                  Joe Winter
-                </span>
-              </div>
-            </button>
-            <div className="block w-auto">
-              <ul className="font-medium flex p-0 flex-row space-x-8 mt-0 bg-gray-50 dark:bg-gray-900 dark:border-gray-700">
-                <li>
-                  <button>
-                    <div className="text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500 dark:hover:bg-transparent">
-                      About
-                    </div>
-                  </button>
-                </li>
-                <li>
-                  <button>
-                    <div className="text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500 dark:hover:bg-transparent">
-                      Projects
-                    </div>
-                  </button>
-                </li>
-                <li>
-                  <button >
-                    <div className="text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500 dark:hover:bg-transparent">
-                      Contact
-                    </div>
-                  </button>
-                </li>
-                {/* <li>
-                  <ThemeToggle />
-                </li> */}
-              </ul>
-            </div>
-          </div>
-        </nav>
-      )}
       {isMobile && (
         <nav className="bg-gray-50 border-gray-200 dark:bg-gray-900 shadow-lg fixed w-full top-0 z-50">
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
