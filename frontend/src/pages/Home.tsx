@@ -10,9 +10,9 @@ export default function Home() {
     navigate("/signup")
   }
   return (
-    <>
-      <button onClick={handleLogInClick}>Log In</button>
-      <button onClick={handleSignUpClick}>Sign Up</button>
-    </>
+    <div className="h-screen flex items-center justify-center space-x-4">
+      <button onClick={handleLogInClick} className="bg-gray-800 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded transition">Log In</button>
+      <button onClick={handleSignUpClick} className="bg-gray-800 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded transition">Sign Up</button>
+    </div>
   );
 }

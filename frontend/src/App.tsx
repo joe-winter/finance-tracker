@@ -3,6 +3,7 @@ import Login from "./pages/Login"
 import SignUp from "./pages/SignUp"
 import Home from "./pages/Home"
 import Dashboard from "./pages/Dashboard"
+import ToggleTheme from "./components/ToggleTheme"
 
 function App() {
   const router = createBrowserRouter([
@@ -26,6 +27,7 @@ function App() {
 
   return (
     <>
+    <ToggleTheme/>
     <RouterProvider router={router}/></>
   )
 }
