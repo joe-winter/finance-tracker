@@ -8,6 +8,8 @@ export function createApp() {
 
   app.use(bodyParser.json())
   app.use(cors())
+
+  // routes
   app.use("/users", userRouter);
   app.use("/tokens", authenticationRouter)
 
