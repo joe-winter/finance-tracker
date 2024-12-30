@@ -32,7 +32,7 @@ describe("/tokens", () => {
     const response = await request(app)
       .post("/tokens")
       .send({ email: "someone@example.com", password: "password123" });
-
+    console.log(response.body)
     expect(response.status).toEqual(201);
     expect(response.body.token).not.toEqual(undefined);
     expect(response.body.message).toEqual("OK");
