@@ -4,6 +4,7 @@ import { Express } from "express";
 import User from "../models/user";
 import connectToDatabase from "../db/db";
 import mongoose from "mongoose";
+import "../mongodb_helper"
 
 describe("/users", () => {
   let app: Express = createApp();
@@ -13,13 +14,7 @@ describe("/users", () => {
   });
 
   beforeAll(async () => {
-    await connectToDatabase();
     app = createApp();
-  });
-
-  afterAll(async () => {
-    await User.deleteMany({});
-    await mongoose.connection.close(true);
   });
 
   describe("POST with user details", () => {
@@ -35,7 +30,6 @@ describe("/users", () => {
     });
 
     it("should create a user", async () => {
-      await User.deleteMany({});
       const response = await request(app).post("/users").send({
         email: "someone@example.com",
         password: "password123",

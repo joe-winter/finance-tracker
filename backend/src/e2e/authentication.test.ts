@@ -2,8 +2,7 @@ import request from "supertest";
 import { createApp } from "../createApp";
 import { Express } from "express";
 import User from "../models/user";
-import connectToDatabase from "../db/db";
-import mongoose from "mongoose";
+import "../mongodb_helper"
 
 describe("/tokens", () => {
   let app: Express = createApp();
@@ -20,12 +19,7 @@ describe("/tokens", () => {
   });
 
   beforeAll(async () => {
-    await connectToDatabase();
     app = createApp();
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.close(true);
   });
 
   it("should return token given valid details", async () => {

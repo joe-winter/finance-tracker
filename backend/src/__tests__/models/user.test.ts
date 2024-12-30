@@ -38,8 +38,8 @@ describe("User Model", () => {
     const user = new User({
       email: "someone@example.com",
       password: "password123",
-      firstName: "chris",
-      lastName: "marion",
+      firstName: "joe",
+      lastName: "winter",
     });
 
     await user.save();

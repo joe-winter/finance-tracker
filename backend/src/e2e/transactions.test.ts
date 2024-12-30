@@ -4,51 +4,74 @@ import { Express } from "express";
 import Transaction from "../models/transaction";
 import connectToDatabase from "../db/db";
 import mongoose from "mongoose";
+import User from "../models/user";
+import { generateToken } from "../lib/token";
+import "../mongodb_helper"
 
 describe("/transactions", () => {
   let app: Express = createApp();
 
   beforeEach(async () => {
+    await User.deleteMany({});
     await Transaction.deleteMany({});
   });
 
   beforeAll(async () => {
-    await connectToDatabase();
     app = createApp();
-  });
-
-  afterAll(async () => {
-    await Transaction.deleteMany({});
-    await mongoose.connection.close(true);
   });
 
   describe("POST with transaction data", () => {
     it("should return a 201 response code", async () => {
-      const response = await request(app).post("/transactions").send({
+      const user = new User({
+        email: "someone@example.com",
+        password: "password123",
+        firstName: "joe",
+        lastName: "winter",
+      });
+      await user.save();
+      
+      const user_id = user._id.toString();
+      const token = generateToken(user_id);
+      
+      const response = await request(app)
+      .post("/transactions")
+      .set("Authorisation", `Bearer ${token}`)
+      .send({
         date: "2024-01-01",
         type: "savings",
         category: "car",
         amount: "59.99",
         description: "new tire",
-        balance: "425.65"
+        balance: "425.65",
       });
-
+      console.log(response.body);
       expect(response.statusCode).toEqual(201);
     });
-    
 
     it("should create a transaction", async () => {
-      await Transaction.deleteMany({});
-      const response = await request(app).post("/transactions").send({
-        date: "2024-01-01",
-        type: "savings",
-        category: "car",
-        amount: "59.99",
-        description: "new tire",
-        balance: "425.65"
+      const user = new User({
+        email: "someone@example.com",
+        password: "password123",
+        firstName: "joe",
+        lastName: "winter",
       });
+      await user.save();
 
-      const transactions = await Transaction.find();
+      const user_id = user._id.toString();
+      const token = generateToken(user_id);
+      const response = await request(app)
+        .post("/transactions")
+        .set("Authorisation", `Bearer ${token}`)
+        .send({
+          date: "2024-01-01",
+          type: "savings",
+          category: "car",
+          amount: "59.99",
+          description: "new tire",
+          balance: "425.65",
+        });
+
+      const transactions = await Transaction.find().populate("user");
       const newTransaction = transactions[transactions.length - 1];
       expect(transactions.length).toEqual(1);
       expect(newTransaction.date).toEqual(new Date("2024-01-01"));
@@ -57,6 +80,7 @@ describe("/transactions", () => {
       expect(newTransaction.amount).toEqual(59.99);
       expect(newTransaction.description).toEqual("new tire");
       expect(newTransaction.balance).toEqual(425.65);
+      expect(newTransaction.user._id.toString()).toEqual(user_id)
     });
   });
 });
