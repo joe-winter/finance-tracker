@@ -32,7 +32,6 @@ export function tokenChecker(
 
     const decoded = JWT.verify(token, secret) as { user_id: string };
     req.user_id = decoded.user_id;
-    console.log("user", decoded)
     next();
   } catch (error) {
     res.status(401).send({ error: "Authentication Failed" });

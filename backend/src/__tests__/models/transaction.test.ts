@@ -3,11 +3,8 @@ import TransactionModel from "../../models/transaction";
 import User from "../../models/user";
 describe("Transaction Model", () => {
   beforeEach(async () => {
-    await TransactionModel.deleteMany({});
-  });
-  afterEach(async () => {
-    await TransactionModel.deleteMany({});
-    await User.deleteMany({});
+    await TransactionModel.deleteMany({}).exec();
+    await User.deleteMany({}).exec();
   });
   it("can save a Transaction", async () => {
     const transaction = new TransactionModel({
@@ -20,7 +17,7 @@ describe("Transaction Model", () => {
     });
 
     await transaction.save();
-    const transactions = await TransactionModel.find();
+    const transactions = await TransactionModel.find({});
 
     expect(transactions[0].date).toEqual(new Date("2024-01-01"));
     expect(transactions[0].type).toEqual("savings");
@@ -49,7 +46,7 @@ describe("Transaction Model", () => {
     });
     await transaction.save()
 
-    const transactionDocument = await TransactionModel.find().populate("user");
+    const transactionDocument = await TransactionModel.find({}).populate("user");
 
     expect(transactionDocument[0].type).toEqual("expenses")
     expect(transactionDocument[0].user.email).toEqual("someone@example.com")

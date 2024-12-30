@@ -3,7 +3,7 @@ import User from "../../models/user";
 
 describe("User Model", () => {
   beforeEach(async () => {
-    await User.deleteMany({});
+    await User.deleteMany({}).exec();
   });
 
   it("has an email", () => {

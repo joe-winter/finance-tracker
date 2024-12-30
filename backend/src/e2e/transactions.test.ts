@@ -2,8 +2,6 @@ import request from "supertest";
 import { createApp } from "../createApp";
 import { Express } from "express";
 import Transaction from "../models/transaction";
-import connectToDatabase from "../db/db";
-import mongoose from "mongoose";
 import User from "../models/user";
 import { generateToken } from "../lib/token";
 import "../mongodb_helper"
@@ -12,9 +10,12 @@ describe("/transactions", () => {
   let app: Express = createApp();
 
   beforeEach(async () => {
-    await User.deleteMany({});
-    await Transaction.deleteMany({});
-  });
+    await User.deleteMany({}).exec();
+    await Transaction.deleteMany({}).exec();
+    const users = await User.find();
+    const transactions = await Transaction.find()
+    console.log("before each /transactions", users.length, transactions.length)
+  })
 
   beforeAll(async () => {
     app = createApp();
@@ -44,7 +45,6 @@ describe("/transactions", () => {
         description: "new tire",
         balance: "425.65",
       });
-      console.log(response.body);
       expect(response.statusCode).toEqual(201);
     });
 
@@ -71,7 +71,7 @@ describe("/transactions", () => {
           balance: "425.65",
         });
 
-      const transactions = await Transaction.find().populate("user");
+      const transactions = await Transaction.find({}).populate("user");
       const newTransaction = transactions[transactions.length - 1];
       expect(transactions.length).toEqual(1);
       expect(newTransaction.date).toEqual(new Date("2024-01-01"));

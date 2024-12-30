@@ -8,14 +8,9 @@ describe("/tokens", () => {
   let app: Express = createApp();
 
   beforeEach(async () => {
-    await User.deleteMany({});
-    const user = new User({
-      email: "someone@example.com",
-      password: "password123",
-      firstName: "Joe",
-      lastName: "Winter",
-    });
-    await user.save();
+    await User.deleteMany({}).exec();
+    const users = await User.find({})
+    console.log("before each /tokens", users.length)
   });
 
   beforeAll(async () => {
@@ -23,15 +18,28 @@ describe("/tokens", () => {
   });
 
   it("should return token given valid details", async () => {
+    const user = new User({
+      email: "someone@example.com",
+      password: "password123",
+      firstName: "Joe",
+      lastName: "Winter",
+    });
+    await user.save();
     const response = await request(app)
       .post("/tokens")
       .send({ email: "someone@example.com", password: "password123" });
-    console.log(response.body)
     expect(response.status).toEqual(201);
     expect(response.body.token).not.toEqual(undefined);
     expect(response.body.message).toEqual("OK");
   });
   it("doesn't return a token when the user doesn't exist", async () => {
+    const user = new User({
+      email: "someone@example.com",
+      password: "password123",
+      firstName: "Joe",
+      lastName: "Winter",
+    });
+    await user.save();
     const response = await request(app)
       .post("/tokens")
       .send({ email: "non-existent@test.com", password: "password123" });
@@ -41,6 +49,13 @@ describe("/tokens", () => {
     expect(response.body.message).toEqual("User not found");
   });
   test("doesn't return a token when the wrong password is given", async () => {
+    const user = new User({
+      email: "someone@example.com",
+      password: "password123",
+      firstName: "Joe",
+      lastName: "Winter",
+    });
+    await user.save();
     const response = await request(app)
       .post("/tokens")
       .send({ email: "someone@example.com", password: "1234" });
