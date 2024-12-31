@@ -4,11 +4,10 @@ import MobileNavBar from "../components/MobileNavBar";
 
 type DashboardProps = {
   isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>
-}
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+};
 
-
-export default function Dashboard({isOpen, setIsOpen} : DashboardProps) {
+export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   useEffect(() => {
@@ -19,18 +18,15 @@ export default function Dashboard({isOpen, setIsOpen} : DashboardProps) {
 
   return (
     <>
-      <MobileNavBar isOpen={isOpen} setIsOpen={setIsOpen}/>
+      <MobileNavBar isOpen={isOpen} setIsOpen={setIsOpen} />
 
-
-      <h2 className={`flex justify-center text-2xl font-semibold whitespace-nowrap dark:text-white p-4 ${isOpen ? "mt-60": "mt-16"}`}>Dashboard</h2>
-      <button
-        onClick={() => {
-          localStorage.removeItem("token");
-          navigate("/login");
-        }}
-        >
-        Log Out
-      </button>
+      <h2
+        className={`flex justify-center text-2xl font-semibold whitespace-nowrap dark:text-white p-4 ${
+          isOpen ? "mt-72" : "mt-16"
+        }`}
+      >
+        Dashboard
+      </h2>
       <div className="p-24">Hello</div>
       <div className="p-24">Hello</div>
       <div className="p-24">Hello</div>

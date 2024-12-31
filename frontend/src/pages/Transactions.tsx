@@ -1,7 +1,13 @@
-import { useEffect } from "react";
+import MobileNavBar from "../components/MobileNavBar";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Transactions() {
+type TransactionProps = {
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   useEffect(() => {
@@ -11,15 +17,14 @@ export default function Transactions() {
   }, [token, navigate]);
   return (
     <>
-      <div>Transactions</div>
-      <button
-        onClick={() => {
-          localStorage.removeItem("token");
-          navigate("/login");
-        }}
+      <MobileNavBar isOpen={isOpen} setIsOpen={setIsOpen} />
+      <h2
+        className={`flex justify-center text-2xl font-semibold whitespace-nowrap dark:text-white p-4 ${
+          isOpen ? "mt-72" : "mt-16"
+        }`}
       >
-        Log Out
-      </button>
+        Transactions
+      </h2>
     </>
   );
 }

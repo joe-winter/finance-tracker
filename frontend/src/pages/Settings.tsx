@@ -1,7 +1,13 @@
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import MobileNavBar from "../components/MobileNavBar";
 
-export default function Settings() {
+type SettingsProps = {
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   useEffect(() => {
@@ -11,15 +17,10 @@ export default function Settings() {
   }, [token, navigate]);
   return (
     <>
-      <div>Settings</div>
-      <button
-        onClick={() => {
-          localStorage.removeItem("token");
-          navigate("/login");
-        }}
-      >
-        Log Out
-      </button>
+    <MobileNavBar isOpen={isOpen} setIsOpen={setIsOpen} />
+      <h2 className={`flex justify-center text-2xl font-semibold whitespace-nowrap dark:text-white p-4 ${
+          isOpen ? "mt-72" : "mt-16"
+        }`}>Settings</h2>
     </>
   );
 }
