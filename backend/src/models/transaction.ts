@@ -8,19 +8,19 @@ interface User {
   lastName: string;
 }
 
-interface Transaction {
+export interface ITransaction {
   date: Date;
-  type: String;
-  category: String;
-  amount: Number;
-  description: String;
-  balance: Number;
+  type: string;
+  category: string;
+  amount: number;
+  description: string;
+  balance: number;
   user: User;
 }
 
 type TransactionModelType = Model<User>;
 
-const transactionSchema = new Schema<Transaction, TransactionModelType>({
+const transactionSchema = new Schema<ITransaction, TransactionModelType>({
   date: { type: Date },
   type: { type: String },
   category: { type: String },

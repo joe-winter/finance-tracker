@@ -31,7 +31,7 @@ describe("User Model", () => {
     expect(user.lastName).toEqual("Winter");
   });
   it("can list all users", async () => {
-    const users = await User.find();
+    const users = await User.find({});
     expect(users).toEqual([]);
   });
   it("can save a user", async () => {
@@ -43,7 +43,7 @@ describe("User Model", () => {
     });
 
     await user.save();
-    const users = await User.find();
+    const users = await User.find({});
 
     expect(users[0].email).toEqual("someone@example.com");
     expect(users[0].password).toEqual("password123");

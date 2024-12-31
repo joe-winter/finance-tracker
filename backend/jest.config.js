@@ -7,4 +7,6 @@ module.exports = {
   transform: {
     "^.+.tsx?$": ["ts-jest",{}],
   },
+  maxWorkers: 1,
+  verbose: true
 };
