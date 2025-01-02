@@ -13,18 +13,7 @@ describe("/transactions", () => {
   beforeEach(async () => {
     await User.deleteMany({}).exec();
     await Transaction.deleteMany({}).exec();
-    const users = await User.find({});
-    const transactions = await Transaction.find({});
-    console.log("before each /transactions", users.length, transactions.length);
   });
-  afterEach(async () => {
-    await User.deleteMany({}).exec();
-    await Transaction.deleteMany({}).exec();
-    const users = await User.find({});
-    const transactions = await Transaction.find({});
-    console.log("before each /transactions", users.length, transactions.length);
-  });
-
   beforeAll(async () => {
     app = createApp();
   });
@@ -46,12 +35,14 @@ describe("/transactions", () => {
         .post("/transactions")
         .set("Authorization", `Bearer ${token}`)
         .send({
-          date: "2024-01-01",
-          type: "savings",
-          category: "car",
-          amount: "59.99",
-          description: "new tire",
-          balance: "425.65",
+          transaction: {
+            date: "2024-01-01",
+            type: "savings",
+            category: "car",
+            amount: "59.99",
+            description: "new tire",
+            balance: "425.65",
+          },
         });
       expect(response.statusCode).toEqual(201);
     });
@@ -71,12 +62,14 @@ describe("/transactions", () => {
         .post("/transactions")
         .set("Authorization", `Bearer ${token}`)
         .send({
-          date: "2024-01-01",
-          type: "savings",
-          category: "car",
-          amount: "59.99",
-          description: "new tire",
-          balance: "425.65",
+          transaction: {
+            date: "2024-01-01",
+            type: "savings",
+            category: "car",
+            amount: "59.99",
+            description: "new tire",
+            balance: "425.65",
+          },
         });
 
       const transactions = await Transaction.find({}).populate("user");
@@ -149,9 +142,11 @@ describe("/transactions", () => {
         .set("Authorization", `Bearer ${token}`);
 
       const transactionResponse = response.body.transactions;
-      console.log("response", transactionResponse.transactions)
+      console.log("response", transactionResponse.transactions);
 
-      expect(new Date(transactionResponse[0].date)).toEqual(new Date("2024-01-01"));
+      expect(new Date(transactionResponse[0].date)).toEqual(
+        new Date("2024-01-01")
+      );
       expect(transactionResponse[0].type).toEqual("expenses");
       expect(transactionResponse[0].category).toEqual("car");
       expect(transactionResponse[0].amount).toEqual(59.99);

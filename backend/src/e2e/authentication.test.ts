@@ -9,8 +9,6 @@ describe("/tokens", () => {
 
   beforeEach(async () => {
     await User.deleteMany({}).exec();
-    const users = await User.find({})
-    console.log("before each /tokens", users.length)
   });
 
   beforeAll(async () => {

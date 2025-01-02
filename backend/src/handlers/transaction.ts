@@ -7,29 +7,33 @@ interface AuthenticatedRequest extends Request {
 }
 interface TransactionRequest extends AuthenticatedRequest {
   body: {
-    date: string;
-    type: String;
-    category: String;
-    amount: String;
-    description: String;
-    balance: String;
+    transaction: {
+      date: string;
+      type: String;
+      category: String;
+      amount: String;
+      description: String;
+      balance: String;
+    };
   };
 }
 type TransactionResponse = {
-    date: Date;
-    type: String;
-    category: string;
-    amount: number;
-    description: string;
-    balance: number;
-  };
+  date: Date;
+  type: String;
+  category: string;
+  amount: number;
+  description: string;
+  balance: number;
+};
 
 export default class TransactionsController {
   public static async create(
     req: TransactionRequest,
     res: Response<{ token?: String; message: String }>
   ) {
-    const { date, type, category, amount, description, balance } = req.body;
+    console.log(req.body)
+    const { date, type, category, amount, description, balance } =
+      req.body.transaction;
 
     const transaction = new TransactionModel({
       date: new Date(date),
@@ -44,7 +48,7 @@ export default class TransactionsController {
     await transaction.save();
 
     console.log(
-      `User ID: ${req.user_id} created Transaction ${req.body.description}`
+      `User ID: ${req.user_id} created Transaction ${req.body.transaction.description}`
     );
 
     if (req.user_id) {
@@ -53,29 +57,31 @@ export default class TransactionsController {
     }
   }
 
-
   public static async getByUser(
     req: AuthenticatedRequest,
-    res: Response<{transactions: TransactionResponse[], token: string}>
+    res: Response<{ transactions: TransactionResponse[]; token: string }>
   ) {
     try {
       if (req.user_id) {
-        const token = generateToken(req.user_id)
-        const transactionsQuery = await TransactionModel.find({ user: req.user_id}).exec();
+        const token = generateToken(req.user_id);
+        const transactionsQuery = await TransactionModel.find({
+          user: req.user_id,
+        }).exec();
 
-        const transactionsResponse: TransactionResponse[] = transactionsQuery.map(transaction => ({
-          date: transaction.date,
-          type: transaction.type,
-          category: transaction.category,
-          amount: transaction.amount,
-          description: transaction.description,
-          balance: transaction.balance
-        }))
-        
-        res.status(200).json({transactions: transactionsResponse, token: token})
+        const transactionsResponse: TransactionResponse[] =
+          transactionsQuery.map((transaction) => ({
+            date: transaction.date,
+            type: transaction.type,
+            category: transaction.category,
+            amount: transaction.amount,
+            description: transaction.description,
+            balance: transaction.balance,
+          }));
+
+        res
+          .status(200)
+          .json({ transactions: transactionsResponse, token: token });
       }
-    } catch (err) {
-      
-    }
+    } catch (err) {}
   }
 }

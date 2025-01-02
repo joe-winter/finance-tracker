@@ -7,14 +7,23 @@ type Transaction = {
   amount: number;
   description: string;
   balance: number;
-}
+};
 
 export class TransactionsService {
-  public static async get() {
+  public static async get(token: string) {
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const response = await fetch(`${BACKEND_URL}/transactions`, requestOptions);
 
+    const data = await response.json();
+
+    return data
   }
 
-  
   public static async add(token: string, transaction: Transaction) {
     const requestOptions = {
       method: "POST",
@@ -24,13 +33,11 @@ export class TransactionsService {
       },
       body: JSON.stringify(transaction),
     };
-    
-    const response = await fetch(`${BACKEND_URL}/transactions`, requestOptions); // /posts refers to all the routes related to posts
-  
+
+    const response = await fetch(`${BACKEND_URL}/transactions`, requestOptions);
+
     if (response.status !== 201) {
       throw new Error("Unable to add transaction");
     }
   }
-
-
 }
