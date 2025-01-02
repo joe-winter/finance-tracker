@@ -15,7 +15,7 @@ export function tokenChecker(
 ) {
   try {
     let token;
-    const authHeader = req.get("Authorisation");
+    const authHeader = req.get("Authorization");
     if (authHeader) {
       token = authHeader.slice(7);
     }

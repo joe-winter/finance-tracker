@@ -18,15 +18,17 @@ describe("Authentication Service", () => {
       await login(testEmail, testPassword);
 
       const fetchArgs = fetchMock.mock.lastCall;
-      const url = fetchArgs[0];
-      const options = fetchArgs[1];
+      const url = fetchArgs?.[0];
+      const options = fetchArgs?.[1];
 
       expect(url).toEqual(`${BACKEND_URL}/tokens`);
-      expect(options.method).toEqual("POST");
-      expect(options.body).toEqual(
-        JSON.stringify({ email: testEmail, password: testPassword })
-      );
-      expect(options.headers["Content-Type"]).toEqual("application/json");
+      expect(options).toMatchObject({
+        method: "POST",
+        body: JSON.stringify({ email: testEmail, password: testPassword }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
     });
 
     it("returns the token if the request was a success", async () => {
@@ -74,29 +76,26 @@ describe("Authentication Service", () => {
         status: 201,
       });
 
-      await signUp(
-        testEmail,
-        testPassword,
-        testFirstName,
-        testLastName,
-      );
+      await signUp(testEmail, testPassword, testFirstName, testLastName);
 
       // This is an array of the arguments that were last passed to fetch
       const fetchArguments = fetchMock.mock.lastCall;
-      const url = fetchArguments[0];
-      const options = fetchArguments[1];
+      const url = fetchArguments?.[0];
+      const options = fetchArguments?.[1];
 
       expect(url).toEqual(`${BACKEND_URL}/users`);
-      expect(options.method).toEqual("POST");
-      expect(options.body).toEqual(
-        JSON.stringify({
+      expect(options).toMatchObject({
+        method: "POST",
+        body: JSON.stringify({
           email: testEmail,
           password: testPassword,
           firstName: testFirstName,
           lastName: testLastName,
-        })
-      );
-      expect(options.headers["Content-Type"]).toEqual("application/json");
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
     });
 
     it("returns token if the signup request was a success", async () => {
@@ -105,17 +104,15 @@ describe("Authentication Service", () => {
       const testFirstName = "TestFirstName";
       const testLastName = "TestLastName";
 
-  
-        fetchMock.mockResponseOnce(JSON.stringify({ token: "testToken" }), {
-          status: 201,
-        });
-
+      fetchMock.mockResponseOnce(JSON.stringify({ token: "testToken" }), {
+        status: 201,
+      });
 
       const token = await signUp(
         testEmail,
         testPassword,
         testFirstName,
-        testLastName,
+        testLastName
       );
       expect(token).toEqual("testToken");
     });
@@ -134,12 +131,7 @@ describe("Authentication Service", () => {
       );
 
       try {
-        await signUp(
-          testEmail,
-          testPassword,
-          testFirstName,
-          testLastName,
-        );
+        await signUp(testEmail, testPassword, testFirstName, testLastName);
       } catch (err: unknown) {
         if (err instanceof Error) {
           expect(err.message).toEqual(

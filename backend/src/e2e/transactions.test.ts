@@ -44,7 +44,7 @@ describe("/transactions", () => {
 
       const response = await request(app)
         .post("/transactions")
-        .set("Authorisation", `Bearer ${token}`)
+        .set("Authorization", `Bearer ${token}`)
         .send({
           date: "2024-01-01",
           type: "savings",
@@ -69,7 +69,7 @@ describe("/transactions", () => {
       const token = generateToken(user_id);
       const response = await request(app)
         .post("/transactions")
-        .set("Authorisation", `Bearer ${token}`)
+        .set("Authorization", `Bearer ${token}`)
         .send({
           date: "2024-01-01",
           type: "savings",
@@ -117,7 +117,7 @@ describe("/transactions", () => {
 
       const response = await request(app)
         .get("/transactions")
-        .set("Authorisation", `Bearer ${token}`);
+        .set("Authorization", `Bearer ${token}`);
 
       expect(response.statusCode).toEqual(200);
     });
@@ -146,7 +146,7 @@ describe("/transactions", () => {
 
       const response = await request(app)
         .get("/transactions")
-        .set("Authorisation", `Bearer ${token}`);
+        .set("Authorization", `Bearer ${token}`);
 
       const transactionResponse = response.body.transactions;
       console.log("response", transactionResponse.transactions)
