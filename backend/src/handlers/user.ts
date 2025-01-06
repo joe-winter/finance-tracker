@@ -13,6 +13,17 @@ interface UserCategoriesRequest extends AuthenticatedRequest {
     savings: string[];
   };
 }
+interface UserResponse {
+  email: string;
+  firstName: string;
+  lastName: string;
+  categories: {
+    expenses: string[];
+    income: string[];
+    savings: string[];
+  };
+}
+
 export default class UserController {
   public static async updateCategories(
     req: UserCategoriesRequest,
@@ -21,16 +32,29 @@ export default class UserController {
     const categories = req.body;
 
     const user = await User.findById(req.user_id);
-    console.log(user);
     if (user) {
-      console.log(user.categories);
       user.categories = categories;
       await user.save();
     }
 
     if (req.user_id) {
       const newToken = generateToken(req.user_id);
-      res.status(200).json({ message: "transaction created", token: newToken });
+      res.status(200).json({ message: "categories updated", token: newToken });
+    }
+  }
+  public static async getNonSensitiveData(
+    req: AuthenticatedRequest,
+    res: Response<{ user: UserResponse; token: string }>
+  ) {
+    const user = await User.findById(
+      req.user_id,
+      "email firstName lastName categories"
+    );
+    console.log(user)
+
+    if (user && req.user_id) {
+      const newToken = generateToken(req.user_id);
+      res.status(200).json({ user: user, token: newToken });
     }
   }
 }
