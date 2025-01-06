@@ -2,7 +2,7 @@ import { TransactionsService } from "../services/transactions";
 import NavBarSwitcher from "../components/NavBarSwitcher";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import TransactionTable from "../components/TransactionTable";
 type TransactionProps = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -11,6 +11,7 @@ type TransactionProps = {
 export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const [state, setState] = useState(false)
   const [transactions, setTransactions] = useState([
     {
       date: "",
@@ -38,11 +39,11 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       }
     };
     fetchData();
-  }, [token, navigate]);
+  }, [token, navigate, state]);
   console.log(transactions);
   return (
     <>
-      <NavBarSwitcher isOpen={isOpen} setIsOpen={setIsOpen}/>
+      <NavBarSwitcher isOpen={isOpen} setIsOpen={setIsOpen} />
       <h2
         className={`flex justify-center text-2xl font-semibold whitespace-nowrap p-4 ${
           isOpen ? "mt-72" : "mt-16"
@@ -51,30 +52,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
         Transactions
       </h2>
       <div className="flex justify-center">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Type</th>
-              <th>Category</th>
-              <th>Amount</th>
-              <th>Description</th>
-              <th>Balance</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((transaction, index) => (
-              <tr key={index}>
-                <td>{transaction.date.slice(0, 10)}</td>
-                <td>{transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}</td>
-                <td>{transaction.category}</td>
-                <td>{transaction.amount.toFixed(2)}</td>
-                <td>{transaction.description}</td>
-                <td>{transaction.balance.toFixed(2)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <TransactionTable transactions={transactions} setState={setState} state={state}/>
       </div>
       {/* `      {transactions.map((transaction, index) => (
         <div key={index} className="p-4 border rounded-lg shadow-sm">

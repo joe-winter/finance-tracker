@@ -1,12 +1,11 @@
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 type Transaction = {
-  date: Date;
+  date: string;
   type: string;
   category: string;
   amount: number;
   description: string;
-  balance: number;
 };
 
 export class TransactionsService {

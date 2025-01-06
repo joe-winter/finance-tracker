@@ -6,16 +6,15 @@ interface AuthenticatedRequest extends Request {
   user_id?: string;
 }
 interface TransactionRequest extends AuthenticatedRequest {
-  body: {
-    transaction: {
+  body: 
+    {
       date: string;
-      type: String;
-      category: String;
-      amount: String;
-      description: String;
-      balance: String;
+      type: string;
+      category: string;
+      amount: string;
+      description: string;
     };
-  };
+
 }
 type TransactionResponse = {
   date: Date;
@@ -32,8 +31,8 @@ export default class TransactionsController {
     res: Response<{ token?: String; message: String }>
   ) {
     console.log(req.body)
-    const { date, type, category, amount, description, balance } =
-      req.body.transaction;
+    const { date, type, category, amount, description } =
+      req.body;
 
     const transaction = new TransactionModel({
       date: new Date(date),
@@ -41,14 +40,14 @@ export default class TransactionsController {
       category,
       amount: Number(amount),
       description,
-      balance: Number(balance),
       user: req.user_id,
+      balance: 200
     });
 
     await transaction.save();
 
     console.log(
-      `User ID: ${req.user_id} created Transaction ${req.body.transaction.description}`
+      `User ID: ${req.user_id} created Transaction ${req.body.description}`
     );
 
     if (req.user_id) {

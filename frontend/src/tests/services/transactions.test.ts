@@ -20,7 +20,6 @@ describe("transaction service", () => {
         category: "car",
         amount: 59.99,
         description: "new tire",
-        balance: 1234.45,
       };
 
       await TransactionsService.add("testToken", transaction);
@@ -38,7 +37,6 @@ describe("transaction service", () => {
           category: "car",
           amount: 59.99,
           description: "new tire",
-          balance: 1234.45,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -58,7 +56,6 @@ describe("transaction service", () => {
         category: "car",
         amount: 59.99,
         description: "new tire",
-        balance: 1234.45,
       };
 
       try {
