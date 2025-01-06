@@ -30,6 +30,34 @@ describe("User Model", () => {
     });
     expect(user.lastName).toEqual("Winter");
   });
+  it("has no categories for each type", () => {
+    const user = new User({
+      categories: {
+        expenses: [],
+        income: [],
+        savings: [],
+      },
+    });
+    expect(user.categories).toMatchObject({
+      expenses: [],
+      income: [],
+      savings: [],
+    });
+  });
+  it("has categories for each type", () => {
+    const user = new User({
+      categories: {
+        expenses: ["rent", "groceries"],
+        income: ["salary", "bonus"],
+        savings: ["emergency fund", "retirement"],
+      },
+    });
+    expect(user.categories).toMatchObject({
+      expenses: ["rent", "groceries"],
+      income: ["salary", "bonus"],
+      savings: ["emergency fund", "retirement"],
+    });
+  });
   it("can list all users", async () => {
     const users = await User.find({});
     expect(users).toEqual([]);
@@ -40,6 +68,11 @@ describe("User Model", () => {
       password: "password123",
       firstName: "joe",
       lastName: "winter",
+      categories: {
+        expenses: ["rent", "groceries"],
+        income: ["salary", "bonus"],
+        savings: ["emergency fund", "retirement"],
+      },
     });
 
     await user.save();
@@ -47,5 +80,10 @@ describe("User Model", () => {
 
     expect(users[0].email).toEqual("someone@example.com");
     expect(users[0].password).toEqual("password123");
+    expect(users[0].categories).toMatchObject({
+      expenses: ["rent", "groceries"],
+      income: ["salary", "bonus"],
+      savings: ["emergency fund", "retirement"],
+    })
   });
 });

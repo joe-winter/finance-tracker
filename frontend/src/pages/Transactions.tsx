@@ -54,36 +54,6 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       <div className="flex justify-center">
         <TransactionTable transactions={transactions} setState={setState} state={state}/>
       </div>
-      {/* `      {transactions.map((transaction, index) => (
-        <div key={index} className="p-4 border rounded-lg shadow-sm">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div>
-              <p className="text-sm text-gray-500">Date</p>
-              <p className="font-medium">{transaction.date}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Type</p>
-              <p className="font-medium capitalize">{transaction.type}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Category</p>
-              <p className="font-medium capitalize">{transaction.category}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Amount</p>
-              <p className="font-medium">${transaction.amount.toFixed(2)}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Description</p>
-              <p className="font-medium">{transaction.description}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Balance</p>
-              <p className="font-medium">${transaction.balance.toFixed(2)}</p>
-            </div>
-          </div>
-        </div>
-      ))}` */}
     </>
   );
 }

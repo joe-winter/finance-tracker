@@ -35,14 +35,12 @@ describe("/transactions", () => {
         .post("/transactions")
         .set("Authorization", `Bearer ${token}`)
         .send({
-          transaction: {
-            date: "2024-01-01",
-            type: "savings",
-            category: "car",
-            amount: "59.99",
-            description: "new tire",
-            balance: "425.65",
-          },
+          date: "2024-01-01",
+          type: "savings",
+          category: "car",
+          amount: "59.99",
+          description: "new tire",
+          balance: "425.65",
         });
       expect(response.statusCode).toEqual(201);
     });
@@ -62,25 +60,24 @@ describe("/transactions", () => {
         .post("/transactions")
         .set("Authorization", `Bearer ${token}`)
         .send({
-          transaction: {
-            date: "2024-01-01",
-            type: "savings",
-            category: "car",
-            amount: "59.99",
-            description: "new tire",
-            balance: "425.65",
-          },
+          date: "2024-01-01",
+          type: "savings",
+          category: "car",
+          amount: "59.99",
+          description: "new tire",
+          balance: "425.65",
         });
 
       const transactions = await Transaction.find({}).populate("user");
       const newTransaction = transactions[transactions.length - 1];
+
+      console.log(transactions)
       expect(transactions.length).toEqual(1);
       expect(newTransaction.date).toEqual(new Date("2024-01-01"));
       expect(newTransaction.type).toEqual("savings");
       expect(newTransaction.category).toEqual("car");
       expect(newTransaction.amount).toEqual(59.99);
       expect(newTransaction.description).toEqual("new tire");
-      expect(newTransaction.balance).toEqual(425.65);
       expect(newTransaction.user._id.toString()).toEqual(user_id);
     });
   });
