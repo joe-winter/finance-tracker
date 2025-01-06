@@ -11,7 +11,16 @@ type TransactionProps = {
 export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const [transactions, setTransactions] = useState([{date: "", type: "", category: "", amount: 0, description: "", balance: 0}]);
+  const [transactions, setTransactions] = useState([
+    {
+      date: "",
+      type: "",
+      category: "",
+      amount: 0,
+      description: "",
+      balance: 0,
+    },
+  ]);
   useEffect(() => {
     if (!token) {
       navigate("/login");
@@ -21,7 +30,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       try {
         if (loggedIn) {
           const transactionsData = await TransactionsService.get(token);
-          setTransactions(transactionsData.transactions)
+          setTransactions(transactionsData.transactions);
         }
       } catch (err) {
         console.log(err);
@@ -35,13 +44,35 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
     <>
       <MobileNavBar isOpen={isOpen} setIsOpen={setIsOpen} />
       <h2
-        className={`flex justify-center text-2xl font-semibold whitespace-nowrap dark:text-white p-4 ${
+        className={`flex justify-center text-2xl font-semibold whitespace-nowrap p-4 ${
           isOpen ? "mt-72" : "mt-16"
         }`}
       >
         Transactions
       </h2>
-      {transactions.map((transaction, index) => (
+      <div className="flex justify-center">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Category</th>
+              <th>Amount</th>
+              <th>Description</th>
+              <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.map((transaction, index) => (
+              <tr key={index}>
+                <td>{transaction.date.slice(0, 10)}</td>
+                <td>{transaction.type.toLocaleUpperCase()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {/* `      {transactions.map((transaction, index) => (
         <div key={index} className="p-4 border rounded-lg shadow-sm">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div>
@@ -70,7 +101,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
             </div>
           </div>
         </div>
-      ))}
+      ))}` */}
     </>
   );
 }

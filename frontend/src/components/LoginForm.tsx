@@ -32,12 +32,12 @@ export default function LoginForm() {
           <div>
             <label
               htmlFor="email"
-              className="block mb-2 text-sm font-medium text-gray-100-900 dark:text-white"
+              className="block mb-2 text-sm font-medium text-gray-100-900 "
             >
               Your Email
             </label>
             <input
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-100"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-100"
               type="text"
               name="email"
               id="email"
@@ -49,12 +49,12 @@ export default function LoginForm() {
           <div>
             <label
               htmlFor="password"
-              className="block mb-2 text-sm font-medium text-gray-100-900 dark:text-white"
+              className="block mb-2 text-sm font-medium text-gray-100-900 "
             >
               Password
             </label>
             <input
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-100"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-100"
               type="password"
               name="password"
               id="password"

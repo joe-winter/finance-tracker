@@ -18,7 +18,7 @@ export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
   return (
     <>
     <MobileNavBar isOpen={isOpen} setIsOpen={setIsOpen} />
-      <h2 className={`flex justify-center text-2xl font-semibold whitespace-nowrap dark:text-white p-4 ${
+      <h2 className={`flex justify-center text-2xl font-semibold whitespace-nowrap  p-4 ${
           isOpen ? "mt-72" : "mt-16"
         }`}>Settings</h2>
     </>
