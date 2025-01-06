@@ -1,5 +1,5 @@
 import { TransactionsService } from "../services/transactions";
-import MobileNavBar from "../components/MobileNavBar";
+import NavBarSwitcher from "../components/NavBarSwitcher";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -42,7 +42,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
   console.log(transactions);
   return (
     <>
-      <MobileNavBar isOpen={isOpen} setIsOpen={setIsOpen} />
+      <NavBarSwitcher isOpen={isOpen} setIsOpen={setIsOpen}/>
       <h2
         className={`flex justify-center text-2xl font-semibold whitespace-nowrap p-4 ${
           isOpen ? "mt-72" : "mt-16"

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import MobileNavBar from "../components/MobileNavBar";
+import NavBarSwitcher from "../components/NavBarSwitcher";
 
 type DashboardProps = {
   isOpen: boolean;
@@ -18,7 +18,7 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
 
   return (
     <>
-      <MobileNavBar isOpen={isOpen} setIsOpen={setIsOpen} />
+      <NavBarSwitcher isOpen={isOpen} setIsOpen={setIsOpen}/>
 
       <h2
         className={`flex justify-center text-2xl font-semibold whitespace-nowrap  p-4 ${
