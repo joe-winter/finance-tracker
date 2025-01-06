@@ -11,8 +11,6 @@ export default function NavBarSwitcher({ isOpen, setIsOpen }: MobileNavBarProps)
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 769);
 
-  console.log(isMobile)
-
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 769);

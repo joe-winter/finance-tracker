@@ -66,7 +66,11 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
             {transactions.map((transaction, index) => (
               <tr key={index}>
                 <td>{transaction.date.slice(0, 10)}</td>
-                <td>{transaction.type.toLocaleUpperCase()}</td>
+                <td>{transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}</td>
+                <td>{transaction.category}</td>
+                <td>{transaction.amount.toFixed(2)}</td>
+                <td>{transaction.description}</td>
+                <td>{transaction.balance.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>

@@ -70,7 +70,7 @@ const data = await getData("users")
 const transactions = [
   {
     date: new Date("2024-01-01"),
-    type: "expense",
+    type: "expenses",
     category: "Groceries",
     amount: 85.50,
     description: "Weekly grocery shopping at Whole Foods",
@@ -88,7 +88,7 @@ const transactions = [
   },
   {
     date: new Date("2024-01-03"),
-    type: "expense",
+    type: "expenses",
     category: "Bills",
     amount: 150.00,
     description: "Electricity bill payment",
@@ -97,7 +97,7 @@ const transactions = [
   },
   {
     date: new Date("2024-01-03"),
-    type: "expense",
+    type: "expenses",
     category: "Transportation",
     amount: 45.00,
     description: "Gas station fill-up",
@@ -106,7 +106,7 @@ const transactions = [
   },
   {
     date: new Date("2024-01-01"),
-    type: "expense",
+    type: "expenses",
     category: "Entertainment",
     amount: 65.00,
     description: "Movie tickets and dinner",
@@ -124,7 +124,7 @@ const transactions = [
   },
   {
     date: new Date("2024-01-03"),
-    type: "expense",
+    type: "expenses",
     category: "Shopping",
     amount: 120.00,
     description: "New clothes from H&M",
@@ -133,11 +133,74 @@ const transactions = [
   },
   {
     date: new Date("2024-01-03"),
-    type: "expense",
+    type: "expenses",
     category: "Bills",
     amount: 80.00,
     description: "Internet bill",
     balance: 2235.00,
+    user: data[1]._id
+  },
+  {
+    date: new Date("2024-01-04"),
+    type: "expenses",
+    category: "Dining",
+    amount: 50.00,
+    description: "Dinner at a local restaurant",
+    balance: 2185.00,
+    user: data[1]._id
+  },
+  {
+    date: new Date("2024-01-05"),
+    type: "savings",
+    category: "Emergency Fund",
+    amount: 300.00,
+    description: "Transferred to emergency savings",
+    balance: 1885.00,
+    user: data[1]._id
+  },
+  {
+    date: new Date("2024-01-06"),
+    type: "savings",
+    category: "Travel Fund",
+    amount: 200.00,
+    description: "Set aside for vacation savings",
+    balance: 1685.00,
+    user: data[1]._id
+  },
+  {
+    date: new Date("2024-01-07"),
+    type: "expenses",
+    category: "Health",
+    amount: 100.00,
+    description: "Pharmacy purchase",
+    balance: 1585.00,
+    user: data[1]._id
+  },
+  {
+    date: new Date("2024-01-08"),
+    type: "income",
+    category: "Gift",
+    amount: 150.00,
+    description: "Birthday gift from family",
+    balance: 1735.00,
+    user: data[1]._id
+  },
+  {
+    date: new Date("2024-01-09"),
+    type: "expenses",
+    category: "Utilities",
+    amount: 90.00,
+    description: "Water bill payment",
+    balance: 1645.00,
+    user: data[1]._id
+  },
+  {
+    date: new Date("2024-01-10"),
+    type: "savings",
+    category: "Investment",
+    amount: 400.00,
+    description: "Contribution to investment account",
+    balance: 1245.00,
     user: data[1]._id
   }
 ];
