@@ -1,7 +1,5 @@
 import {
-  ChangeEvent,
   Dispatch,
-  FormEvent,
   SetStateAction,
   useEffect,
   useState,
@@ -25,11 +23,6 @@ interface User {
     income: string[];
     savings: string[];
   };
-}
-interface Categories {
-  expenses: string[];
-  income: string[];
-  savings: string[];
 }
 
 export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
@@ -66,7 +59,6 @@ export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
     };
     fetchData();
   }, [navigate, token, refresh]);
-  console.log("user info", user);
   return (
     <>
       <NavBarSwitcher isOpen={isOpen} setIsOpen={setIsOpen} />

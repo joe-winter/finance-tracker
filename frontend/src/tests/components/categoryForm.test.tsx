@@ -67,4 +67,52 @@ describe("Category form", () => {
       updatedCategories
     );
   });
+  it("doesnt not call function when empty input is given", async () => {
+    window.localStorage.setItem("token", "testToken");
+    const user = userEvent.setup();
+    const categories = {
+      expenses: ["Rent", "Groceries", "Transportation"],
+      income: ["Salary", "Freelancing"],
+      savings: ["Emergency Fund", "Vacation"],
+    };
+    render(
+      <CategoryForm
+        type={"expenses"}
+        placeholder={"Enter expense here"}
+        categories={categories}
+        refresh={false}
+        setRefresh={vi.fn()}
+      />
+    );
+
+    
+    const buttonEl = screen.getByRole("button");
+    await user.click(buttonEl)
+
+    expect(UserService.updateCategories).not.toHaveBeenCalled()
+  })
+  it("doesnt call backend when there is dupicate", async () => {
+    window.localStorage.setItem("token", "testToken");
+    const user = userEvent.setup();
+    const categories = {
+      expenses: ["Rent", "Groceries", "Transportation"],
+      income: ["Salary", "Freelancing"],
+      savings: ["Emergency Fund", "Vacation"],
+    };
+    render(
+      <CategoryForm
+        type={"expenses"}
+        placeholder={"Enter expense here"}
+        categories={categories}
+        refresh={false}
+        setRefresh={vi.fn()}
+      />
+    );
+    const inputEl = screen.getByPlaceholderText("Enter expense here");
+    const buttonEl = screen.getByRole("button");
+    await user.type(inputEl, "rent")
+    await user.click(buttonEl)
+
+    expect(UserService.updateCategories).not.toHaveBeenCalled()
+  })
 });
