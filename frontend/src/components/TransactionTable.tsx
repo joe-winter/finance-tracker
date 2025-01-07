@@ -1,5 +1,12 @@
 import { TransactionsService } from "../services/transactions";
-import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useState } from "react";
+import DropdownWithAutoComplete from "./DropdownWithAutoComplete";
+import {
+  ChangeEvent,
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useState,
+} from "react";
 
 type TransactionTableProps = {
   transactions: {
@@ -10,12 +17,14 @@ type TransactionTableProps = {
     description: string;
     balance: number;
   }[];
-    setState: Dispatch<SetStateAction<boolean>>;
-    state: boolean;
+  setState: Dispatch<SetStateAction<boolean>>;
+  state: boolean;
 };
 
 export default function TransactionTable({
-  transactions, setState, state
+  transactions,
+  setState,
+  state,
 }: TransactionTableProps) {
   const [formValue, setFormValue] = useState({
     date: "",
@@ -69,15 +78,13 @@ export default function TransactionTable({
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token")
+      const token = localStorage.getItem("token");
       if (token) {
-
-        const newToken = await TransactionsService.add(token, formValue)
-        setState(!state)
-        // localStorage.setItem("token", newToken)
-      } 
+        await TransactionsService.add(token, formValue);
+        setState(!state);
+      }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
@@ -96,18 +103,53 @@ export default function TransactionTable({
         </thead>
         <tbody>
           <tr>
-            {formData.map((data, index) => (
-              <td key={index}>
-                <input className="dark:bg-gray-900 border rounded"
-                  type={data.type}
-                  name={data.id}
-                  id={data.id}
-                  placeholder={data.placeholder}
-                  value={data.value}
+              <td>
+                <input
+                  className="dark:bg-gray-900 border rounded"
+                  type={formData[0].type}
+                  name={formData[0].id}
+                  id={formData[0].id}
+                  placeholder={formData[0].placeholder}
+                  value={formData[0].value}
                   onChange={handleChange}
                 />
               </td>
-            ))}
+              <td>
+                <DropdownWithAutoComplete placeholder="Type" options={["expenses", "income", "savings"]}/>
+              </td>
+              <td>
+                <input
+                  className="dark:bg-gray-900 border rounded"
+                  type={formData[2].type}
+                  name={formData[2].id}
+                  id={formData[2].id}
+                  placeholder={formData[2].placeholder}
+                  value={formData[2].value}
+                  onChange={handleChange}
+                />
+              </td>
+              <td>
+                <input
+                  className="dark:bg-gray-900 border rounded"
+                  type={formData[3].type}
+                  name={formData[3].id}
+                  id={formData[3].id}
+                  placeholder={formData[3].placeholder}
+                  value={formData[3].value}
+                  onChange={handleChange}
+                />
+              </td>
+              <td>
+                <input
+                  className="dark:bg-gray-900 border rounded"
+                  type={formData[4].type}
+                  name={formData[4].id}
+                  id={formData[4].id}
+                  placeholder={formData[4].placeholder}
+                  value={formData[4].value}
+                  onChange={handleChange}
+                />
+              </td>
             <td>
               <button type="submit">Add</button>
             </td>

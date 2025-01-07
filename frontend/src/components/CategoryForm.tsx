@@ -38,7 +38,6 @@ export default function CategoryForm({
     e.preventDefault();
 
     const categoryType = type as keyof Categories;
-
     const duplicate = categories[categoryType].some(
       (element) => element.toLowerCase() === inputValue.toLowerCase()
     );
@@ -47,10 +46,10 @@ export default function CategoryForm({
       console.log("Invalid category");
       return;
     }
+
     categories[categoryType] = [...categories[categoryType], inputValue];
 
     if (token) {
-      console.log("hit");
       await UserService.updateCategories(token, categories);
       setRefresh(!refresh);
     }

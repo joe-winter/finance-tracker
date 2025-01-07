@@ -11,7 +11,7 @@ type TransactionProps = {
 export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const [state, setState] = useState(false)
+  const [state, setState] = useState(false);
   const [transactions, setTransactions] = useState([
     {
       date: "",
@@ -51,8 +51,12 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       >
         Transactions
       </h2>
-      <div className="flex justify-center">
-        <TransactionTable transactions={transactions} setState={setState} state={state}/>
+        <div className=" overflow-x-auto w-full">
+          <TransactionTable
+            transactions={transactions}
+            setState={setState}
+            state={state}
+          />
       </div>
     </>
   );
