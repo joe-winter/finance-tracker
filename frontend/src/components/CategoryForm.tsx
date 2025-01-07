@@ -29,6 +29,7 @@ export default function CategoryForm({ type, placeholder, categories, refresh, s
     Object.keys(updateCategories).forEach((key) => {
       const typedkey = key as keyof Categories
       if (typedkey === type) {
+        console.log("help me")
         updateCategories[typedkey] = [...updateCategories[typedkey], inputValue]
       }
     })

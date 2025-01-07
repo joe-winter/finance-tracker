@@ -37,7 +37,6 @@ export class UserService {
     if (response.status !==200) {
       throw new Error("Unable to update categories")
     }
-    console.log("updated")
   }
   public static async getUserData(token: string): Promise<UserResponse> {
         const requestOptions = {

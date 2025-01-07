@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import NavBarSwitcher from "../components/NavBarSwitcher";
 import { UserService } from "@/services/user";
 import CategoryForm from "@/components/CategoryForm";
+import CategoryList from "@/components/CategoryList";
 
 interface SettingsProps {
   isOpen: boolean;
@@ -44,8 +45,7 @@ export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
       savings: [],
     },
   });
-  const [refresh, setRefresh] = useState(false)
-
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -81,11 +81,12 @@ export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
       <div>Name: {`${user?.firstName} ${user?.lastName}`}</div>
       <h2>Categories</h2>
       <div>Expenses:</div>
-      <div>
-        {user.categories?.expenses.map((category, index) => (
-          <span key={index}>{category}</span>
-        ))}
-      </div>
+      <CategoryList
+        type={"expenses"}
+        categories={user.categories}
+        refresh={refresh}
+        setRefresh={setRefresh}
+      />
       <CategoryForm
         type={"expenses"}
         placeholder={"Enter expense here"}
@@ -94,11 +95,12 @@ export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
         setRefresh={setRefresh}
       />
       <div>Income:</div>
-      <div>
-        {user.categories?.income.map((category, index) => (
-          <span key={index}>{category}</span>
-        ))}
-      </div>
+      <CategoryList
+        type={"income"}
+        categories={user.categories}
+        refresh={refresh}
+        setRefresh={setRefresh}
+      />
       <CategoryForm
         type={"income"}
         placeholder={"Enter incomes here"}
@@ -107,11 +109,12 @@ export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
         setRefresh={setRefresh}
       />
       <div>Savings:</div>
-      <div>
-        {user.categories?.savings.map((category, index) => (
-          <span key={index}>{category}</span>
-        ))}
-      </div>
+      <CategoryList
+        type={"savings"}
+        categories={user.categories}
+        refresh={refresh}
+        setRefresh={setRefresh}
+      />
       <CategoryForm
         type={"savings"}
         placeholder={"Enter savings here"}
