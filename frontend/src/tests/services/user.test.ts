@@ -20,13 +20,13 @@ describe("user service", () => {
         savings: ["savings", "fund"],
       };
 
-      await UserService.updateCategories("testToken", categories)
+      await UserService.updateCategories("testToken", categories);
 
-      const fetchArgs = fetchMock.mock.lastCall
-      const url = fetchArgs?.[0]
-      const options = fetchArgs?.[1]
+      const fetchArgs = fetchMock.mock.lastCall;
+      const url = fetchArgs?.[0];
+      const options = fetchArgs?.[1];
 
-      expect(url).toEqual(`${BACKEND_URL}/user/categories`)
+      expect(url).toEqual(`${BACKEND_URL}/user/categories`);
       expect(options).toMatchObject({
         method: "POST",
         body: JSON.stringify({
@@ -38,27 +38,52 @@ describe("user service", () => {
           "Content-Type": "application/json",
           Authorization: "Bearer testToken",
         },
-      })
+      });
     });
-        it("throws error if status is not 201", async () => {
-          fetchMock.mockResponseOnce(
-            JSON.stringify({ message: "Something went wrong" }),
-            { status: 400 }
-          );
-    
-          const categories = {
-            expenses: ["car", "food", "bills"],
-            income: ["freelance", "employment"],
-            savings: ["savings", "fund"],
-          };
-    
-          try {
-            await UserService.updateCategories("testToken", categories)
-          } catch (err: unknown) {
-            if (err instanceof Error) {
-              expect(err.message).toEqual("Unable to add transaction");
-            }
-          }
-        });
+    it("throws error if status is not 200", async () => {
+      fetchMock.mockResponseOnce(
+        JSON.stringify({ message: "Something went wrong" }),
+        { status: 400 }
+      );
+
+      const categories = {
+        expenses: ["car", "food", "bills"],
+        income: ["freelance", "employment"],
+        savings: ["savings", "fund"],
+      };
+
+      try {
+        await UserService.updateCategories("testToken", categories);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          expect(err.message).toEqual("Unable to update categories");
+        }
+      }
+    });
   });
+  describe("getUserData", () => {
+    it("includes a token in its request", async () => {
+      fetchMock.mockResponseOnce(
+        JSON.stringify({ user: {}, token: "newToken" }),
+        { status: 200 }
+      );
+
+      const response = await UserService.getUserData("testToken")
+
+      const fetchArgs = fetchMock.mock.lastCall;
+      const url = fetchArgs?.[0];
+      const options = fetchArgs?.[1];
+
+      expect(url).toEqual(`${BACKEND_URL}/user`);
+      expect(options).toMatchObject({
+        method: "GET",
+        headers: {
+          Authorization: "Bearer testToken",
+        },
+      });
+
+      expect(response.user).toEqual({});
+      expect(response.token).toEqual("newToken");
+    })
+  })
 });
