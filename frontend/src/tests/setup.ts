@@ -14,4 +14,5 @@ fetchMocker.enableMocks();
 
 afterEach(() => {
   cleanup()
+  vi.clearAllMocks()
 })

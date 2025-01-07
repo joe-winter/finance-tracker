@@ -9,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import NavBarSwitcher from "../components/NavBarSwitcher";
 import { UserService } from "@/services/user";
+import CategoryForm from "@/components/CategoryForm";
 
 interface SettingsProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ interface Categories {
   expenses: string[];
   income: string[];
   savings: string[];
-};
+}
 
 export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
   const navigate = useNavigate();
@@ -43,30 +44,8 @@ export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
       savings: [],
     },
   });
-  const [newExpense, setNewExpense] = useState("");
-  const [newIncome, setNewIncome] = useState("");
-  const [newSaving, setNewSaving] = useState("");
-  const [updatedCategories, setUpdatedCategories] = useState<Categories>({
-    expenses: [],
-    income: [],
-    savings: [],
-  })
+  const [refresh, setRefresh] = useState(false)
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    const updatedCategories = { ...user.categories };
-    updatedCategories.expenses.push(newExpense)
-    setUpdatedCategories(updatedCategories)
-    const loggedIn = token !== null;
-    try {
-      if (loggedIn) {
-        await UserService.updateCategories(token, updatedCategories)
-      }
-    } catch (err) {
-      console.log(err)
-    }
-  };
 
   useEffect(() => {
     if (!token) {
@@ -77,7 +56,7 @@ export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
       try {
         if (loggedIn) {
           const response = await UserService.getUserData(token);
-          localStorage.setItem("token", response.token)
+          localStorage.setItem("token", response.token);
           setUser(response.user);
         }
       } catch (err) {
@@ -86,7 +65,7 @@ export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
       }
     };
     fetchData();
-  }, [navigate, token, updatedCategories]);
+  }, [navigate, token, refresh]);
   console.log("user info", user);
   return (
     <>
@@ -107,32 +86,39 @@ export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
           <span key={index}>{category}</span>
         ))}
       </div>
-      <form action="" onSubmit={handleSubmit}>
-        <label htmlFor="expenses"></label>
-        <input
-          type="text"
-          name="epenses"
-          id="expenses"
-          placeholder="Enter expense here"
-          value={newExpense}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setNewExpense(e.target.value)
-          }
-        />
-        <button type="submit">+</button>
-      </form>
+      <CategoryForm
+        type={"expenses"}
+        placeholder={"Enter expense here"}
+        categories={user.categories}
+        refresh={refresh}
+        setRefresh={setRefresh}
+      />
       <div>Income:</div>
       <div>
         {user.categories?.income.map((category, index) => (
           <span key={index}>{category}</span>
         ))}
       </div>
+      <CategoryForm
+        type={"income"}
+        placeholder={"Enter incomes here"}
+        categories={user.categories}
+        refresh={refresh}
+        setRefresh={setRefresh}
+      />
       <div>Savings:</div>
       <div>
         {user.categories?.savings.map((category, index) => (
           <span key={index}>{category}</span>
         ))}
       </div>
+      <CategoryForm
+        type={"savings"}
+        placeholder={"Enter savings here"}
+        categories={user.categories}
+        refresh={refresh}
+        setRefresh={setRefresh}
+      />
     </>
   );
 }
