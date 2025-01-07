@@ -3,6 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import Settings from "../../pages/Settings";
 import { UserService } from "@/services/user";
 import { act } from "react";
+import userEvent from "@testing-library/user-event";
 
 vi.mock("react-router-dom", () => {
   const navigateMock = vi.fn();
@@ -50,10 +51,12 @@ describe("Settings Page", () => {
     });
     const emailEl = screen.getByText("Email: john.doe@example.com");
     const nameEl = screen.getByText("Name: John Doe");
+    const typeEl = screen.getByText("Expenses:")
+    const categoryEl = screen.getByText("Salary")
     expect(emailEl).toBeInTheDocument();
     expect(nameEl).toBeInTheDocument();
-    const headingEl = screen.getAllByRole("heading")
-    console.log(headingEl.length)
+    expect(typeEl).toBeInTheDocument();
+    expect(categoryEl).toBeInTheDocument();
   });
   it("should fetch user data from backend", async () => {
     window.localStorage.setItem("token", "testToken");
@@ -63,4 +66,55 @@ describe("Settings Page", () => {
 
     expect(UserService.getUserData).toHaveBeenCalledWith("testToken");
   });
+  it("it should have input fields and add buttons for each type", () => {
+    render(<Settings />);
+
+    const expensesInputEl = screen.getByPlaceholderText("Enter expense here")
+    expect(expensesInputEl).toBeInTheDocument()
+
+    const buttonEls = screen.getAllByRole('button')
+    expect(buttonEls[5]).toHaveTextContent("+")
+  })
+  it("should call backend with updated categories when called", async () => {
+    const userData = {
+      email: "john.doe@example.com",
+      firstName: "John",
+      lastName: "Doe",
+      categories: {
+        expenses: ["Rent", "Groceries", "Transportation"],
+        income: ["Salary", "Freelancing"],
+        savings: ["Emergency Fund", "Vacation"],
+      },
+    };
+    const user = userEvent.setup()
+    // Setting token in localStorage before rendering
+    window.localStorage.setItem("token", "testToken");
+
+    // Mocking the user data response from the API
+    vi.mocked(UserService.getUserData).mockResolvedValue({
+      user: userData,
+      token: "newToken",
+    });
+
+    // Wrapping render inside act to ensure all async effects are processed
+    await act(async () => {
+      render(<Settings />);
+    });
+
+
+    const expensesInputEl = screen.getByPlaceholderText("Enter expense here")
+    await user.type(expensesInputEl, "Bills")
+    
+
+    const buttonEls = screen.getAllByRole('button')
+    await user.click(buttonEls[5])
+
+    const expectedCategories = {
+      expenses: ["Rent", "Groceries", "Transportation", "Bills"],
+      income: ["Salary", "Freelancing"],
+      savings: ["Emergency Fund", "Vacation"],
+    }
+
+    expect(UserService.updateCategories).toHaveBeenCalledWith("newToken", expectedCategories)
+  })
 });

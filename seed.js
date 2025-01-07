@@ -53,12 +53,22 @@ const users = [
     password: "password123",
     firstName: "John",
     lastName: "Doe",
+    categories: {
+      expenses: [],
+      income: [],
+      savings: [],
+    },
   },
   {
     email: "test",
     password: "1234",
     firstName: "Joe",
     lastName: "Winter",
+    categories: {
+      expenses: [],
+      income: [],
+      savings: [],
+    },
   }
 ]
 
