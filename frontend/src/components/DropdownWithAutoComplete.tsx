@@ -1,19 +1,37 @@
-import { useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 
 interface DropdownWithAutoCompleteProps {
   placeholder: string;
   options: string[];
+  state: string;
+  setStateFunc: Dispatch<SetStateAction<string>>;
 }
 
 export default function DropdownWithAutoComplete({
   placeholder,
   options,
+  state,
+  setStateFunc,
 }: DropdownWithAutoCompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
+  // reset input on if input not in options
+  // if (!options.includes(state) && state !== "") {
+  //   setStateFunc("")
+  // }
   return (
     <div>
       <div className="flex">
-        <input type="text" name="" id="" placeholder={placeholder} />
+        <input
+          type="text"
+          name=""
+          id=""
+          placeholder={placeholder}
+          value={state}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setStateFunc(e.target.value)
+          }
+          onClick={() => setIsOpen(!isOpen)}
+        />
         <button onClick={() => setIsOpen(!isOpen)}>
           <svg
             className="w-6 h-6 text-gray-800 dark:text-white"
@@ -35,8 +53,22 @@ export default function DropdownWithAutoComplete({
           </svg>
         </button>
       </div>
-      {isOpen &&
-        options.map((option, index) => <div key={index}>{option}</div>)}
+      {isOpen && (
+        <div className="bg-white absolute">
+          {options.map((option, index) => (
+            <div key={index}>
+              <button
+                onClick={() => {
+                  setStateFunc(option);
+                  setIsOpen(false);
+                }}
+              >
+                {option}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

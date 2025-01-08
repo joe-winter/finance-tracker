@@ -1,12 +1,6 @@
-import { TransactionsService } from "../services/transactions";
+import { TransactionsService } from "@/services/transactions";
 import DropdownWithAutoComplete from "./DropdownWithAutoComplete";
-import {
-  ChangeEvent,
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  useState,
-} from "react";
+import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 
 type TransactionTableProps = {
   transactions: {
@@ -19,74 +13,45 @@ type TransactionTableProps = {
   }[];
   setState: Dispatch<SetStateAction<boolean>>;
   state: boolean;
+  categories: Categories;
 };
+
+interface Categories {
+  expenses: string[];
+  income: string[];
+  savings: string[];
+}
 
 export default function TransactionTable({
   transactions,
-  setState,
+  categories,
   state,
+  setState
 }: TransactionTableProps) {
-  const [formValue, setFormValue] = useState({
-    date: "",
-    type: "",
-    category: "",
-    amount: 0,
-    description: "",
-  });
-
-  const formData = [
-    {
-      type: "date",
-      id: "date",
-      placeholder: "Date",
-      value: formValue.date,
-    },
-    {
-      type: "text",
-      id: "type",
-      placeholder: "Type",
-      value: formValue.type,
-    },
-    {
-      type: "text",
-      id: "category",
-      placeholder: "Category",
-      value: formValue.category,
-    },
-    {
-      type: "number",
-      id: "amount",
-      placeholder: "Amount",
-      value: formValue.amount,
-    },
-    {
-      type: "text",
-      id: "description",
-      placeholder: "Description",
-      value: formValue.description,
-    },
-  ];
-
-  function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    const { name, value } = e.target;
-    setFormValue((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
+  const [date, setDate] = useState("");
+  const [type, setType] = useState("");
+  const [category, setCategory] = useState("");
+  const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState("");
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
       if (token) {
-        await TransactionsService.add(token, formValue);
+        await TransactionsService.add(token, {date, type, category, amount, description});
         setState(!state);
       }
     } catch (err) {
       console.log(err);
     }
   }
+
+  const getCategories = (type: string, categories: Categories) => {
+    const categoryType = type.toLowerCase() as keyof Categories;
+    console.log(categories[categoryType])
+    return categories[categoryType]
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -103,53 +68,55 @@ export default function TransactionTable({
         </thead>
         <tbody>
           <tr>
-              <td>
-                <input
-                  className="dark:bg-gray-900 border rounded"
-                  type={formData[0].type}
-                  name={formData[0].id}
-                  id={formData[0].id}
-                  placeholder={formData[0].placeholder}
-                  value={formData[0].value}
-                  onChange={handleChange}
-                />
-              </td>
-              <td>
-                <DropdownWithAutoComplete placeholder="Type" options={["expenses", "income", "savings"]}/>
-              </td>
-              <td>
-                <input
-                  className="dark:bg-gray-900 border rounded"
-                  type={formData[2].type}
-                  name={formData[2].id}
-                  id={formData[2].id}
-                  placeholder={formData[2].placeholder}
-                  value={formData[2].value}
-                  onChange={handleChange}
-                />
-              </td>
-              <td>
-                <input
-                  className="dark:bg-gray-900 border rounded"
-                  type={formData[3].type}
-                  name={formData[3].id}
-                  id={formData[3].id}
-                  placeholder={formData[3].placeholder}
-                  value={formData[3].value}
-                  onChange={handleChange}
-                />
-              </td>
-              <td>
-                <input
-                  className="dark:bg-gray-900 border rounded"
-                  type={formData[4].type}
-                  name={formData[4].id}
-                  id={formData[4].id}
-                  placeholder={formData[4].placeholder}
-                  value={formData[4].value}
-                  onChange={handleChange}
-                />
-              </td>
+            <td>
+              <input
+                className="dark:bg-gray-900 border rounded"
+                type="date"
+                name="date"
+                id="date"
+                placeholder="Date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </td>
+            <td className="relative">
+              <DropdownWithAutoComplete
+                placeholder="Type"
+                options={["Expenses", "Income", "Savings"]}
+                state={type}
+                setStateFunc={setType}
+              />
+            </td>
+            <td className="relative">
+              <DropdownWithAutoComplete
+                placeholder="Category"
+                options={getCategories(type, categories)}
+                state={category}
+                setStateFunc={setCategory}
+              />
+            </td>
+            <td>
+              <input
+                className="dark:bg-gray-900 border rounded"
+                type="number"
+                name="amount"
+                id="amount"
+                placeholder="Amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
+            </td>
+            <td>
+              <input
+                className="dark:bg-gray-900 border rounded"
+                type="text"
+                name="description"
+                id="description"
+                placeholder="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </td>
             <td>
               <button type="submit">Add</button>
             </td>

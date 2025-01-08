@@ -24,6 +24,16 @@ export class TransactionsService {
   }
 
   public static async add(token: string, transaction: Transaction) {
+    if (
+      !transaction.date ||
+      !transaction.type ||
+      !transaction.category ||
+      !transaction.description ||
+      !transaction.amount
+    ) {
+      console.log("Must enter valid transaction")
+      return;
+    }
     const requestOptions = {
       method: "POST",
       headers: {
@@ -32,6 +42,7 @@ export class TransactionsService {
       },
       body: JSON.stringify(transaction),
     };
+    
 
     const response = await fetch(`${BACKEND_URL}/transactions`, requestOptions);
 
