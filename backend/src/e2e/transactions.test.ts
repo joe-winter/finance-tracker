@@ -71,7 +71,6 @@ describe("/transactions", () => {
       const transactions = await Transaction.find({}).populate("user");
       const newTransaction = transactions[transactions.length - 1];
 
-      console.log(transactions)
       expect(transactions.length).toEqual(1);
       expect(newTransaction.date).toEqual(new Date("2024-01-01"));
       expect(newTransaction.type).toEqual("savings");
@@ -79,6 +78,239 @@ describe("/transactions", () => {
       expect(newTransaction.amount).toEqual(59.99);
       expect(newTransaction.description).toEqual("new tire");
       expect(newTransaction.user._id.toString()).toEqual(user_id);
+    });
+    it("should caluclate balanceon frst transaction", async () => {
+      const user = new User({
+        email: "someone@example.com",
+        password: "password123",
+        firstName: "joe",
+        lastName: "winter",
+      });
+      await user.save();
+
+      const user_id = user._id.toString();
+      const token = generateToken(user_id);
+      const response = await request(app)
+        .post("/transactions")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          date: "2024-01-01",
+          type: "income",
+          category: "employment",
+          amount: "1000",
+          description: "pay check",
+        });
+
+      const transactions = await Transaction.find({});
+      const newTransaction = transactions[transactions.length - 1];
+
+      expect(transactions.length).toEqual(1);
+      expect(newTransaction.balance).toEqual(1000);
+    });
+    it("given old transactions, the new balance is caluclated", async () => {
+      const user = new User({
+        email: "someone@example.com",
+        password: "password123",
+        firstName: "joe",
+        lastName: "winter",
+      });
+      await user.save();
+
+      const transaction = new TransactionModel({
+        date: new Date("2024-01-01"),
+        type: "expenses",
+        category: "car",
+        amount: 59.99,
+        description: "new tire",
+        user: user._id,
+      });
+
+      await transaction.save();
+      const user_id = user._id.toString();
+      const token = generateToken(user_id);
+      const response = await request(app)
+        .post("/transactions")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          date: "2024-01-02",
+          type: "income",
+          category: "employment",
+          amount: "1000",
+          description: "pay check",
+        });
+
+      const transactions = await Transaction.find({}).sort({date: 1});
+      const newTransaction = transactions[transactions.length - 1];
+
+      expect(transactions.length).toEqual(2);
+      expect(newTransaction.balance).toEqual(940.01);
+    });
+    it("given old transactions, the new balance is caluclated with negative", async () => {
+      const user = new User({
+        email: "someone@example.com",
+        password: "password123",
+        firstName: "joe",
+        lastName: "winter",
+      });
+      await user.save();
+
+      const transaction = new TransactionModel({
+        date: new Date("2024-01-01"),
+        type: "expenses",
+        category: "car",
+        amount: 59.99,
+        description: "new tire",
+        user: user._id,
+      });
+
+      await transaction.save();
+      const user_id = user._id.toString();
+      const token = generateToken(user_id);
+      const response = await request(app)
+        .post("/transactions")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          date: "2024-01-02",
+          type: "expenses",
+          category: "car",
+          amount: "125",
+          description: "brakes",
+        });
+
+      const transactions = await Transaction.find({}).sort({date: 1});
+      const newTransaction = transactions[transactions.length - 1];
+
+      expect(transactions.length).toEqual(2);
+      expect(newTransaction.balance).toEqual(-184.99);
+    });
+    it("given a transaction with an older date recalucates future transactions", async () => {
+      const user = new User({
+        email: "someone@example.com",
+        password: "password123",
+        firstName: "joe",
+        lastName: "winter",
+      });
+      await user.save();
+
+      const transactionModels = [
+        // Transaction with the latest date
+        new TransactionModel({
+          date: new Date("2024-01-15"),
+          type: "income",
+          category: "salary",
+          amount: 1000,
+          description: "monthly salary",
+          user: user._id,
+        }),
+        // Transaction with the earliest date
+        new TransactionModel({
+          date: new Date("2024-01-01"),
+          type: "expenses",
+          category: "car",
+          amount: 59.99,
+          description: "new tire",
+          user: user._id,
+        }),
+        // Transaction with a mid-range date
+        new TransactionModel({
+          date: new Date("2024-01-10"),
+          type: "expenses",
+          category: "groceries",
+          amount: 120.5,
+          description: "weekly shopping",
+          user: user._id,
+        }),
+      ];
+
+      await transactionModels[0].save();
+      await transactionModels[1].save();
+      await transactionModels[2].save();
+
+      const user_id = user._id.toString();
+      const token = generateToken(user_id);
+      const response = await request(app)
+        .post("/transactions")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          date: "2024-01-02",
+          type: "expenses",
+          category: "car",
+          amount: "125",
+          description: "brakes",
+        });
+
+      const transactions = await Transaction.find({}).sort({ date: 1 });
+
+      expect(transactions[0].balance).toEqual(-59.99); // Initial balance for the first transaction
+      expect(transactions[1].balance).toEqual(-184.99); // After adding brakes (-125)
+      expect(transactions[2].balance).toEqual(-305.49); // After groceries (-120.5)
+      expect(transactions[3].balance).toEqual(694.51); // After salary (+1000)
+    });
+    it("recalucl;ates transactions given an old one", async () => {
+      const user = new User({
+        email: "someone@example.com",
+        password: "password123",
+        firstName: "joe",
+        lastName: "winter",
+      });
+      await user.save();
+
+      const transactionModels = [
+        // Transaction with the latest date
+        new TransactionModel({
+          date: new Date("2024-01-15"),
+          type: "income",
+          category: "salary",
+          amount: 1000,
+          description: "monthly salary",
+          balance: 1305.15,
+          user: user._id,
+        }),
+        // Transaction with the earliest date
+        new TransactionModel({
+          date: new Date("2024-01-01"),
+          type: "expenses",
+          category: "car",
+          amount: 59.99,
+          description: "new tire",
+          balance: 425.65,
+          user: user._id,
+        }),
+        // Transaction with a mid-range date
+        new TransactionModel({
+          date: new Date("2024-01-10"),
+          type: "expenses",
+          category: "groceries",
+          amount: 120.5,
+          description: "weekly shopping",
+          balance: 305.15,
+          user: user._id,
+        }),
+      ];
+
+      await transactionModels[0].save();
+      await transactionModels[1].save();
+      await transactionModels[2].save();
+
+      const user_id = user._id.toString();
+      const token = generateToken(user_id);
+      const response = await request(app)
+        .post("/transactions")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          date: "2023-01-02",
+          type: "expenses",
+          category: "car",
+          amount: "125",
+          description: "brakes",
+        });
+
+      const transactions = await Transaction.find({}).sort({ date: 1 });
+
+      expect(transactions[0].balance).toEqual(-125); // Initial balance for the first transaction
+      expect(transactions[1].balance).toEqual(-184.99); // After adding brakes (-125)
+      expect(transactions[2].balance).toEqual(-305.49); // After groceries (-120.5)
+      expect(transactions[3].balance).toEqual(694.51); // After salary (+1000)
     });
   });
   describe("GET with a valid token and user_id", () => {
@@ -139,7 +371,6 @@ describe("/transactions", () => {
         .set("Authorization", `Bearer ${token}`);
 
       const transactionResponse = response.body.transactions;
-      console.log("response", transactionResponse.transactions);
 
       expect(new Date(transactionResponse[0].date)).toEqual(
         new Date("2024-01-01")

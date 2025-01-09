@@ -7,7 +7,7 @@ import { UserService } from "@/services/user";
 type TransactionProps = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-};
+};  
 interface User {
   email: string;
   firstName: string;

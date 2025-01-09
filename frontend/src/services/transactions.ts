@@ -4,7 +4,7 @@ type Transaction = {
   date: string;
   type: string;
   category: string;
-  amount: number;
+  amount: string;
   description: string;
 };
 
