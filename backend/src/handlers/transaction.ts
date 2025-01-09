@@ -29,20 +29,22 @@ export default class TransactionsController {
     res: Response<{ token?: String; message: String }>
   ) {
     const { date, type, category, amount, description } = req.body;
-      // save new transaction
-      const transaction = new TransactionModel({
-        date: new Date(date),
-        type,
-        category,
-        amount: Number(amount),
-        description,
-        user: req.user_id,
-      });
+    // save new transaction
+    const transaction = new TransactionModel({
+      date: new Date(date),
+      type,
+      category,
+      amount: Number(amount),
+      description,
+      user: req.user_id,
+    });
 
-      await transaction.save();
+    await transaction.save();
 
-      await TransactionsController.updateBalances();
+    await TransactionsController.updateBalances();
 
+    const transactions = await TransactionModel.find({}).sort({ date: 1 });
+    // console.log("trtansactions", transactions)
     console.log(
       `User ID: ${req.user_id} created Transaction ${req.body.description}`
     );
@@ -56,19 +58,27 @@ export default class TransactionsController {
   private static async updateBalances() {
     const transactions = await TransactionModel.find({}).sort({ date: 1 });
 
-    let balance: number = 0;
+    const dailyTotals = new Map<string, number>();
+    const dailyBalance = new Map<string, number>();
+
+    transactions.forEach((transaction) => {
+      const amount =
+        transaction.type === "expenses"
+          ? -transaction.amount
+          : transaction.amount;
+      const balance = dailyTotals.get(transaction.date.toString()) || 0;
+      dailyTotals.set(transaction.date.toString(), balance + amount);
+    });
+    let previousBalance = 0
+    dailyTotals.forEach((amount, date) => {
+      previousBalance += amount
+      dailyBalance.set(date, previousBalance);
+    });
+
     transactions.forEach(async (transaction) => {
-      if (transaction.type === "expenses") {
-        balance -= transaction.amount;
-        transaction.balance = parseFloat(balance.toFixed(2));
-        await transaction.save();
-        console.log("update balance", transaction);
-      } else {
-        balance += transaction.amount;
-        transaction.balance = parseFloat(balance.toFixed(2));
-        await transaction.save();
-        console.log("update balance", transaction);
-      }
+      transaction.balance = dailyBalance.get(transaction.date.toString()) || 0
+      await transaction.save()
+      console.log(transaction)
     });
   }
 

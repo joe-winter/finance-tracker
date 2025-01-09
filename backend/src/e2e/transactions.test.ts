@@ -139,7 +139,7 @@ describe("/transactions", () => {
           description: "pay check",
         });
 
-      const transactions = await Transaction.find({}).sort({date: 1});
+      const transactions = await Transaction.find({}).sort({ date: 1 });
       const newTransaction = transactions[transactions.length - 1];
 
       expect(transactions.length).toEqual(2);
@@ -177,7 +177,7 @@ describe("/transactions", () => {
           description: "brakes",
         });
 
-      const transactions = await Transaction.find({}).sort({date: 1});
+      const transactions = await Transaction.find({}).sort({ date: 1 });
       const newTransaction = transactions[transactions.length - 1];
 
       expect(transactions.length).toEqual(2);
@@ -311,6 +311,120 @@ describe("/transactions", () => {
       expect(transactions[1].balance).toEqual(-184.99); // After adding brakes (-125)
       expect(transactions[2].balance).toEqual(-305.49); // After groceries (-120.5)
       expect(transactions[3].balance).toEqual(694.51); // After salary (+1000)
+    });
+    it("calculates end of day balances given transactions on the same day", async () => {
+      const user = new User({
+        email: "someone@example.com",
+        password: "password123",
+        firstName: "joe",
+        lastName: "winter",
+      });
+      await user.save();
+
+      const transactionModels = [
+        // January 15 transactions (multiple on same day)
+        new TransactionModel({
+          date: new Date("2024-01-15"),
+          type: "income",
+          category: "salary",
+          amount: 1000,
+          description: "monthly salary",
+          user: user._id,
+        }),
+        new TransactionModel({
+          date: new Date("2024-01-15"),
+          type: "expenses",
+          category: "utilities",
+          amount: 150,
+          description: "electricity bill",
+          user: user._id,
+        }),
+        new TransactionModel({
+          date: new Date("2024-01-15"),
+          type: "expenses",
+          category: "entertainment",
+          amount: 50,
+          description: "streaming service",
+          user: user._id,
+        }),
+
+        // January 1 transaction
+        new TransactionModel({
+          date: new Date("2024-01-01"),
+          type: "expenses",
+          category: "car",
+          amount: 59.99,
+          description: "new tire",
+          user: user._id,
+        }),
+
+        // January 10 transactions (multiple on same day)
+        new TransactionModel({
+          date: new Date("2024-01-10"),
+          type: "expenses",
+          category: "groceries",
+          amount: 120.5,
+          description: "weekly shopping",
+          user: user._id,
+        }),
+        new TransactionModel({
+          date: new Date("2024-01-10"),
+          type: "income",
+          category: "freelance",
+          amount: 200,
+          description: "freelance payment",
+          user: user._id,
+        }),
+        new TransactionModel({
+          date: new Date("2024-01-10"),
+          type: "expenses",
+          category: "dining",
+          amount: 30,
+          description: "lunch",
+          user: user._id,
+        }),
+      ];
+
+      // Save all transactions
+      for (const transaction of transactionModels) {
+        await transaction.save();
+      }
+
+      // Add new transaction via API
+      const user_id = user._id.toString();
+      const token = generateToken(user_id);
+      const response = await request(app)
+        .post("/transactions")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+          date: "2023-01-02",
+          type: "expenses",
+          category: "car",
+          amount: "125",
+          description: "brakes",
+        });
+
+      const transactions = await Transaction.find({}).sort({ date: 1 });
+
+      // Verify balances
+      expect(transactions[0].balance).toEqual(-125); // Jan 2 - Initial brakes expense
+      expect(transactions[1].balance).toEqual(-184.99); // Jan 1 - After tire (-59.99)
+      expect(transactions[2].balance).toEqual(-135.49); // Jan 10 - All transactions on this day:
+      // Starting from -184.99
+      // -120.50 (groceries)
+      // +200 (freelance)
+      // -30 (lunch)
+      // = -135.49 final balance
+      expect(transactions[3].balance).toEqual(-135.49); // Jan 10 - Same end-of-day balance
+      expect(transactions[4].balance).toEqual(-135.49); // Jan 10 - Same end-of-day balance
+      expect(transactions[5].balance).toEqual(664.51); // Jan 15 - All transactions on this day:
+      // Starting from -135.49
+      // +1000 (salary)
+      // -150 (utilities)
+      // -50 (streaming)
+      // = 664.51 final balance
+      expect(transactions[6].balance).toEqual(664.51); // Jan 15 - Same end-of-day balance
+      expect(transactions[7].balance).toEqual(664.51); // Jan 15 - Same end-of-day balance
     });
   });
   describe("GET with a valid token and user_id", () => {
