@@ -1,6 +1,7 @@
 import { Request, Response } from "express-serve-static-core";
 import TransactionModel from "../models/transaction";
 import { generateToken } from "../lib/token";
+import User from "../models/user";
 
 interface AuthenticatedRequest extends Request {
   user_id?: string;
@@ -41,13 +42,17 @@ export default class TransactionsController {
 
     await transaction.save();
 
-    await TransactionsController.updateBalances();
+    const currentUser = await User.findById(req.user_id);
 
-    const transactions = await TransactionModel.find({}).sort({ date: 1 });
-    // console.log("trtansactions", transactions)
-    console.log(
-      `User ID: ${req.user_id} created Transaction ${req.body.description}`
-    );
+    if (currentUser) {
+      await TransactionsController.updateBalances(req.user_id || "");
+
+      // const transactions = await TransactionModel.find({user: req.user_id}).sort({ date: 1 });
+      // console.log("trtansactions", transactions)
+      console.log(
+        `User ID: ${req.user_id} created Transaction ${req.body.description}`
+      );
+    }
 
     if (req.user_id) {
       const newToken = generateToken(req.user_id);
@@ -55,8 +60,10 @@ export default class TransactionsController {
     }
   }
 
-  private static async updateBalances() {
-    const transactions = await TransactionModel.find({}).sort({ date: 1 });
+  private static async updateBalances(userId: string) {
+    const transactions = await TransactionModel.find({ user: userId }).sort({
+      date: 1,
+    });
 
     const dailyTotals = new Map<string, number>();
     const dailyBalance = new Map<string, number>();
@@ -69,16 +76,16 @@ export default class TransactionsController {
       const balance = dailyTotals.get(transaction.date.toString()) || 0;
       dailyTotals.set(transaction.date.toString(), balance + amount);
     });
-    let previousBalance = 0
+    let previousBalance = 0;
     dailyTotals.forEach((amount, date) => {
-      previousBalance += amount
+      previousBalance += amount;
       dailyBalance.set(date, previousBalance);
     });
 
     transactions.forEach(async (transaction) => {
-      transaction.balance = dailyBalance.get(transaction.date.toString()) || 0
-      await transaction.save()
-      console.log(transaction)
+      transaction.balance = dailyBalance.get(transaction.date.toString()) || 0;
+      await transaction.save();
+      console.log(transaction);
     });
   }
 

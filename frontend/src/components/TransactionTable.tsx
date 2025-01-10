@@ -82,7 +82,7 @@ export default function TransactionTable({
             <td className="relative">
               <DropdownWithAutoComplete
                 placeholder="Type"
-                options={["Expenses", "Income", "Savings"]}
+                options={["expenses", "income", "savings"]}
                 state={type}
                 setStateFunc={setType}
               />
@@ -131,7 +131,7 @@ export default function TransactionTable({
               <td>{transaction.category}</td>
               <td>{transaction.amount.toFixed(2)}</td>
               <td>{transaction.description.slice(0, 18)}</td>
-              <td>{transaction.balance.toFixed(2)}</td>
+              <td>{transaction?.balance?.toFixed(2)}</td>
             </tr>
           ))}
         </tbody>
