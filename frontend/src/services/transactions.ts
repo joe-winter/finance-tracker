@@ -18,6 +18,10 @@ export class TransactionsService {
     };
     const response = await fetch(`${BACKEND_URL}/transactions`, requestOptions);
 
+    if (response.status !== 200) {
+      throw new Error("Unable to get transactions");
+    }
+
     const data = await response.json();
 
     return data

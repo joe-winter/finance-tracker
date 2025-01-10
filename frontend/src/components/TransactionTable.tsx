@@ -49,7 +49,6 @@ export default function TransactionTable({
 
   const getCategories = (type: string, categories: Categories) => {
     const categoryType = type.toLowerCase() as keyof Categories;
-    console.log(categories[categoryType])
     return categories[categoryType]
   };
 
@@ -121,7 +120,7 @@ export default function TransactionTable({
               <button type="submit">Add</button>
             </td>
           </tr>
-          {transactions.map((transaction, index) => (
+          {transactions && transactions.map((transaction, index) => (
             <tr key={index}>
               <td>{transaction.date.slice(0, 10)}</td>
               <td>

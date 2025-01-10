@@ -246,7 +246,7 @@ describe("/transactions", () => {
       expect(transactions[2].balance).toEqual(-305.49); // After groceries (-120.5)
       expect(transactions[3].balance).toEqual(694.51); // After salary (+1000)
     });
-    it("recalucl;ates transactions given an old one", async () => {
+    it("recaluclates transactions given an old one", async () => {
       const user = new User({
         email: "someone@example.com",
         password: "password123",
@@ -321,76 +321,76 @@ describe("/transactions", () => {
       });
       await user.save();
 
-      const transactionModels = [
-        // January 15 transactions (multiple on same day)
-        new TransactionModel({
-          date: new Date("2024-01-15"),
-          type: "income",
-          category: "salary",
-          amount: 1000,
-          description: "monthly salary",
-          user: user._id,
-        }),
-        new TransactionModel({
-          date: new Date("2024-01-15"),
-          type: "expenses",
-          category: "utilities",
-          amount: 150,
-          description: "electricity bill",
-          user: user._id,
-        }),
-        new TransactionModel({
-          date: new Date("2024-01-15"),
-          type: "expenses",
-          category: "entertainment",
-          amount: 50,
-          description: "streaming service",
-          user: user._id,
-        }),
+      const transaction1 = new TransactionModel({
+        date: new Date("2024-01-15"),
+        type: "income",
+        category: "salary",
+        amount: 1000,
+        description: "monthly salary",
+        user: user._id,
+      });
+      await transaction1.save();
 
-        // January 1 transaction
-        new TransactionModel({
-          date: new Date("2024-01-01"),
-          type: "expenses",
-          category: "car",
-          amount: 59.99,
-          description: "new tire",
-          user: user._id,
-        }),
+      const transaction2 = new TransactionModel({
+        date: new Date("2024-01-15"),
+        type: "expenses",
+        category: "utilities",
+        amount: 150,
+        description: "electricity bill",
+        user: user._id,
+      });
+      await transaction2.save();
 
-        // January 10 transactions (multiple on same day)
-        new TransactionModel({
-          date: new Date("2024-01-10"),
-          type: "expenses",
-          category: "groceries",
-          amount: 120.5,
-          description: "weekly shopping",
-          user: user._id,
-        }),
-        new TransactionModel({
-          date: new Date("2024-01-10"),
-          type: "income",
-          category: "freelance",
-          amount: 200,
-          description: "freelance payment",
-          user: user._id,
-        }),
-        new TransactionModel({
-          date: new Date("2024-01-10"),
-          type: "expenses",
-          category: "dining",
-          amount: 30,
-          description: "lunch",
-          user: user._id,
-        }),
-      ];
+      const transaction3 = new TransactionModel({
+        date: new Date("2024-01-15"),
+        type: "expenses",
+        category: "entertainment",
+        amount: 50,
+        description: "streaming service",
+        user: user._id,
+      });
+      await transaction3.save();
 
-      // Save all transactions
-      for (const transaction of transactionModels) {
-        await transaction.save();
-      }
+      const transaction4 = new TransactionModel({
+        date: new Date("2024-01-01"),
+        type: "expenses",
+        category: "car",
+        amount: 59.99,
+        description: "new tire",
+        user: user._id,
+      });
+      await transaction4.save();
 
-      // Add new transaction via API
+      const transaction5 = new TransactionModel({
+        date: new Date("2024-01-10"),
+        type: "expenses",
+        category: "groceries",
+        amount: 120.5,
+        description: "weekly shopping",
+        user: user._id,
+      });
+      await transaction5.save();
+
+      const transaction6 = new TransactionModel({
+        date: new Date("2024-01-10"),
+        type: "income",
+        category: "freelance",
+        amount: 200,
+        description: "freelance payment",
+        user: user._id,
+      });
+      await transaction6.save();
+
+      const transaction7 = new TransactionModel({
+        date: new Date("2024-01-10"),
+        type: "expenses",
+        category: "dining",
+        amount: 30,
+        description: "lunch",
+        user: user._id,
+      });
+      await transaction7.save();
+
       const user_id = user._id.toString();
       const token = generateToken(user_id);
       const response = await request(app)
@@ -405,6 +405,7 @@ describe("/transactions", () => {
         });
 
       const transactions = await Transaction.find({}).sort({ date: 1 });
+      expect(transactions.length).toEqual(8);
 
       // Verify balances
       expect(transactions[0].balance).toEqual(-125); // Jan 2 - Initial brakes expense

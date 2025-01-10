@@ -65,6 +65,7 @@ export default class TransactionsController {
       date: 1,
     });
 
+
     const dailyTotals = new Map<string, number>();
     const dailyBalance = new Map<string, number>();
 
@@ -76,17 +77,18 @@ export default class TransactionsController {
       const balance = dailyTotals.get(transaction.date.toString()) || 0;
       dailyTotals.set(transaction.date.toString(), balance + amount);
     });
+
     let previousBalance = 0;
     dailyTotals.forEach((amount, date) => {
       previousBalance += amount;
       dailyBalance.set(date, previousBalance);
     });
 
-    transactions.forEach(async (transaction) => {
+    // must user a for loop when dealing with asynchronous code
+    for (const transaction of transactions) {
       transaction.balance = dailyBalance.get(transaction.date.toString()) || 0;
       await transaction.save();
-      console.log(transaction);
-    });
+    }
   }
 
   public static async getByUser(

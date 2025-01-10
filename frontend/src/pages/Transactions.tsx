@@ -7,7 +7,7 @@ import { UserService } from "@/services/user";
 type TransactionProps = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-};  
+};
 interface User {
   email: string;
   firstName: string;
@@ -23,16 +23,16 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [state, setState] = useState(false);
-    const [user, setUser] = useState<User>({
-      email: "",
-      firstName: "",
-      lastName: "",
-      categories: {
-        expenses: [],
-        income: [],
-        savings: [],
-      },
-    });
+  const [user, setUser] = useState<User>({
+    email: "",
+    firstName: "",
+    lastName: "",
+    categories: {
+      expenses: [],
+      income: [],
+      savings: [],
+    },
+  });
   const [transactions, setTransactions] = useState([
     {
       date: "",
@@ -53,9 +53,9 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
         if (loggedIn) {
           const transactionsData = await TransactionsService.get(token);
           setTransactions(transactionsData.transactions);
-          const userData = await UserService.getUserData(token)
-          setUser(userData.user)
-          localStorage.setItem("token", userData.token)
+          const userData = await UserService.getUserData(token);
+          setUser(userData.user);
+          localStorage.setItem("token", userData.token);
         }
       } catch (err) {
         console.log(err);
@@ -64,7 +64,6 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
     };
     fetchData();
   }, [token, navigate, state]);
-  console.log(transactions);
   return (
     <>
       <NavBarSwitcher isOpen={isOpen} setIsOpen={setIsOpen} />
@@ -75,14 +74,13 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       >
         Transactions
       </h2>
-        <div className=" overflow-x-auto w-full">
-          <TransactionTable
-            transactions={transactions}
-            setState={setState}
-            state={state}
-            categories={user.categories}
-
-          />
+      <div className=" overflow-x-auto w-full">
+        <TransactionTable
+          transactions={transactions}
+          setState={setState}
+          state={state}
+          categories={user.categories}
+        />
       </div>
     </>
   );
