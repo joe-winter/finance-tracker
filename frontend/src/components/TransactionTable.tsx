@@ -4,6 +4,7 @@ import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 
 type TransactionTableProps = {
   transactions: {
+    _id: string
     date: string;
     type: string;
     category: string;
@@ -51,6 +52,14 @@ export default function TransactionTable({
     const categoryType = type.toLowerCase() as keyof Categories;
     return categories[categoryType]
   };
+
+  const handleDelete = async (transactionId: string) => {
+    const token = localStorage.getItem("token")
+    if (token) {
+      await TransactionsService.deleteById(token, transactionId)
+      setState(!state);
+    }
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -131,6 +140,7 @@ export default function TransactionTable({
               <td>{transaction.amount.toFixed(2)}</td>
               <td>{transaction.description.slice(0, 18)}</td>
               <td>{transaction?.balance?.toFixed(2)}</td>
+              <td><button onClick={() => handleDelete(transaction._id)}>Delete</button></td>
             </tr>
           ))}
         </tbody>

@@ -497,4 +497,38 @@ describe("/transactions", () => {
       expect(transactionResponse[0].balance).toEqual(425.65);
     });
   });
+  describe("Delete with a valid token, user id and transaction id", () => {
+    it("delete transaction from database", async () => {
+      const user = new User({
+        email: "someone@example.com",
+        password: "password123",
+        firstName: "joe",
+        lastName: "winter",
+      });
+      await user.save();
+
+      const user_id = user._id.toString();
+      const token = generateToken(user_id);
+
+      const transaction = new TransactionModel({
+        date: new Date("2024-01-01"),
+        type: "expenses",
+        category: "car",
+        amount: 59.99,
+        description: "new tire",
+        balance: 425.65,
+        user: user._id,
+      });
+      await transaction.save();
+      console.log("testParanms", transaction._id.toString());
+      const response = await request(app)
+        .delete(`/transactions/${transaction._id.toString()}`)
+        .set("Authorization", `Bearer ${token}`);
+
+      expect(response.statusCode).toEqual(200);
+
+      const transactions = await TransactionModel.find({});
+      expect(transactions.length).toEqual(0);
+    });
+  });
 });

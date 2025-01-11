@@ -26,7 +26,7 @@ export class TransactionsService {
 
     return data
   }
-
+  
   public static async add(token: string, transaction: Transaction) {
     if (
       !transaction.date ||
@@ -47,11 +47,30 @@ export class TransactionsService {
       body: JSON.stringify(transaction),
     };
     
-
+    
     const response = await fetch(`${BACKEND_URL}/transactions`, requestOptions);
-
+    
     if (response.status !== 201) {
       throw new Error("Unable to add transaction");
     }
+  }
+  
+  public static async deleteById(token: string, transactionId: string) {
+    const requestOptions = {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const response = await fetch(`${BACKEND_URL}/transactions/${transactionId}`, requestOptions);
+  
+    if (response.status !== 200) {
+      throw new Error("Unable to get transactions");
+    }
+  
+    const data = await response.json();
+  
+    return data
+    
   }
 }

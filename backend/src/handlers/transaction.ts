@@ -2,6 +2,7 @@ import { Request, Response } from "express-serve-static-core";
 import TransactionModel from "../models/transaction";
 import { generateToken } from "../lib/token";
 import User from "../models/user";
+import { Types } from "mongoose";
 
 interface AuthenticatedRequest extends Request {
   user_id?: string;
@@ -16,6 +17,7 @@ interface TransactionRequest extends AuthenticatedRequest {
   };
 }
 type Transaction = {
+  _id: Types.ObjectId
   date: Date;
   type: String;
   category: string;
@@ -65,7 +67,6 @@ export default class TransactionsController {
       date: 1,
     });
 
-
     const dailyTotals = new Map<string, number>();
     const dailyBalance = new Map<string, number>();
 
@@ -104,6 +105,7 @@ export default class TransactionsController {
 
         const transactionsResponse: Transaction[] = transactionsQuery.map(
           (transaction) => ({
+            _id: transaction._id,
             date: transaction.date,
             type: transaction.type,
             category: transaction.category,
@@ -118,5 +120,19 @@ export default class TransactionsController {
           .json({ transactions: transactionsResponse, token: token });
       }
     } catch (err) {}
+  }
+
+  public static async deleteById(
+    req: AuthenticatedRequest,
+    res: Response<{ token?: String; message: String }>
+  ) {
+    if (req.user_id) {
+      const token = generateToken(req.user_id);
+      const transactionId = req.params.id;
+      console.log("params", transactionId);
+
+      await TransactionModel.deleteOne({ _id: transactionId });
+      res.status(200).json({ message: "deleted", token: token });
+    }
   }
 }
