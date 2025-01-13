@@ -35,6 +35,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
   });
   const [transactions, setTransactions] = useState([
     {
+      _id: "",
       date: "",
       type: "",
       category: "",

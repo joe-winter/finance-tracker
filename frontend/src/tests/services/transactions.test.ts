@@ -100,9 +100,47 @@ describe("transaction service", () => {
         await TransactionsService.get("testToken");
       } catch (err: unknown) {
         if (err instanceof Error) {
-          expect(err.message).toEqual("Unable to fetch transactions");
+          expect(err.message).toEqual("Unable to get transactions");
         }
       }
     });
   });
+  describe("delete", () => {
+    it("includes a token and transaction id in its request", async () => {
+      fetchMock.mockResponseOnce(
+        JSON.stringify({ message: "delete", token: "newToken"}),
+        {status: 200}
+      )
+      
+      const response = await TransactionsService.deleteById("testToken", "123")
+      
+      const fetchArgs = fetchMock.mock.lastCall;
+      const url = fetchArgs?.[0];
+      const options = fetchArgs?.[1];
+      
+      expect(url).toEqual(`${BACKEND_URL}/transactions/123`);
+      expect(options).toMatchObject({
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer testToken",
+        },
+      });
+      
+      expect(response.token).toEqual("newToken");
+    })
+    it("rejects with error if the status is not 200", async () => {
+      fetchMock.mockResponseOnce(
+        JSON.stringify({ message: "Something went wrong" }),
+        { status: 400 }
+      );
+      try {
+        await TransactionsService.deleteById("testToken", "123");
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          expect(err.message).toEqual("Unable to get transactions");
+        }
+      }
+      
+    })
+  })
 });

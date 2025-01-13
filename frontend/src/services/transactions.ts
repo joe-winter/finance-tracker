@@ -1,6 +1,7 @@
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 type Transaction = {
+  _id?: string,
   date: string;
   type: string;
   category: string;
