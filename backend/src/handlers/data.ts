@@ -6,54 +6,72 @@ import TransactionModel from "../models/transaction";
 interface AuthenticatedRequest extends Request {
   user_id?: string;
 }
-interface UserCategoriesRequest extends AuthenticatedRequest {
-  body: {
-    expenses: string[];
-    income: string[];
-    savings: string[];
+interface TotalsRequest extends AuthenticatedRequest {
+  query: {
+    startDate: string;
+    endDate: string;
   };
+}
+interface CategoryTotal {
+  name: string;
+  total: number;
 }
 
 interface Totals {
-  expenses: {total: number; [category: string]: number};
-  income: {total: number; [category: string]: number};
-  savings: {total: number; [category: string]: number};
-
+  expenses: { total: number; categories: { [category: string]: number } };
+  income: { total: number; categories: { [category: string]: number } };
+  savings: { total: number; categories: { [category: string]: number } };
 }
-
 
 export default class DataController {
   public static async totals(
-    req: AuthenticatedRequest,
+    req: TotalsRequest,
     res: Response<{ token?: String; totals: Totals }>
   ) {
     if (req.user_id) {
-      const transactions = await TransactionModel.find({user: req.user_id})
-
-      const totals: Totals = {
-        expenses: {total: 0},
-        income: {total: 0},
-        savings: {total: 0},
+      let transactions;
+      if (req.query.startDate && req.query.endDate) {
+        transactions = await TransactionModel.find({
+          user: req.user_id,
+          date: {
+            $gte: new Date(req.query.startDate),
+            $lte: new Date(req.query.endDate),
+          },
+        });
+      } else {
+        transactions = await TransactionModel.find({ user: req.user_id });
       }
 
+      const totals: Totals = {
+        expenses: {
+          total: 0,
+          categories: {},
+        },
+        income: {
+          total: 0,
+          categories: {},
+        },
+        savings: {
+          total: 0,
+          categories: {},
+        },
+      };
+
       transactions.forEach((transaction) => {
-        const type = transaction.type as keyof Totals
-        totals[type].total += transaction.amount
+        const type = transaction.type as keyof Totals;
+        totals[type].total += transaction.amount;
 
-        if ((transaction.category in totals[type])) {
-          totals[type][transaction.category] = Math.round((totals[type][transaction.category] + transaction.amount) * 100) /100
+        if (transaction.category in totals[type]) {
+          totals[type].categories[transaction.category] =
+            Math.round(
+              (totals[type].categories[transaction.category] +
+                transaction.amount) *
+                100
+            ) / 100;
         } else {
-          totals[type][transaction.category] = Math.round(transaction.amount * 100) /100
+          totals[type].categories[transaction.category] = transaction.amount;
         }
-      })
-
-      console.log(totals)
-
-
-
-
-
-
+      });
       const newToken = generateToken(req.user_id);
       res.status(200).json({ totals: totals, token: newToken });
     }

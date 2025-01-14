@@ -117,6 +117,25 @@ describe("/data", () => {
         expect(data.expenses.car).toEqual(109.99)
         expect(data.income.freelance).toEqual(200)
       })
+      it("given date params retruns totals", async () => {
+        const token = generateToken(userId)
+  
+        const response = await request(app)
+        .get("/data/totals")
+        .set("Authorization", `Bearer ${token}`)
+        .query({startDate: "2024-01-10", endDate: "2024-01-15"})
+  
+        expect(response.statusCode).toEqual(200)
+  
+        const data = response.body.totals
+  
+        expect(data.expenses.total).toEqual(350.5)
+        expect(data.income.total).toEqual(1200)
+  
+        expect(data.expenses.car).toEqual(50)
+        expect(data.income.freelance).toEqual(200)
+
+      })
     })
   })
 });
