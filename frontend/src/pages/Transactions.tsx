@@ -1,6 +1,6 @@
 import { TransactionsService } from "../services/transactions";
 import NavBarSwitcher from "../components/NavBarSwitcher";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TransactionTable from "../components/TransactionTable";
 import { UserService } from "@/services/user";
@@ -18,25 +18,25 @@ interface User {
     savings: string[];
   };
 }
-// type Transaction = {
-//   _id: string;
-//   date: string;
-//   type: string;
-//   category: string;
-//   amount: number;
-//   description: string;
-//   balance: number;
-// }
+type Transaction = {
+  _id: string;
+  date: string;
+  type: string;
+  category: string;
+  amount: number;
+  description: string;
+  balance: number;
+};
 
-type sortField = "date" | "type" | "category" | "amount" | null
+type sortField = "date" | "type" | "category" | "amount" | null;
 
-type sortDirection = "ascending" | "descending"
+type sortDirection = "ascending" | "descending" | null;
 
 export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const [sortField, setSortField] = useState<sortField>(null)
-  const [sortDirection, setSortDirection] = useState<sortDirection>("ascending")
+  const [sortField, setSortField] = useState<sortField>(null);
+  const [sortDirection, setSortDirection] = useState<sortDirection>(null);
   const [state, setState] = useState(false);
   const [user, setUser] = useState<User>({
     email: "",
@@ -48,7 +48,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       savings: [],
     },
   });
-  const [transactions, setTransactions] = useState([
+  const [transactions, setTransactions] = useState<Transaction[]>([
     {
       _id: "",
       date: "",
@@ -83,11 +83,21 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
     fetchData();
   }, [token, navigate]);
 
+  const sortedTransactions = useMemo(() => {
+    if (sortDirection === null) return transactions;
+    
+    return [...transactions].sort((a, b) => {
+      const modifier = sortDirection === "ascending" ? 1 : -1;
+      return (new Date(a.date).getTime() - new Date(b.date).getTime()) * modifier;
+    });
+  }, [transactions, sortDirection]);
+
   const handleSortingChange = (field: sortField) => {
-    const direction = sortDirection === "ascending" ? "descending": "ascending"
-    setSortField(field)
-    setSortDirection(direction)
-  }
+    const direction =
+      sortDirection === "ascending" ? "descending" : "ascending";
+    setSortField(field);
+    setSortDirection(direction);
+  };
 
   return (
     <>
@@ -101,7 +111,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       </h2>
       <div className=" overflow-x-auto w-full">
         <TransactionTable
-          transactions={transactions}
+          transactions={sortedTransactions}
           setState={setState}
           state={state}
           categories={user.categories}
