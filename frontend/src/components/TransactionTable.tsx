@@ -2,20 +2,23 @@ import { TransactionsService } from "@/services/transactions";
 import DropdownWithAutoComplete from "./DropdownWithAutoComplete";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import TableHeading from "./TableHeading";
 
+type Transaction = {
+  _id: string;
+  date: string;
+  type: string;
+  category: string;
+  amount: number;
+  description: string;
+  balance: number;
+}
 type TransactionTableProps = {
-  transactions: {
-    _id: string
-    date: string;
-    type: string;
-    category: string;
-    amount: number;
-    description: string;
-    balance: number;
-  }[];
+  transactions: Transaction[];
   setState: Dispatch<SetStateAction<boolean>>;
   state: boolean;
   categories: Categories;
+  handleSortingChange: (field: sortField) => void;
 };
 
 interface Categories {
@@ -23,12 +26,14 @@ interface Categories {
   income: string[];
   savings: string[];
 }
+type sortField = "date" | "type" | "category" | "amount" | null
 
 export default function TransactionTable({
   transactions,
   categories,
   state,
-  setState
+  setState,
+  handleSortingChange
 }: TransactionTableProps) {
   const [date, setDate] = useState("");
   const [type, setType] = useState("");
@@ -36,41 +41,68 @@ export default function TransactionTable({
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
       if (token) {
-        await TransactionsService.add(token, {date, type, category, amount, description});
+        await TransactionsService.add(token, {
+          date,
+          type,
+          category,
+          amount,
+          description,
+        });
         setState(!state);
       }
     } catch (err) {
       console.log(err);
-      navigate("/login")
+      navigate("/login");
     }
   }
 
   const getCategories = (type: string, categories: Categories) => {
     const categoryType = type.toLowerCase() as keyof Categories;
-    return categories[categoryType]
+    return categories[categoryType];
   };
 
   const handleDelete = async (transactionId: string) => {
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token");
     if (token) {
-      await TransactionsService.deleteById(token, transactionId)
+      await TransactionsService.deleteById(token, transactionId);
       setState(!state);
     }
-  }
+  };
+
+
+  // const dateAscending = () => {
+  //   const sorted = [...transactions].sort(
+  //     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  //   );
+  //   setTransactions(sorted)
+  // };
+  // const dateDescending = () => {
+  //   const sorted = [...transactions].sort(
+  //     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  //   );
+  //   setTransactions(sorted)
+  // };
+
+  // console.log(transactions)
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={(e: FormEvent) => e.preventDefault()}>
       <table>
         <thead>
           <tr>
-            <th>Date</th>
+            <th>
+              <TableHeading
+                heading="date"
+                handleSortingChange={handleSortingChange}
+              />
+            </th>
             <th>Type</th>
             <th>Category</th>
             <th>Amount</th>
@@ -90,7 +122,7 @@ export default function TransactionTable({
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
               />
-            </td > 
+            </td>
             <td className="relative">
               <DropdownWithAutoComplete
                 placeholder="Type"
@@ -136,20 +168,25 @@ export default function TransactionTable({
               <button type="submit">Add</button>
             </td>
           </tr>
-          {transactions && transactions.map((transaction, index) => (
-            <tr key={index}>
-              <td>{transaction.date.slice(0, 10)}</td>
-              <td>
-                {transaction.type.charAt(0).toUpperCase() +
-                  transaction.type.slice(1)}
-              </td>
-              <td>{transaction.category}</td>
-              <td>{transaction.amount.toFixed(2)}</td>
-              <td>{transaction.description.slice(0, 18)}</td>
-              <td>{transaction?.balance?.toFixed(2)}</td>
-              <td><button onClick={() => handleDelete(transaction._id)}>Delete</button></td>
-            </tr>
-          ))}
+          {transactions &&
+            transactions.map((transaction, index) => (
+              <tr key={index}>
+                <td>{transaction.date.slice(0, 10)}</td>
+                <td>
+                  {transaction.type.charAt(0).toUpperCase() +
+                    transaction.type.slice(1)}
+                </td>
+                <td>{transaction.category}</td>
+                <td>{transaction.amount.toFixed(2)}</td>
+                <td>{transaction.description.slice(0, 18)}</td>
+                <td>{transaction?.balance?.toFixed(2)}</td>
+                <td>
+                  <button onClick={() => handleDelete(transaction._id)}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </form>

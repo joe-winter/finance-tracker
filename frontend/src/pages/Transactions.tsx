@@ -18,10 +18,25 @@ interface User {
     savings: string[];
   };
 }
+// type Transaction = {
+//   _id: string;
+//   date: string;
+//   type: string;
+//   category: string;
+//   amount: number;
+//   description: string;
+//   balance: number;
+// }
+
+type sortField = "date" | "type" | "category" | "amount" | null
+
+type sortDirection = "ascending" | "descending"
 
 export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const [sortField, setSortField] = useState<sortField>(null)
+  const [sortDirection, setSortDirection] = useState<sortDirection>("ascending")
   const [state, setState] = useState(false);
   const [user, setUser] = useState<User>({
     email: "",
@@ -44,10 +59,12 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       balance: 0,
     },
   ]);
+
   useEffect(() => {
     if (!token) {
       navigate("/login");
     }
+
     const fetchData = async () => {
       const loggedIn = token !== null;
       try {
@@ -64,7 +81,14 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       }
     };
     fetchData();
-  }, [token, navigate, state]);
+  }, [token, navigate]);
+
+  const handleSortingChange = (field: sortField) => {
+    const direction = sortDirection === "ascending" ? "descending": "ascending"
+    setSortField(field)
+    setSortDirection(direction)
+  }
+
   return (
     <>
       <NavBarSwitcher isOpen={isOpen} setIsOpen={setIsOpen} />
@@ -81,6 +105,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
           setState={setState}
           state={state}
           categories={user.categories}
+          handleSortingChange={handleSortingChange}
         />
       </div>
     </>
