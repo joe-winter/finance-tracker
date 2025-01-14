@@ -80,9 +80,9 @@ export default function TransactionTable({
         </thead>
         <tbody>
           <tr>
-            <td>
+            <td className="max-w-fit">
               <input
-                className="dark:bg-gray-900 border rounded"
+                className="dark:bg-gray-900 border rounded max-w-30"
                 type="date"
                 name="date"
                 id="date"
@@ -90,13 +90,14 @@ export default function TransactionTable({
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
               />
-            </td>
+            </td > 
             <td className="relative">
               <DropdownWithAutoComplete
                 placeholder="Type"
                 options={["expenses", "income", "savings"]}
                 state={type}
                 setStateFunc={setType}
+                size={7}
               />
             </td>
             <td className="relative">
@@ -105,11 +106,12 @@ export default function TransactionTable({
                 options={getCategories(type, categories)}
                 state={category}
                 setStateFunc={setCategory}
+                size={10}
               />
             </td>
             <td>
               <input
-                className="dark:bg-gray-900 border rounded"
+                className="dark:bg-gray-900 border rounded max-w-24"
                 type="number"
                 name="amount"
                 id="amount"
@@ -127,6 +129,7 @@ export default function TransactionTable({
                 placeholder="Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                size={18}
               />
             </td>
             <td>

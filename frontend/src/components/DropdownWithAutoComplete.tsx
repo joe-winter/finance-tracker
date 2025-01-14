@@ -5,6 +5,7 @@ interface DropdownWithAutoCompleteProps {
   options: string[];
   state: string;
   setStateFunc: Dispatch<SetStateAction<string>>;
+  size: number
 }
 
 function capitaliseString (string: string): string {
@@ -19,6 +20,7 @@ export default function DropdownWithAutoComplete({
   options,
   state,
   setStateFunc,
+  size
 }: DropdownWithAutoCompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   // reset input on if input not in options
@@ -38,6 +40,7 @@ export default function DropdownWithAutoComplete({
             setStateFunc(e.target.value)
           }
           onClick={() => setIsOpen(!isOpen)}
+          size={size}
         />
         <button onClick={() => setIsOpen(!isOpen)}>
           <svg
