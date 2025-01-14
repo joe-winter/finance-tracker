@@ -1,6 +1,7 @@
 import { TransactionsService } from "@/services/transactions";
 import DropdownWithAutoComplete from "./DropdownWithAutoComplete";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type TransactionTableProps = {
   transactions: {
@@ -35,6 +36,8 @@ export default function TransactionTable({
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
 
+  const navigate = useNavigate()
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     try {
@@ -45,6 +48,7 @@ export default function TransactionTable({
       }
     } catch (err) {
       console.log(err);
+      navigate("/login")
     }
   }
 

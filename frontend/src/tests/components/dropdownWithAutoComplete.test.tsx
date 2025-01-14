@@ -23,15 +23,15 @@ describe("drop down with auto complete", () => {
 
     const buttonEl = screen.getByTestId("chevron-svg");
 
-    expect(screen.queryByText("expenses")).toBeNull();
-    expect(screen.queryByText("income")).toBeNull();
-    expect(screen.queryByText("savings")).toBeNull();
+    expect(screen.queryByText("Expenses")).toBeNull();
+    expect(screen.queryByText("Income")).toBeNull();
+    expect(screen.queryByText("Savings")).toBeNull();
 
     await user.click(buttonEl);
 
-    expect(screen.getByText("expenses")).toBeInTheDocument();
-    expect(screen.getByText("income")).toBeInTheDocument();
-    expect(screen.getByText("savings")).toBeInTheDocument();
+    expect(screen.getByText("Expenses")).toBeInTheDocument();
+    expect(screen.getByText("Income")).toBeInTheDocument();
+    expect(screen.getByText("Savings")).toBeInTheDocument();
   });
   it("when an option is selected is state is changed", async () => {
     const user = userEvent.setup();
@@ -49,7 +49,7 @@ describe("drop down with auto complete", () => {
 
     const buttonEl = screen.getByTestId("chevron-svg");
     await user.click(buttonEl);
-    const optionButtonEl = screen.getByRole("button", { name: "savings" });
+    const optionButtonEl = screen.getByRole("button", { name: "Savings" });
     await user.click(optionButtonEl);
 
     expect(setStateFunc).toHaveBeenCalledWith("savings");
@@ -57,6 +57,6 @@ describe("drop down with auto complete", () => {
   it("given a alue the input value changes", () => {
     render(<DropdownWithAutoComplete placeholder={"Type"} state={"savings"} />);
     const inputEl = screen.getByPlaceholderText("Type");
-    expect(inputEl).toHaveValue("savings");
+    expect(inputEl).toHaveValue("Savings");
   });
 });

@@ -17,7 +17,7 @@ interface TransactionRequest extends AuthenticatedRequest {
   };
 }
 type Transaction = {
-  _id: Types.ObjectId
+  _id: Types.ObjectId;
   date: Date;
   type: String;
   category: string;
@@ -131,6 +131,12 @@ export default class TransactionsController {
 
       await TransactionModel.deleteOne({ _id: transactionId });
       res.status(200).json({ message: "deleted", token: token });
+
+      const currentUser = await User.findById(req.user_id);
+
+      if (currentUser) {
+        await TransactionsController.updateBalances(req.user_id || "");
+      }
     }
   }
 }

@@ -8,7 +8,10 @@ interface DropdownWithAutoCompleteProps {
 }
 
 function capitaliseString (string: string): string {
-  return string.charAt(0).toUpperCase() + string.slice(1)
+  if (string ) {
+    return string.charAt(0).toUpperCase() + string.slice(1)
+  }
+  return ""
 }
 
 export default function DropdownWithAutoComplete({
@@ -19,9 +22,9 @@ export default function DropdownWithAutoComplete({
 }: DropdownWithAutoCompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   // reset input on if input not in options
-  if (state !== "" && !options.includes(state) ) {
-    setStateFunc("")
-  }
+  // if (state !== "" && !options.includes(state) ) {
+  //   setStateFunc("")
+  // }
   return (
     <div>
       <div className="flex">
