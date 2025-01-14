@@ -3,9 +3,10 @@ import { Cell, Pie, PieChart } from "recharts"
 interface PieChartProps {
   data: {name: string, value: number}[];
   colors: string[];
+  total: number
 }
 
-export default function PieChartTotals({data, colors}: PieChartProps) {
+export default function PieChartTotals({data, colors, total}: PieChartProps) {
   return (
     <div className="flex items-center">
             <div>
@@ -31,7 +32,7 @@ export default function PieChartTotals({data, colors}: PieChartProps) {
               {data.map((expenses, index) => (
                 <div key={index} className="flex">
                   <div
-                    className="w-6 h-6"
+                    className="w-5 h-5"
                     style={{ backgroundColor: colors[index % colors.length] }}
                   ></div>
                   <div>
@@ -39,6 +40,7 @@ export default function PieChartTotals({data, colors}: PieChartProps) {
                   </div>
                 </div>
               ))}
+              <div>Total: {total}</div>
             </div>
           </div>
   )

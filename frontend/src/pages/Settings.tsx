@@ -59,6 +59,8 @@ export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
     };
     fetchData();
   }, [navigate, token, refresh]);
+
+  console.log("Settings", user)
   return (
     <>
       <NavBarSwitcher isOpen={isOpen} setIsOpen={setIsOpen} />

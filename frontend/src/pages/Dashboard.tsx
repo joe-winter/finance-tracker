@@ -43,6 +43,16 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
     "#5F9EA0",
     "#87CEEB",
   ];
+  const COLORSRED = [
+    "#8B0000",
+    "#B22222",
+    "#DC143C",
+    "#FF0000",
+    "#FF6347",
+    "#FF7F7F",
+    "#FFA07A",
+  ];
+  
   
 
   useEffect(() => {
@@ -80,6 +90,12 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
     incomeData.push({ name: key, value: value });
   }
   incomeData.sort((a, b) => b.value - a.value);
+  const savingsData = []
+
+  for (const [key, value] of Object.entries(data.savings.categories)) {
+    savingsData.push({ name: key, value: value });
+  }
+  savingsData.sort((a, b) => b.value - a.value);
 
   console.log("expenses", expensesData);
 
@@ -95,9 +111,11 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
         Dashboard
       </h2>
       <h3>Expenses</h3>
-      <PieChartTotals data={expensesData} colors={COLORSGREEN}/>
+      <PieChartTotals data={expensesData} colors={COLORSGREEN} total={data.expenses.total}/>
       <h3>Income</h3>
-      <PieChartTotals data={incomeData} colors={COLORSBLUE}/>
+      <PieChartTotals data={incomeData} colors={COLORSBLUE} total={data.income.total}/>
+      <h3>Savings</h3>
+      <PieChartTotals data={savingsData} colors={COLORSRED} total={data.savings.total}/>
     </>
   );
 }

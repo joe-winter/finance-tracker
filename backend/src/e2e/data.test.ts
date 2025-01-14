@@ -114,8 +114,8 @@ describe("/data", () => {
         expect(data.expenses.total).toEqual(410.49)
         expect(data.income.total).toEqual(1200)
 
-        expect(data.expenses.car).toEqual(109.99)
-        expect(data.income.freelance).toEqual(200)
+        expect(data.expenses.categories.car).toEqual(109.99)
+        expect(data.income.categories.freelance).toEqual(200)
       })
       it("given date params retruns totals", async () => {
         const token = generateToken(userId)
@@ -132,8 +132,8 @@ describe("/data", () => {
         expect(data.expenses.total).toEqual(350.5)
         expect(data.income.total).toEqual(1200)
   
-        expect(data.expenses.car).toEqual(50)
-        expect(data.income.freelance).toEqual(200)
+        expect(data.expenses.categories.car).toEqual(50)
+        expect(data.income.categories.freelance).toEqual(200)
 
       })
     })

@@ -61,7 +61,7 @@ export default class DataController {
         const type = transaction.type as keyof Totals;
         totals[type].total += transaction.amount;
 
-        if (transaction.category in totals[type]) {
+        if (transaction.category in totals[type].categories) {
           totals[type].categories[transaction.category] =
             Math.round(
               (totals[type].categories[transaction.category] +
