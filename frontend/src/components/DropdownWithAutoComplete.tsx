@@ -7,6 +7,10 @@ interface DropdownWithAutoCompleteProps {
   setStateFunc: Dispatch<SetStateAction<string>>;
 }
 
+function capitaliseString (string: string): string {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 export default function DropdownWithAutoComplete({
   placeholder,
   options,
@@ -15,9 +19,9 @@ export default function DropdownWithAutoComplete({
 }: DropdownWithAutoCompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   // reset input on if input not in options
-  // if (!options.includes(state) && state !== "") {
-  //   setStateFunc("")
-  // }
+  if (state !== "" && !options.includes(state) ) {
+    setStateFunc("")
+  }
   return (
     <div>
       <div className="flex">
@@ -26,7 +30,7 @@ export default function DropdownWithAutoComplete({
           name=""
           id=""
           placeholder={placeholder}
-          value={state}
+          value={capitaliseString(state)}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setStateFunc(e.target.value)
           }
@@ -55,7 +59,7 @@ export default function DropdownWithAutoComplete({
       </div>
       {isOpen && (
         <div className="bg-white absolute">
-          {options.map((option, index) => (
+          {options && options.map((option, index) => (
             <div key={index}>
               <button
                 onClick={() => {
@@ -63,7 +67,7 @@ export default function DropdownWithAutoComplete({
                   setIsOpen(false);
                 }}
               >
-                {option}
+                {capitaliseString(option)}
               </button>
             </div>
           ))}

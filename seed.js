@@ -54,8 +54,8 @@ const users = [
     firstName: "John",
     lastName: "Doe",
     categories: {
-      expenses: [],
-      income: [],
+      expenses: ["groceries", "bills", "transportation"],
+      income: ["salary"],
       savings: [],
     },
   },
@@ -65,9 +65,16 @@ const users = [
     firstName: "Joe",
     lastName: "Winter",
     categories: {
-      expenses: [],
-      income: [],
-      savings: [],
+      expenses: [
+        "entertainment",
+        "shopping",
+        "bills",
+        "dining",
+        "health",
+        "utilities",
+      ],
+      income: ["freelance", "gift"],
+      savings: ["emergency fund", "travel fund", "investment"],
     },
   },
 ];
@@ -79,7 +86,7 @@ const transactions = [
   {
     date: new Date("2025-01-01"),
     type: "expenses",
-    category: "Groceries",
+    category: "groceries",
     amount: 85.5,
     description: "Weekly grocery shopping at Whole Foods",
     user: data[0]._id,
@@ -87,7 +94,7 @@ const transactions = [
   {
     date: new Date("2025-01-02"),
     type: "income",
-    category: "Salary",
+    category: "salary",
     amount: 3000.0,
     description: "Monthly salary deposit",
     user: data[0]._id,
@@ -95,7 +102,7 @@ const transactions = [
   {
     date: new Date("2025-01-03"),
     type: "expenses",
-    category: "Bills",
+    category: "bills",
     amount: 150.0,
     description: "Electricity bill payment",
     user: data[0]._id,
@@ -103,7 +110,7 @@ const transactions = [
   {
     date: new Date("2025-01-03"),
     type: "expenses",
-    category: "Transportation",
+    category: "transportation",
     amount: 45.0,
     description: "Gas station fill-up",
     user: data[0]._id,
@@ -111,7 +118,7 @@ const transactions = [
   {
     date: new Date("2025-01-01"),
     type: "expenses",
-    category: "Entertainment",
+    category: "entertainment",
     amount: 65.0,
     description: "Movie tickets and dinner",
     user: data[1]._id,
@@ -119,7 +126,7 @@ const transactions = [
   {
     date: new Date("2025-01-02"),
     type: "income",
-    category: "Freelance",
+    category: "freelance",
     amount: 500.0,
     description: "Web development project payment",
     user: data[1]._id,
@@ -127,7 +134,7 @@ const transactions = [
   {
     date: new Date("2025-01-03"),
     type: "expenses",
-    category: "Shopping",
+    category: "shopping",
     amount: 120.0,
     description: "New clothes from H&M",
     user: data[1]._id,
@@ -135,7 +142,7 @@ const transactions = [
   {
     date: new Date("2025-01-03"),
     type: "expenses",
-    category: "Bills",
+    category: "bills",
     amount: 80.0,
     description: "Internet bill",
     user: data[1]._id,
@@ -143,7 +150,7 @@ const transactions = [
   {
     date: new Date("2025-01-04"),
     type: "expenses",
-    category: "Dining",
+    category: "dining",
     amount: 50.0,
     description: "Dinner at a local restaurant",
     user: data[1]._id,
@@ -151,7 +158,7 @@ const transactions = [
   {
     date: new Date("2025-01-05"),
     type: "savings",
-    category: "Emergency Fund",
+    category: "emergency fund",
     amount: 300.0,
     description: "Transferred to emergency savings",
     user: data[1]._id,
@@ -159,7 +166,7 @@ const transactions = [
   {
     date: new Date("2025-01-06"),
     type: "savings",
-    category: "Travel Fund",
+    category: "travel fund",
     amount: 200.0,
     description: "Set aside for vacation savings",
     user: data[1]._id,
@@ -167,7 +174,7 @@ const transactions = [
   {
     date: new Date("2025-01-07"),
     type: "expenses",
-    category: "Health",
+    category: "health",
     amount: 100.0,
     description: "Pharmacy purchase",
     user: data[1]._id,
@@ -175,7 +182,7 @@ const transactions = [
   {
     date: new Date("2025-01-08"),
     type: "income",
-    category: "Gift",
+    category: "gift",
     amount: 150.0,
     description: "Birthday gift from family",
     user: data[1]._id,
@@ -183,7 +190,7 @@ const transactions = [
   {
     date: new Date("2025-01-09"),
     type: "expenses",
-    category: "Utilities",
+    category: "utilities",
     amount: 90.0,
     description: "Water bill payment",
     user: data[1]._id,
@@ -191,7 +198,7 @@ const transactions = [
   {
     date: new Date("2025-01-10"),
     type: "savings",
-    category: "Investment",
+    category: "investment",
     amount: 400.0,
     description: "Contribution to investment account",
     user: data[1]._id,

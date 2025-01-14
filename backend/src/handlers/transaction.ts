@@ -35,8 +35,8 @@ export default class TransactionsController {
     // save new transaction
     const transaction = new TransactionModel({
       date: new Date(date),
-      type,
-      category,
+      type: type.toLowerCase(),
+      category: category.toLowerCase(),
       amount: Number(amount),
       description,
       user: req.user_id,
@@ -49,8 +49,6 @@ export default class TransactionsController {
     if (currentUser) {
       await TransactionsController.updateBalances(req.user_id || "");
 
-      // const transactions = await TransactionModel.find({user: req.user_id}).sort({ date: 1 });
-      // console.log("trtansactions", transactions)
       console.log(
         `User ID: ${req.user_id} created Transaction ${req.body.description}`
       );
