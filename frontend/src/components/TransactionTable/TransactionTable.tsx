@@ -12,28 +12,35 @@ type Transaction = {
   amount: number;
   description: string;
   balance: number;
-}
+};
 type TransactionTableProps = {
   transactions: Transaction[];
   setState: Dispatch<SetStateAction<boolean>>;
   state: boolean;
   categories: Categories;
-  handleSortingChange: (field: sortField) => void;
+  handleSortingChange: (field: string, type: SortType) => void;
 };
+
+type TableHeadingOptions = {
+  heading: string;
+  sortable: boolean;
+  type: SortType;
+};
+
+type SortType = "date" | "number" | "string" | null;
 
 interface Categories {
   expenses: string[];
   income: string[];
   savings: string[];
 }
-type sortField = "date" | "type" | "category" | "amount" | null
 
 export default function TransactionTable({
   transactions,
   categories,
   state,
   setState,
-  handleSortingChange
+  handleSortingChange,
 }: TransactionTableProps) {
   const [date, setDate] = useState("");
   const [type, setType] = useState("");
@@ -76,38 +83,55 @@ export default function TransactionTable({
     }
   };
 
-
-  // const dateAscending = () => {
-  //   const sorted = [...transactions].sort(
-  //     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-  //   );
-  //   setTransactions(sorted)
-  // };
-  // const dateDescending = () => {
-  //   const sorted = [...transactions].sort(
-  //     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  //   );
-  //   setTransactions(sorted)
-  // };
-
-  // console.log(transactions)
+  const tableHeadings: TableHeadingOptions[] = [
+    {
+      heading: "date",
+      sortable: true,
+      type: "date",
+    },
+    {
+      heading: "type",
+      sortable: true,
+      type: "string",
+    },
+    {
+      heading: "category",
+      sortable: true,
+      type: "string",
+    },
+    {
+      heading: "amount",
+      sortable: true,
+      type: "number",
+    },
+    {
+      heading: "description",
+      sortable: false,
+      type: null,
+    },
+    {
+      heading: "balance",
+      sortable: false,
+      type: null,
+    },
+  ];
 
   return (
     <form onSubmit={(e: FormEvent) => e.preventDefault()}>
       <table>
         <thead>
           <tr>
-            <th>
-              <TableHeading
-                heading="date"
-                handleSortingChange={handleSortingChange}
-              />
-            </th>
-            <th>Type</th>
-            <th>Category</th>
-            <th>Amount</th>
-            <th>Description</th>
-            <th>Balance</th>
+            {tableHeadings.map((heading, index) => (
+              <th key={index}>
+                <TableHeading
+                  heading={heading.heading}
+                  type={heading.type ? heading.type : null}
+                  handleSortingChange={
+                    heading.sortable ? handleSortingChange : undefined
+                  }
+                />
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>

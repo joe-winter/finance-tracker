@@ -28,15 +28,23 @@ type Transaction = {
   balance: number;
 };
 
-type sortField = "date" | "type" | "category" | "amount" | null;
+interface SortOptions {
+  field: string | null;
+  direction: SortDirection;
+  type: SortType;
+}
 
-type sortDirection = "ascending" | "descending" | null;
+type SortType = "date" | "number" | "string" | null;
+type SortDirection = "ascending" | "descending" | null;
 
 export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const [sortField, setSortField] = useState<sortField>(null);
-  const [sortDirection, setSortDirection] = useState<sortDirection>(null);
+  const [sortOptions, setSortOptions] = useState<SortOptions>({
+    field: null,
+    direction: null,
+    type: null,
+  });
   const [state, setState] = useState(false);
   const [user, setUser] = useState<User>({
     email: "",
@@ -84,20 +92,44 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
   }, [token, navigate]);
 
   const sortedTransactions = useMemo(() => {
-    if (sortDirection === null) return transactions;
-    
-    return [...transactions].sort((a, b) => {
-      const modifier = sortDirection === "ascending" ? 1 : -1;
-      return (new Date(a.date).getTime() - new Date(b.date).getTime()) * modifier;
-    });
-  }, [transactions, sortDirection]);
+    // if (sortOptions.direction === null) return transactions;
+    // if (sortOptions.field === null) return transactions
+    // if (sortOptions.type === null) return transactions
 
-  const handleSortingChange = (field: sortField) => {
+    return [...transactions].sort((a, b) => {
+      const modifier = sortOptions.direction === "ascending" ? 1 : -1;
+      if (sortOptions.field === "date") {
+        return (
+          (new Date(a.date).getTime() - new Date(b.date).getTime()) * modifier
+        );
+      }
+      if (sortOptions.type === "string") {
+        const field = sortOptions.field as keyof Transaction;
+        if (typeof a[field] === "string" && typeof b[field] === "string")
+          return a[field].localeCompare(b[field]) * modifier;
+      }
+      if (sortOptions.type === "number") {
+        const field = sortOptions.field as keyof Transaction;
+        if (typeof a[field] === "number" && typeof b[field] === "number")
+          return (a[field] - b[field]) * modifier;
+      }
+
+      return 0;
+    });
+  }, [
+    sortOptions.direction,
+    sortOptions.field,
+    sortOptions.type,
+    transactions,
+  ]);
+
+  const handleSortingChange = (field: string, type: SortType) => {
     const direction =
-      sortDirection === "ascending" ? "descending" : "ascending";
-    setSortField(field);
-    setSortDirection(direction);
+      sortOptions.direction === "ascending" ? "descending" : "ascending";
+    setSortOptions({ field, direction, type });
   };
+
+  console.log(sortOptions);
 
   return (
     <>
