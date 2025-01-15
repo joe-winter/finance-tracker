@@ -1,4 +1,4 @@
-import DropdownWithAutoComplete from "@/components/DropdownWithAutoComplete";
+import DropdownWithAutoComplete from "@/components/TransactionTable/DropdownWithAutoComplete";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 

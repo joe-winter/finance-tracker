@@ -2,7 +2,7 @@ import { TransactionsService } from "../services/transactions";
 import NavBarSwitcher from "../components/NavBarSwitcher";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import TransactionTable from "../components/TransactionTable";
+import TransactionTable from "../components/TransactionTable/TransactionTable";
 import { UserService } from "@/services/user";
 type TransactionProps = {
   isOpen: boolean;

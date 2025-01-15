@@ -1,17 +1,20 @@
-import TableHeading from "@/components/TableHeading";
+import TableHeading from "@/components/TransactionTable/TableHeading";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 describe("table heading", () => {
   it("should display given heading", () => {
-    render(<TableHeading heading="Date" />);
+    render(<TableHeading heading="date" />);
 
     const headingEl = screen.getByRole("heading");
 
     expect(headingEl).toHaveTextContent("Date");
   });
   it("has sort button", () => {
-    render(<TableHeading />);
+    const handleSortingChange = vi.fn();
+    render(
+      <TableHeading heading="date" handleSortingChange={handleSortingChange} />
+    );
 
     const buttonEl = screen.getByTestId("sort-svg");
 
@@ -20,37 +23,40 @@ describe("table heading", () => {
   it("call sort ascending function when button is clicked", async () => {
     const user = userEvent.setup();
 
-    const ascendingFunction = vi.fn();
-    render(<TableHeading ascendingFunction={ascendingFunction} />);
-
-    const buttonEl = screen.getByTestId("sort-svg");
-
-    await user.click(buttonEl);
-
-    expect(ascendingFunction).toHaveBeenCalledOnce();
-  });
-  it("calls ascending and then dececing function after click button", async () => {
-    const user = userEvent.setup();
-
-    const ascendingFunction = vi.fn();
-    const descendingFunction = vi.fn();
+    const handleSortingChange = vi.fn();
     render(
-      <TableHeading
-        ascendingFunction={ascendingFunction}
-        decendingFunction={descendingFunction}
-      />
+      <TableHeading heading="date" handleSortingChange={handleSortingChange} />
     );
 
     const buttonEl = screen.getByTestId("sort-svg");
 
     await user.click(buttonEl);
 
-    expect(ascendingFunction).toHaveBeenCalledOnce();
-    expect(descendingFunction).not.toHaveBeenCalled();
+    expect(handleSortingChange).toHaveBeenCalledWith("date");
+  });
+  it("calls ascending and then dececing function after click button", async () => {
+    const user = userEvent.setup();
+
+    const handleSortingChange = vi.fn();
+    render(
+      <TableHeading heading="date" handleSortingChange={handleSortingChange} />
+    );
+
+    const buttonEl = screen.getByTestId("sort-svg");
 
     await user.click(buttonEl);
 
-    expect(ascendingFunction).toHaveBeenCalledOnce();
-    expect(descendingFunction).toHaveBeenCalledOnce();
+    expect(handleSortingChange).toHaveBeenCalledOnce();
+
+    await user.click(buttonEl);
+
+    expect(handleSortingChange).toHaveBeenCalledTimes(2);
+  });
+  it("doesnt short sort svg if no function is given", async () => {
+    render(<TableHeading heading={"type"} />);
+
+    const buttonEl = screen.queryByRole("button");
+
+    expect(buttonEl).toBeNull();
   });
 });
