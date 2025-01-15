@@ -89,13 +89,9 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       }
     };
     fetchData();
-  }, [token, navigate]);
+  }, [token, navigate, state]);
 
   const sortedTransactions = useMemo(() => {
-    // if (sortOptions.direction === null) return transactions;
-    // if (sortOptions.field === null) return transactions
-    // if (sortOptions.type === null) return transactions
-
     return [...transactions].sort((a, b) => {
       const modifier = sortOptions.direction === "ascending" ? 1 : -1;
       if (sortOptions.field === "date") {
@@ -113,15 +109,9 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
         if (typeof a[field] === "number" && typeof b[field] === "number")
           return (a[field] - b[field]) * modifier;
       }
-
       return 0;
     });
-  }, [
-    sortOptions.direction,
-    sortOptions.field,
-    sortOptions.type,
-    transactions,
-  ]);
+  }, [sortOptions, transactions]);
 
   const handleSortingChange = (field: string, type: SortType) => {
     const direction =
@@ -129,7 +119,6 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
     setSortOptions({ field, direction, type });
   };
 
-  console.log(sortOptions);
 
   return (
     <>

@@ -17,7 +17,7 @@ export default function TableHeading({
     <div className="flex justify-center">
       <h2>{heading && heading.charAt(0).toUpperCase() + heading.slice(1)}</h2>
       {handleSortingChange !== undefined && type !== null && (
-        <button onClick={() => handleSortingChange(heading, type)}>
+        <button type="button"onClick={() => handleSortingChange(heading, type)}>
           <SortIcon />
         </button>
       )}

@@ -5,14 +5,14 @@ interface DropdownWithAutoCompleteProps {
   options: string[];
   state: string;
   setStateFunc: Dispatch<SetStateAction<string>>;
-  size: number
+  size: number;
 }
 
-function capitaliseString (string: string): string {
-  if (string ) {
-    return string.charAt(0).toUpperCase() + string.slice(1)
+function capitaliseString(string: string): string {
+  if (string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
-  return ""
+  return "";
 }
 
 export default function DropdownWithAutoComplete({
@@ -20,7 +20,7 @@ export default function DropdownWithAutoComplete({
   options,
   state,
   setStateFunc,
-  size
+  size,
 }: DropdownWithAutoCompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   // reset input on if input not in options
@@ -42,7 +42,7 @@ export default function DropdownWithAutoComplete({
           onClick={() => setIsOpen(!isOpen)}
           size={size}
         />
-        <button onClick={() => setIsOpen(!isOpen)}>
+        <button type="button" onClick={() => setIsOpen(!isOpen)}>
           <svg
             className="w-6 h-6 text-gray-800 dark:text-white"
             aria-hidden="true"
@@ -65,18 +65,20 @@ export default function DropdownWithAutoComplete({
       </div>
       {isOpen && (
         <div className="bg-white absolute">
-          {options && options.map((option, index) => (
-            <div key={index}>
-              <button
-                onClick={() => {
-                  setStateFunc(option);
-                  setIsOpen(false);
-                }}
-              >
-                {capitaliseString(option)}
-              </button>
-            </div>
-          ))}
+          {options &&
+            options.map((option, index) => (
+              <div key={index}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStateFunc(option);
+                    setIsOpen(false);
+                  }}
+                >
+                  {capitaliseString(option)}
+                </button>
+              </div>
+            ))}
         </div>
       )}
     </div>

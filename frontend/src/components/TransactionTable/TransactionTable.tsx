@@ -63,6 +63,7 @@ export default function TransactionTable({
           description,
         });
         setState(!state);
+        console.log("transaction added")
       }
     } catch (err) {
       console.log(err);
@@ -117,7 +118,7 @@ export default function TransactionTable({
   ];
 
   return (
-    <form onSubmit={(e: FormEvent) => e.preventDefault()}>
+    <form onSubmit={handleSubmit}>
       <table>
         <thead>
           <tr>
@@ -205,7 +206,7 @@ export default function TransactionTable({
                 <td>{transaction.description.slice(0, 18)}</td>
                 <td>{transaction?.balance?.toFixed(2)}</td>
                 <td>
-                  <button onClick={() => handleDelete(transaction._id)}>
+                  <button type="button" onClick={() => handleDelete(transaction._id)}>
                     Delete
                   </button>
                 </td>
