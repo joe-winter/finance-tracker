@@ -67,12 +67,14 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       balance: 0,
     },
   ]);
+  const [currentPageNumber, setCurrentPageNumber] = useState(1)
 
+  
   useEffect(() => {
     if (!token) {
       navigate("/login");
     }
-
+    
     const fetchData = async () => {
       const loggedIn = token !== null;
       try {
@@ -90,7 +92,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
     };
     fetchData();
   }, [token, navigate, state]);
-
+  
   const sortedTransactions = useMemo(() => {
     return [...transactions].sort((a, b) => {
       const modifier = sortOptions.direction === "ascending" ? 1 : -1;
@@ -112,14 +114,21 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       return 0;
     });
   }, [sortOptions, transactions]);
+  
+  const dataToDisplay = useMemo(() => {
+    const start = (currentPageNumber - 1) * 10
+    const end = currentPageNumber * 10
+    return sortedTransactions.slice(start, end)
+  }, [currentPageNumber, sortedTransactions])
+
 
   const handleSortingChange = (field: string, type: SortType) => {
     const direction =
-      sortOptions.direction === "ascending" ? "descending" : "ascending";
+    sortOptions.direction === "ascending" ? "descending" : "ascending";
     setSortOptions({ field, direction, type });
   };
-
-
+  
+  
   return (
     <>
       <NavBarSwitcher isOpen={isOpen} setIsOpen={setIsOpen} />
@@ -132,7 +141,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       </h2>
       <div className=" overflow-x-auto w-full">
         <TransactionTable
-          transactions={sortedTransactions}
+          transactions={dataToDisplay}
           setState={setState}
           state={state}
           categories={user.categories}
