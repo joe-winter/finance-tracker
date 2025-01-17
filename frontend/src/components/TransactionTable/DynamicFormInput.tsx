@@ -1,18 +1,12 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { ChevronDown } from "@/assets/Icons";
+import StringUtils from "@/utils/stringUtils";
 interface DynamicFormInput {
   placeholder: string;
   choices?: string[];
   value: string;
   onChange: Dispatch<SetStateAction<string>>;
   size: number;
-}
-
-function capitaliseString(string: string): string {
-  if (string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-  return "";
 }
 
 export default function DynamicFormInput({
@@ -42,7 +36,7 @@ export default function DynamicFormInput({
           name=""
           id=""
           placeholder={placeholder}
-          value={capitaliseString(value)}
+          value={StringUtils.capitalise(value)}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             onChange(e.target.value)
           }
@@ -64,7 +58,7 @@ export default function DynamicFormInput({
                   type="button"
                   onClick={() => handleOptionSelect(choice)}
                 >
-                  {capitaliseString(choice)}
+                  {StringUtils.capitalise(value)}
                 </button>
               </div>
             ))}
