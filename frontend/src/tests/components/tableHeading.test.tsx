@@ -25,14 +25,14 @@ describe("table heading", () => {
 
     const handleSortingChange = vi.fn();
     render(
-      <TableHeading heading="date" handleSortingChange={handleSortingChange} />
+      <TableHeading heading="date" handleSortingChange={handleSortingChange} type={"date"}/>
     );
 
     const buttonEl = screen.getByTestId("sort-svg");
 
     await user.click(buttonEl);
 
-    expect(handleSortingChange).toHaveBeenCalledWith("date");
+    expect(handleSortingChange).toHaveBeenCalledWith("date", "date");
   });
   it("calls ascending and then dececing function after click button", async () => {
     const user = userEvent.setup();

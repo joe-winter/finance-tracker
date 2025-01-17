@@ -1,5 +1,5 @@
 import { TransactionsService } from "@/services/transactions";
-import DropdownWithAutoComplete from "./DropdownWithAutoComplete";
+import DynamicFormInput from "./DynamicFormInput";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TableHeading from "./TableHeading";
@@ -63,7 +63,6 @@ export default function TransactionTable({
           description,
         });
         setState(!state);
-        console.log("transaction added")
       }
     } catch (err) {
       console.log(err);
@@ -149,20 +148,20 @@ export default function TransactionTable({
               />
             </td>
             <td className="relative">
-              <DropdownWithAutoComplete
+              <DynamicFormInput
                 placeholder="Type"
-                options={["expenses", "income", "savings"]}
-                state={type}
-                setStateFunc={setType}
+                choices={["expenses", "income", "savings"]}
+                value={type}
+                onChange={setType}
                 size={7}
               />
             </td>
             <td className="relative">
-              <DropdownWithAutoComplete
+              <DynamicFormInput
                 placeholder="Category"
-                options={getCategories(type, categories)}
-                state={category}
-                setStateFunc={setCategory}
+                choices={getCategories(type, categories)}
+                value={category}
+                onChange={setCategory}
                 size={10}
               />
             </td>

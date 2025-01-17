@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import DropdownWithAutoComplete from "./DropdownWithAutoComplete";
+import DynamicFormInput from "./DynamicFormInput";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { TransactionsService } from "@/services/transactions";
 
@@ -69,18 +69,18 @@ export default function TableForm({
               />
             </td>
             <td className="relative">
-              <DropdownWithAutoComplete
+              <DynamicFormInput
                 placeholder="Type"
-                options={["expenses", "income", "savings"]}
+                choices={["expenses", "income", "savings"]}
                 state={type}
                 setStateFunc={setType}
                 size={7}
               />
             </td>
             <td className="relative">
-              <DropdownWithAutoComplete
+              <DynamicFormInput
                 placeholder="Category"
-                options={getCategories(type, categories)}
+                choices={getCategories(type, categories)}
                 state={category}
                 setStateFunc={setCategory}
                 size={10}
