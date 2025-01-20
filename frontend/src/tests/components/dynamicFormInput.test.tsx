@@ -31,7 +31,7 @@ describe("drop down with auto complete", () => {
       />
     );
 
-    const buttonEl = screen.getByTestId("chevron-svg");
+    const buttonEl = screen.getByTestId("chevron-down");
     expect(buttonEl).toBeInTheDocument();
   });
   it("given choices when a clicks they appear below", async () => {
@@ -48,7 +48,7 @@ describe("drop down with auto complete", () => {
       />
     );
 
-    const buttonEl = screen.getByTestId("chevron-svg");
+    const buttonEl = screen.getByTestId("chevron-down");
 
     expect(screen.queryByText("Expenses")).toBeNull();
     expect(screen.queryByText("Income")).toBeNull();
@@ -76,7 +76,7 @@ describe("drop down with auto complete", () => {
       />
     );
 
-    const buttonEl = screen.getByTestId("chevron-svg");
+    const buttonEl = screen.getByTestId("chevron-down");
     await user.click(buttonEl);
     const optionButtonEl = screen.getByRole("button", { name: "Savings" });
     await user.click(optionButtonEl);
@@ -105,7 +105,7 @@ describe("drop down with auto complete", () => {
       />
     );
 
-    const buttonEl = screen.queryByTestId("chevron-svg");
+    const buttonEl = screen.queryByTestId("chevron-down");
     expect(buttonEl).toBeNull();
   });
   it("resets value if value is no longer in options", () => {

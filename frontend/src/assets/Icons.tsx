@@ -28,7 +28,7 @@ export const ChevronDown = () => (
     height="24"
     fill="none"
     viewBox="0 0 24 24"
-    data-testid="chevron-svg"
+    data-testid="chevron-down"
   >
     <path
       stroke="currentColor"

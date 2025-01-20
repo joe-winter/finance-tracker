@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import TransactionTable from "../components/TransactionTable/TransactionTable";
 import { UserService } from "@/services/user";
 import PageSelector from "@/components/TransactionTable/PageSelector";
+import { PageSizeSelector } from "@/components/TransactionTable/PageSizeSelector";
 type TransactionProps = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -126,10 +127,10 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
   }, [sortOptions, transactions]);
   
   const dataToDisplay = useMemo(() => {
-    const start = (currentPageNumber - 1) * 10
-    const end = currentPageNumber * 10
+    const start = (currentPageNumber - 1) * itemsPerPage
+    const end = currentPageNumber * itemsPerPage
     return sortedTransactions.slice(start, end)
-  }, [currentPageNumber, sortedTransactions])
+  }, [currentPageNumber, sortedTransactions, itemsPerPage])
 
 
   const handleSortingChange = (field: string, type: SortType) => {
@@ -157,8 +158,9 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
           categories={user.categories}
           handleSortingChange={handleSortingChange}
         />
-        <PageSelector pageNumber={currentPageNumber} onPageChange={handlePageChange}/>
       </div>
+        <PageSelector pageNumber={currentPageNumber} onPageChange={handlePageChange}/>
+        <PageSizeSelector currentPageSize={itemsPerPage} options={[10, 25, 100]} onPageSizeChange={setItemsPerPage}/>
     </>
   );
 }
