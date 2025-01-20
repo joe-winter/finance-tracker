@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TransactionTable from "../components/TransactionTable/TransactionTable";
 import { UserService } from "@/services/user";
+import PageSelector from "@/components/TransactionTable/PageSelector";
 type TransactionProps = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -68,6 +69,15 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
     },
   ]);
   const [currentPageNumber, setCurrentPageNumber] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+  const maxPage = Math.ceil(transactions.length / itemsPerPage)
+  console.log(maxPage)
+
+  const handlePageChange = (newPageNumber: number) => {
+    if (newPageNumber > 0 && newPageNumber <= maxPage) {
+      setCurrentPageNumber(newPageNumber)
+    } 
+  }
 
   
   useEffect(() => {
@@ -147,6 +157,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
           categories={user.categories}
           handleSortingChange={handleSortingChange}
         />
+        <PageSelector pageNumber={currentPageNumber} onPageChange={handlePageChange}/>
       </div>
     </>
   );

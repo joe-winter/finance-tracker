@@ -71,8 +71,8 @@ export default function TransactionTable({
   }
 
   const getCategories = (type: string, categories: Categories) => {
-    const categoryType = type.toLowerCase() as keyof Categories;
-    return categories[categoryType];
+      const categoryType = type.toLowerCase() as keyof Categories;
+      return categories[categoryType]
   };
 
   const handleDelete = async (transactionId: string) => {

@@ -58,7 +58,7 @@ export default function DynamicFormInput({
                   type="button"
                   onClick={() => handleOptionSelect(choice)}
                 >
-                  {StringUtils.capitalise(value)}
+                  {StringUtils.capitalise(choice)}
                 </button>
               </div>
             ))}

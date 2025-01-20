@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 
 const onChange = vi.fn();
 
+
 describe("drop down with auto complete", () => {
   it("has given placeholder", () => {
     render(
@@ -124,4 +125,7 @@ describe("drop down with auto complete", () => {
 
     expect(onChange).toHaveBeenCalledWith("");
   });
+  it("doesnt capitalise the string if type isnt text", () => {
+
+  })
 });
