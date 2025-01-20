@@ -19,19 +19,20 @@ export default function DynamicFormInput({
   const [isOpen, setIsOpen] = useState(false);
 
   // reset input on if input not in options
-  if (choices && value !== "" && !choices.includes(value) ) {
-    console.log("hello there")
-    onChange("")
+  if (choices && value !== "" && !choices.includes(value)) {
+    console.log("hello there");
+    onChange("");
   }
 
   const handleOptionSelect = (choice: string) => {
-    onChange(choice)
-    setIsOpen(false)
-  }
+    onChange(choice);
+    setIsOpen(false);
+  };
   return (
     <div>
-      <div className="flex">
+      <div className="flex border border-gray-200 rounded">
         <input
+          className="bg-gray-50 placeholder:p-1"
           type="text"
           name=""
           id=""
@@ -50,19 +51,19 @@ export default function DynamicFormInput({
         )}
       </div>
       {choices && isOpen && (
-        <div className="bg-white absolute">
+        <ul className="bg-gray-50 border border-gray-200 rounded absolute w-full">
           {choices &&
             choices.map((choice, index) => (
-              <div key={index}>
+              <li key={index}>
                 <button
                   type="button"
                   onClick={() => handleOptionSelect(choice)}
                 >
                   {StringUtils.capitalise(choice)}
                 </button>
-              </div>
+              </li>
             ))}
-        </div>
+        </ul>
       )}
     </div>
   );

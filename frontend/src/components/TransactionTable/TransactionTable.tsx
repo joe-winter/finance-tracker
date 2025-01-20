@@ -3,7 +3,7 @@ import DynamicFormInput from "./DynamicFormInput";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TableHeading from "./TableHeading";
-
+import StringUtils from "@/utils/stringUtils";
 type Transaction = {
   _id: string;
   date: string;
@@ -70,9 +70,20 @@ export default function TransactionTable({
     }
   }
 
+  const convertDate = (date: string) => {
+    return new Date(date)
+      .toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "numeric",
+        year: "numeric",
+      })
+      .toString();
+  };
+
+
   const getCategories = (type: string, categories: Categories) => {
-      const categoryType = type.toLowerCase() as keyof Categories;
-      return categories[categoryType]
+    const categoryType = type.toLowerCase() as keyof Categories;
+    return categories[categoryType];
   };
 
   const handleDelete = async (transactionId: string) => {
@@ -194,18 +205,21 @@ export default function TransactionTable({
           </tr>
           {transactions &&
             transactions.map((transaction, index) => (
-              <tr key={index}>
-                <td>{transaction.date.slice(0, 10)}</td>
+              <tr key={index} className="border border-b">
+                <td>{convertDate(transaction.date)}</td>
                 <td>
                   {transaction.type.charAt(0).toUpperCase() +
                     transaction.type.slice(1)}
                 </td>
-                <td>{transaction.category}</td>
-                <td>{transaction.amount.toFixed(2)}</td>
+                <td>{StringUtils.capitalise(transaction.category)}</td>
+                <td>£{transaction.amount.toFixed(2)}</td>
                 <td>{transaction.description.slice(0, 18)}</td>
-                <td>{transaction?.balance?.toFixed(2)}</td>
+                <td>£{transaction?.balance?.toFixed(2)}</td>
                 <td>
-                  <button type="button" onClick={() => handleDelete(transaction._id)}>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(transaction._id)}
+                  >
                     Delete
                   </button>
                 </td>
