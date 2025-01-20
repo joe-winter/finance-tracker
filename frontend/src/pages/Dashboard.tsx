@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import NavBarSwitcher from "../components/NavBarSwitcher";
 import { DataService } from "@/services/data";
 import PieChartTotals from "@/components/PieChartTotals";
-
+import StringUtils from "@/utils/stringUtils";
 type DashboardProps = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -33,7 +33,15 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
     },
   });
 
-  const COLORSGREEN = ["#006400","#228B22","#2E8B57","#3CB371","#32CD32","#7CFC00","#90EE90",];
+  const COLORSGREEN = [
+    "#006400",
+    "#228B22",
+    "#2E8B57",
+    "#3CB371",
+    "#32CD32",
+    "#7CFC00",
+    "#90EE90",
+  ];
   const COLORSBLUE = [
     "#00008B",
     "#0000CD",
@@ -52,8 +60,6 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
     "#FF7F7F",
     "#FFA07A",
   ];
-  
-  
 
   useEffect(() => {
     if (!token) {
@@ -78,22 +84,31 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
   console.log("Data", data);
 
   const expensesData = [];
-
+  let expenesesSum = 0;
   for (const [key, value] of Object.entries(data.expenses.categories)) {
-    expensesData.push({ name: key, value: value });
+    expenesesSum += value;
+    if (expensesData.length < 6) {
+      expensesData.push({ name: StringUtils.capitalise(key), value: value });
+    } else {
+      break;
+    }
   }
   expensesData.sort((a, b) => b.value - a.value);
+  expensesData.push({
+    name: "Other",
+    value: data.expenses.total - expenesesSum,
+  });
 
-  const incomeData = []
+  const incomeData = [];
 
   for (const [key, value] of Object.entries(data.income.categories)) {
-    incomeData.push({ name: key, value: value });
+    incomeData.push({ name: StringUtils.capitalise(key), value: value });
   }
   incomeData.sort((a, b) => b.value - a.value);
-  const savingsData = []
+  const savingsData = [];
 
   for (const [key, value] of Object.entries(data.savings.categories)) {
-    savingsData.push({ name: key, value: value });
+    savingsData.push({ name: StringUtils.capitalise(key), value: value });
   }
   savingsData.sort((a, b) => b.value - a.value);
 
@@ -110,12 +125,30 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
       >
         Dashboard
       </h2>
-      <h3>Expenses</h3>
-      <PieChartTotals data={expensesData} colors={COLORSGREEN} total={data.expenses.total}/>
-      <h3>Income</h3>
-      <PieChartTotals data={incomeData} colors={COLORSBLUE} total={data.income.total}/>
-      <h3>Savings</h3>
-      <PieChartTotals data={savingsData} colors={COLORSRED} total={data.savings.total}/>
+      <section className="bg-white rounded-lg shadow p-2 m-4">
+        <h3 className="font-semibold text-xl">Expenses</h3>
+        <PieChartTotals
+          data={expensesData}
+          colors={COLORSGREEN}
+          total={data.expenses.total}
+        />
+      </section>
+      <section className="bg-white rounded-lg shadow p-2 m-4">
+        <h3 className="font-semibold text-xl">Income</h3>
+        <PieChartTotals
+          data={incomeData}
+          colors={COLORSBLUE}
+          total={data.income.total}
+        />
+      </section>
+      <section className="bg-white rounded-lg shadow p-2 m-4">
+        <h3 className="font-semibold text-xl">Savings</h3>
+        <PieChartTotals
+          data={savingsData}
+          colors={COLORSRED}
+          total={data.savings.total}
+        />
+      </section>
     </>
   );
 }

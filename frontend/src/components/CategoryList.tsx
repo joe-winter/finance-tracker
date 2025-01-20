@@ -1,6 +1,6 @@
 import { UserService } from "@/services/user";
 import { Dispatch, SetStateAction } from "react";
-
+import StringUtils from "@/utils/stringUtils";
 interface CategoryListProps {
   categories: Categories;
   type: string;
@@ -18,7 +18,6 @@ export default function CategoryList({ categories, type, refresh, setRefresh }: 
   const categoryType = type as keyof Categories;
 
   const handleClick = async (category: string) => {
-    console.log("clicked", category);
     categories[categoryType] = categories[categoryType].filter(
       (element) => element !== category
     );
@@ -28,12 +27,12 @@ export default function CategoryList({ categories, type, refresh, setRefresh }: 
     }
   };
   return (
-    <>
+    <div className="flex flex-wrap">
       {categories[categoryType].map((category, index) => (
-        <div key={index}>
-          {category} <button onClick={() => handleClick(category)}>X</button>
+        <div key={index} className="bg-gray-400 border-2 rounded border-gray-500 px-1 m-1">
+          {StringUtils.capitalise(category)} <button onClick={() => handleClick(category)}>X</button>
         </div>
       ))}
-    </>
+    </div>
   );
 }

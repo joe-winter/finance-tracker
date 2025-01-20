@@ -1,9 +1,4 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBarSwitcher from "../components/NavBarSwitcher";
 import { UserService } from "@/services/user";
@@ -60,7 +55,7 @@ export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
     fetchData();
   }, [navigate, token, refresh]);
 
-  console.log("Settings", user)
+  console.log("Settings", user);
   return (
     <>
       <NavBarSwitcher isOpen={isOpen} setIsOpen={setIsOpen} />
@@ -71,51 +66,86 @@ export default function Settings({ isOpen, setIsOpen }: SettingsProps) {
       >
         Settings
       </h2>
-      <div>Email: {user?.email}</div>
-      <div>Name: {`${user?.firstName} ${user?.lastName}`}</div>
-      <h2>Categories</h2>
-      <div>Expenses:</div>
-      <CategoryList
-        type={"expenses"}
-        categories={user.categories}
-        refresh={refresh}
-        setRefresh={setRefresh}
-      />
-      <CategoryForm
-        type={"expenses"}
-        placeholder={"Enter expense here"}
-        categories={user.categories}
-        refresh={refresh}
-        setRefresh={setRefresh}
-      />
-      <div>Income:</div>
-      <CategoryList
-        type={"income"}
-        categories={user.categories}
-        refresh={refresh}
-        setRefresh={setRefresh}
-      />
-      <CategoryForm
-        type={"income"}
-        placeholder={"Enter incomes here"}
-        categories={user.categories}
-        refresh={refresh}
-        setRefresh={setRefresh}
-      />
-      <div>Savings:</div>
-      <CategoryList
-        type={"savings"}
-        categories={user.categories}
-        refresh={refresh}
-        setRefresh={setRefresh}
-      />
-      <CategoryForm
-        type={"savings"}
-        placeholder={"Enter savings here"}
-        categories={user.categories}
-        refresh={refresh}
-        setRefresh={setRefresh}
-      />
+      {/* User Profile Section */}
+      <section className="bg-white rounded-lg shadow p-6 m-4">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          Profile Information
+        </h2>
+        <div className="space-y-2">
+          <div className="flex items-center">
+            <span className="text-gray-500 w-24">Email:</span>
+            <span className="text-gray-900">{user?.email}</span>
+          </div>
+          <div className="flex items-center">
+            <span className="text-gray-500 w-24">Name:</span>
+            <span className="text-gray-900">{`${user?.firstName} ${user?.lastName}`}</span>
+          </div>
+        </div>
+      </section>
+      {/* Categories Section */}
+      <section className="bg-white rounded-lg shadow p-6 m-4">
+        <h2 className="text-xl font-semibold text-gray-800 mb-6">Categories</h2>
+
+        {/* Expenses */}
+        <div className="mb-8">
+          <h3 className="text-lg font-medium text-gray-700 mb-3">Expenses</h3>
+          <div className="mb-3">
+            <CategoryList
+              type="expenses"
+              categories={user.categories}
+              refresh={refresh}
+              setRefresh={setRefresh}
+            />
+          </div>
+          <CategoryForm
+            type="expenses"
+            placeholder="Enter expense here"
+            categories={user.categories}
+            refresh={refresh}
+            setRefresh={setRefresh}
+          />
+        </div>
+
+        {/* Income */}
+        <div className="mb-8">
+          <h3 className="text-lg font-medium text-gray-700 mb-3">Income</h3>
+          <div className="mb-3">
+            <CategoryList
+              type="income"
+              categories={user.categories}
+              refresh={refresh}
+              setRefresh={setRefresh}
+            />
+          </div>
+          <CategoryForm
+            type="income"
+            placeholder="Enter income here"
+            categories={user.categories}
+            refresh={refresh}
+            setRefresh={setRefresh}
+          />
+        </div>
+
+        {/* Savings */}
+        <div>
+          <h3 className="text-lg font-medium text-gray-700 mb-3">Savings</h3>
+          <div className="mb-3">
+            <CategoryList
+              type="savings"
+              categories={user.categories}
+              refresh={refresh}
+              setRefresh={setRefresh}
+            />
+          </div>
+          <CategoryForm
+            type="savings"
+            placeholder="Enter savings here"
+            categories={user.categories}
+            refresh={refresh}
+            setRefresh={setRefresh}
+          />
+        </div>
+      </section>
     </>
   );
 }
