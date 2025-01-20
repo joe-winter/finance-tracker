@@ -4,6 +4,7 @@ import NavBarSwitcher from "../components/NavBarSwitcher";
 import { DataService } from "@/services/data";
 import PieChartTotals from "@/components/PieChartTotals";
 import StringUtils from "@/utils/stringUtils";
+import Dropdown from "@/components/Dropdown";
 type DashboardProps = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -32,6 +33,22 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
       categories: {},
     },
   });
+  const [year, setYear] = useState("");
+  const [month, setMonth] = useState("");
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   const COLORSGREEN = [
     "#006400",
@@ -81,8 +98,6 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
     fetchData();
   }, [navigate, token]);
 
-  console.log("Data", data);
-
   const expensesData = [];
   let expenesesSum = 0;
   for (const [key, value] of Object.entries(data.expenses.categories)) {
@@ -98,7 +113,6 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
     name: "Other",
     value: data.expenses.total - expenesesSum,
   });
-
   const incomeData = [];
 
   for (const [key, value] of Object.entries(data.income.categories)) {
@@ -112,8 +126,6 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
   }
   savingsData.sort((a, b) => b.value - a.value);
 
-  console.log("expenses", expensesData);
-
   return (
     <>
       <NavBarSwitcher isOpen={isOpen} setIsOpen={setIsOpen} />
@@ -125,6 +137,21 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
       >
         Dashboard
       </h2>
+
+      <section className="bg-white rounded-lg shadow p-2 m-4">
+        <div className="flex">
+          <span className="p-2">Select Year</span>
+          <Dropdown
+            value={year}
+            setValue={setYear}
+            options={["2020", "2021", "2022", "2023", "2024", "2025"]}
+          />
+        </div>
+        <div className="flex">
+          <span className="p-2">Select Month</span>
+          <Dropdown value={month} setValue={setMonth} options={months} />
+        </div>
+      </section>
       <section className="bg-white rounded-lg shadow p-2 m-4">
         <h3 className="font-semibold text-xl">Expenses</h3>
         <PieChartTotals

@@ -38,7 +38,7 @@ export default function PieChartTotals({ data, colors, total }: PieChartProps) {
             <div className="flex justify-between w-44">
               <span className="font-medium">{expenses.name}</span>
               <span className="text-gray-600 justify-end">
-                ${expenses.value.toLocaleString()}
+                £{expenses.value.toLocaleString()}
               </span>
             </div>
           </div>
@@ -46,7 +46,7 @@ export default function PieChartTotals({ data, colors, total }: PieChartProps) {
         <div className="pt-2 mt-2 border-t border-gray-200">
           <div className="flex justify-between font-semibold">
             <span>Total</span>
-            <span>${total.toLocaleString()}</span>
+            <span>£{total.toLocaleString()}</span>
           </div>
         </div>
       </div>
