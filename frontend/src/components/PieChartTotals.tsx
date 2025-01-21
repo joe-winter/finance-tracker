@@ -28,14 +28,14 @@ export default function PieChartTotals({ data, colors, total }: PieChartProps) {
           </Pie>
         </PieChart>
       </div>
-      <div>
+      <div className="w-full">
         {data.map((expenses, index) => (
-          <div key={index} className="flex items-center gap-2">
+          <div key={index} className="flex items-center gap-2 min-w-full">
             <div
               className="w-5 h-5 rounded"
               style={{ backgroundColor: colors[index % colors.length] }}
             ></div>
-            <div className="flex justify-between w-44">
+            <div className="flex justify-between w-full">
               <span className="font-medium">{expenses.name}</span>
               <span className="text-gray-600 justify-end">
                 £{expenses.value.toLocaleString()}

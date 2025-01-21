@@ -157,27 +157,28 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
       </h2>
 
       <section className="bg-white rounded-lg shadow p-2 m-4 flex">
-        <div className="flex items-center">
-          <span className="p-2 font-medium">Year: </span>
-
-          <Dropdown
-            value={year}
-            setValue={setYear}
-            options={["2020", "2021", "2022", "2023", "2024", "2025"]}
-            size="w-32"
-          />
-        </div>
-        <div className="flex items-center">
-          <span className="p-2 font-medium">Month: </span>
-          <Dropdown
-            value={month}
-            setValue={setMonth}
-            options={months}
-            size="w-32"
-          />
+        <div className="flex items-center gap-4 w-full">
+          <div className="flex items-center flex-grow">
+            <span className="p-2 font-medium">Year:</span>
+            <Dropdown
+              value={year}
+              setValue={setYear}
+              options={["2020", "2021", "2022", "2023", "2024", "2025"]}
+              size="w-full"
+            />
+          </div>
+          <div className="flex items-center flex-grow">
+            <span className="p-2 font-medium">Month:</span>
+            <Dropdown
+              value={month}
+              setValue={setMonth}
+              options={months}
+              size="w-full"
+            />
+          </div>
         </div>
       </section>
-      <section className="bg-white rounded-lg shadow p-2 m-4">
+      <section className="bg-white rounded-lg shadow p-2 m-4 overflow-auto">
         <h3 className="font-semibold text-xl">Expenses</h3>
         <PieChartTotals
           data={expensesData}
@@ -185,7 +186,7 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
           total={data.expenses.total}
         />
       </section>
-      <section className="bg-white rounded-lg shadow p-2 m-4">
+      <section className="bg-white rounded-lg shadow p-2 m-4 overflow-auto">
         <h3 className="font-semibold text-xl">Income</h3>
         <PieChartTotals
           data={incomeData}
@@ -193,7 +194,7 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
           total={data.income.total}
         />
       </section>
-      <section className="bg-white rounded-lg shadow p-2 m-4">
+      <section className="bg-white rounded-lg shadow p-2 m-4 overflow-auto">
         <h3 className="font-semibold text-xl">Savings</h3>
         <PieChartTotals
           data={savingsData}
