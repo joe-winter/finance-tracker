@@ -49,9 +49,9 @@ describe("Settings Page", () => {
     await act(async () => {
       render(<Settings />);
     });
-    const emailEl = screen.getByText("Email: john.doe@example.com");
-    const nameEl = screen.getByText("Name: John Doe");
-    const typeEl = screen.getByText("Expenses:");
+    const emailEl = screen.getByText("john.doe@example.com");
+    const nameEl = screen.getByText("John Doe");
+    const typeEl = screen.getByText("Expenses");
     const categoryEl = screen.getByText("Salary");
     expect(emailEl).toBeInTheDocument();
     expect(nameEl).toBeInTheDocument();

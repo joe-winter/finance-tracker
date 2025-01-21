@@ -33,9 +33,10 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
       categories: {},
     },
   });
-  const [year, setYear] = useState("");
-  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("2025");
+  const [month, setMonth] = useState("January");
   const months = [
+    "All Year",
     "January",
     "February",
     "March",
@@ -49,6 +50,18 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
     "November",
     "December",
   ];
+
+  let startDate: string = "";
+  let endDate: string = "";
+
+  if (month !== "All Year") {
+    startDate = new Date(Number(year), months.indexOf(month) -1, 1).toString()
+    endDate = new Date(Number(year), months.indexOf(month), 1).toString()
+  } else {
+    startDate = new Date(Number(year), 0, 1).toString()
+    endDate = new Date(Number(year), 12, 1).toString()
+
+  }
 
   const COLORSGREEN = [
     "#006400",
@@ -86,7 +99,7 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
       const loggedIn = token !== null;
       try {
         if (loggedIn) {
-          const response = await DataService.getTotals(token);
+          const response = await DataService.getTotals(token, startDate, endDate);
           localStorage.setItem("token", response.token);
           setData(response.totals);
         }
@@ -96,7 +109,9 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
       }
     };
     fetchData();
-  }, [navigate, token]);
+  }, [endDate, navigate, startDate, token]);
+
+  console.log(data)
 
   const expensesData = [];
   let expenesesSum = 0;
@@ -131,16 +146,16 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
       <NavBarSwitcher isOpen={isOpen} setIsOpen={setIsOpen} />
 
       <h2
-        className={`flex justify-center text-2xl font-semibold whitespace-nowrap  p-4 ${
+        className={`flex justify-center text-2xl font-semibold pt-4 ${
           isOpen ? "mt-72" : "mt-16"
         }`}
       >
         Dashboard
       </h2>
 
-      <section className="bg-white rounded-lg shadow p-2 m-4">
+      <section className="bg-white rounded-lg shadow p-2 m-4 flex">
         <div className="flex">
-          <span className="p-2">Select Year</span>
+          <span className="p-2 font-medium">Year: </span>
           <Dropdown
             value={year}
             setValue={setYear}
@@ -148,7 +163,7 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
           />
         </div>
         <div className="flex">
-          <span className="p-2">Select Month</span>
+          <span className="p-2 font-medium">Month: </span>
           <Dropdown value={month} setValue={setMonth} options={months} />
         </div>
       </section>

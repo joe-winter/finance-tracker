@@ -35,9 +35,10 @@ export default class DataController {
           user: req.user_id,
           date: {
             $gte: new Date(req.query.startDate),
-            $lte: new Date(req.query.endDate),
+            $lt: new Date(req.query.endDate),
           },
         });
+        console.log(req.query.startDate, req.query.endDate)
       } else {
         transactions = await TransactionModel.find({ user: req.user_id });
       }
