@@ -28,6 +28,11 @@ export default function MobileNavBar({ isOpen, setIsOpen }: MobileNavBarProps) {
   //     window.removeEventListener("resize", handleResize);
   //   };
   // }, []);
+
+  const handleNavigate = (path:string) => {
+    navigate(path)
+    setIsOpen(false)
+  }
   return (
     <div className="h-full">
       <nav
@@ -55,21 +60,21 @@ export default function MobileNavBar({ isOpen, setIsOpen }: MobileNavBarProps) {
             {isOpen && (
               <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                 <li>
-                  <button onClick={() => navigate("/transactions")}>
+                  <button onClick={() => handleNavigate("/transactions")}>
                     <div className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
                       Transactions
                     </div>
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => navigate("/dashboard")}>
+                  <button onClick={() => handleNavigate("/dashboard")}>
                     <div className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
                       Dashboard
                     </div>
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => navigate("/settings")}>
+                  <button onClick={() => handleNavigate("/settings")}>
                     <div className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
                       Settings
                     </div>

@@ -60,7 +60,6 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
   } else {
     startDate = new Date(Number(year), 0, 1).toString()
     endDate = new Date(Number(year), 12, 1).toString()
-
   }
 
   const COLORSGREEN = [
