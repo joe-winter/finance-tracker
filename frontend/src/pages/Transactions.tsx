@@ -6,6 +6,7 @@ import TransactionTable from "../components/TransactionTable/TransactionTable";
 import { UserService } from "@/services/user";
 import PageSelector from "@/components/TransactionTable/PageSelector";
 import { PageSizeSelector } from "@/components/TransactionTable/PageSizeSelector";
+import Dropdown from "@/components/Dropdown";
 type TransactionProps = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -69,23 +70,22 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       balance: 0,
     },
   ]);
-  const [currentPageNumber, setCurrentPageNumber] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(10)
-  const maxPage = Math.ceil(transactions.length / itemsPerPage)
-  console.log(maxPage)
+  const [currentPageNumber, setCurrentPageNumber] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const maxPage = Math.ceil(transactions.length / itemsPerPage);
+  console.log(maxPage);
 
   const handlePageChange = (newPageNumber: number) => {
     if (newPageNumber > 0 && newPageNumber <= maxPage) {
-      setCurrentPageNumber(newPageNumber)
-    } 
-  }
+      setCurrentPageNumber(newPageNumber);
+    }
+  };
 
-  
   useEffect(() => {
     if (!token) {
       navigate("/login");
     }
-    
+
     const fetchData = async () => {
       const loggedIn = token !== null;
       try {
@@ -103,7 +103,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
     };
     fetchData();
   }, [token, navigate, state]);
-  
+
   const sortedTransactions = useMemo(() => {
     return [...transactions].sort((a, b) => {
       const modifier = sortOptions.direction === "ascending" ? 1 : -1;
@@ -125,21 +125,19 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       return 0;
     });
   }, [sortOptions, transactions]);
-  
-  const dataToDisplay = useMemo(() => {
-    const start = (currentPageNumber - 1) * itemsPerPage
-    const end = currentPageNumber * itemsPerPage
-    return sortedTransactions.slice(start, end)
-  }, [currentPageNumber, sortedTransactions, itemsPerPage])
 
+  const dataToDisplay = useMemo(() => {
+    const start = (currentPageNumber - 1) * itemsPerPage;
+    const end = currentPageNumber * itemsPerPage;
+    return sortedTransactions.slice(start, end);
+  }, [currentPageNumber, sortedTransactions, itemsPerPage]);
 
   const handleSortingChange = (field: string, type: SortType) => {
     const direction =
-    sortOptions.direction === "ascending" ? "descending" : "ascending";
+      sortOptions.direction === "ascending" ? "descending" : "ascending";
     setSortOptions({ field, direction, type });
   };
-  
-  
+
   return (
     <>
       <NavBarSwitcher isOpen={isOpen} setIsOpen={setIsOpen} />
@@ -150,17 +148,27 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       >
         Transactions
       </h2>
-      <div className=" overflow-x-auto w-full">
-        <TransactionTable
-          transactions={dataToDisplay}
-          setState={setState}
-          state={state}
-          categories={user.categories}
-          handleSortingChange={handleSortingChange}
-        />
-      </div>
-        <PageSelector pageNumber={currentPageNumber} onPageChange={handlePageChange}/>
-        <PageSizeSelector currentPageSize={itemsPerPage} options={[10, 25, 100]} onPageSizeChange={setItemsPerPage}/>
+      <section className="bg-white rounded-lg shadow p-2 m-4">
+        <div className=" overflow-x-auto w-full">
+          <TransactionTable
+            transactions={dataToDisplay}
+            setState={setState}
+            state={state}
+            categories={user.categories}
+            handleSortingChange={handleSortingChange}
+          />
+        </div>
+        <div className="flex justify-between items-center mt-2">
+          <PageSelector
+            pageNumber={currentPageNumber}
+            onPageChange={handlePageChange}
+          />
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">Items per page:</span>
+            <Dropdown value={itemsPerPage} setValue={setItemsPerPage} options={[10,25,100]}/>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

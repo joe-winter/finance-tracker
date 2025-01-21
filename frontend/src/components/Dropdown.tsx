@@ -1,27 +1,28 @@
 import { ChevronDown } from "@/assets/Icons";
 import { Dispatch, SetStateAction, useState } from "react";
 
-interface DropdownProps {
-  value: string;
-  setValue: Dispatch<SetStateAction<string>>;
-  options: string[];
+interface DropdownProps<T extends string | number> {
+  value: T;
+  setValue: Dispatch<SetStateAction<T>>;
+  options: T[];
+  size?: string
 }
 
-export default function Dropdown({ value, setValue, options }: DropdownProps) {
+export default function Dropdown<T extends string | number>({ value, setValue, options, size }: DropdownProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
-  const handleOptionSelect = (option: string) => {
+  const handleOptionSelect = (option: T) => {
     setValue(option);
     setIsOpen(false);
   };
 
   return (
-    <div className="relative w-32">
+    <div className={`relative ${size ? size : "w-min"}`}>
       {/* Dropdown Trigger */}
       <div
-        className="flex items-center justify-between bg-gray-100 pl-3 py-2 rounded cursor-pointer"
+        className="flex items-center justify-between bg-gray-100 p-1  rounded cursor-pointer"
         onClick={toggleDropdown}
       >
         <span>{value}</span>

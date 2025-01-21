@@ -55,11 +55,11 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
   let endDate: string = "";
 
   if (month !== "All Year") {
-    startDate = new Date(Number(year), months.indexOf(month) -1, 1).toString()
-    endDate = new Date(Number(year), months.indexOf(month), 1).toString()
+    startDate = new Date(Number(year), months.indexOf(month) - 1, 1).toString();
+    endDate = new Date(Number(year), months.indexOf(month), 1).toString();
   } else {
-    startDate = new Date(Number(year), 0, 1).toString()
-    endDate = new Date(Number(year), 12, 1).toString()
+    startDate = new Date(Number(year), 0, 1).toString();
+    endDate = new Date(Number(year), 12, 1).toString();
   }
 
   const COLORSGREEN = [
@@ -98,7 +98,11 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
       const loggedIn = token !== null;
       try {
         if (loggedIn) {
-          const response = await DataService.getTotals(token, startDate, endDate);
+          const response = await DataService.getTotals(
+            token,
+            startDate,
+            endDate
+          );
           localStorage.setItem("token", response.token);
           setData(response.totals);
         }
@@ -110,7 +114,7 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
     fetchData();
   }, [endDate, navigate, startDate, token]);
 
-  console.log(data)
+  console.log(data);
 
   const expensesData = [];
   let expenesesSum = 0;
@@ -153,17 +157,24 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
       </h2>
 
       <section className="bg-white rounded-lg shadow p-2 m-4 flex">
-        <div className="flex">
+        <div className="flex items-center">
           <span className="p-2 font-medium">Year: </span>
+
           <Dropdown
             value={year}
             setValue={setYear}
             options={["2020", "2021", "2022", "2023", "2024", "2025"]}
+            size="w-32"
           />
         </div>
-        <div className="flex">
+        <div className="flex items-center">
           <span className="p-2 font-medium">Month: </span>
-          <Dropdown value={month} setValue={setMonth} options={months} />
+          <Dropdown
+            value={month}
+            setValue={setMonth}
+            options={months}
+            size="w-32"
+          />
         </div>
       </section>
       <section className="bg-white rounded-lg shadow p-2 m-4">
