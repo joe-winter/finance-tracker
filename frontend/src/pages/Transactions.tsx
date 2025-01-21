@@ -71,7 +71,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
     },
   ]);
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
   const maxPage = Math.ceil(transactions.length / itemsPerPage);
   console.log(maxPage);
 
@@ -165,7 +165,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
           />
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium">Items per page:</span>
-            <Dropdown value={itemsPerPage} setValue={setItemsPerPage} options={[10,25,100]}/>
+            <Dropdown value={itemsPerPage} setValue={setItemsPerPage} options={[10,20,50,100]}/>
           </div>
         </div>
       </section>

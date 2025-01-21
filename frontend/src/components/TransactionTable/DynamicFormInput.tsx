@@ -29,8 +29,8 @@ export default function DynamicFormInput({
     setIsOpen(false);
   };
   return (
-    <div>
-      <div className="flex border border-gray-200 rounded">
+    <div className="bg-gray-50">
+      <div className="flex rounded">
         <input
           className="bg-gray-50 placeholder:p-1"
           type="text"
@@ -51,12 +51,13 @@ export default function DynamicFormInput({
         )}
       </div>
       {choices && isOpen && (
-        <ul className="bg-gray-50 border border-gray-200 rounded absolute w-full">
+        <ul className="absolute bg-white border rounded shadow-md mt-2 w-full max-h-60 overflow-auto z-40">
           {choices &&
             choices.map((choice, index) => (
               <li key={index}>
                 <button
                   type="button"
+                  className="px-4 py-2"
                   onClick={() => handleOptionSelect(choice)}
                 >
                   {StringUtils.capitalise(choice)}

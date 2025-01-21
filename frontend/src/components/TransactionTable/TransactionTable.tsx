@@ -80,7 +80,6 @@ export default function TransactionTable({
       .toString();
   };
 
-
   const getCategories = (type: string, categories: Categories) => {
     const categoryType = type.toLowerCase() as keyof Categories;
     return categories[categoryType];
@@ -129,7 +128,7 @@ export default function TransactionTable({
 
   return (
     <form onSubmit={handleSubmit}>
-      <table>
+      <table className="table-auto">
         <thead>
           <tr>
             {tableHeadings.map((heading, index) => (
@@ -149,7 +148,7 @@ export default function TransactionTable({
           <tr>
             <td className="max-w-fit">
               <input
-                className="dark:bg-gray-900 border rounded max-w-30"
+                className="dark:bg-gray-900 bg-gray-50 rounded max-w-30"
                 type="date"
                 name="date"
                 id="date"
@@ -173,12 +172,12 @@ export default function TransactionTable({
                 choices={getCategories(type, categories)}
                 value={category}
                 onChange={setCategory}
-                size={10}
+                size={12}
               />
             </td>
             <td>
               <input
-                className="dark:bg-gray-900 border rounded max-w-24"
+                className="dark:bg-gray-900 bg-gray-50 rounded max-w-24"
                 type="number"
                 name="amount"
                 id="amount"
@@ -189,7 +188,7 @@ export default function TransactionTable({
             </td>
             <td>
               <input
-                className="dark:bg-gray-900 border rounded"
+                className="dark:bg-gray-900 bg-gray-50 rounded"
                 type="text"
                 name="description"
                 id="description"
@@ -200,27 +199,52 @@ export default function TransactionTable({
               />
             </td>
             <td>
-              <button type="submit">Add</button>
+              <button
+                className="dark:bg-gray-900 bg-blue-50 w-16 rounded"
+                type="submit"
+              >
+                Add
+              </button>
             </td>
           </tr>
           {transactions &&
             transactions.map((transaction, index) => (
-              <tr key={index} className="border border-b">
+              <tr key={index} className="border-b">
                 <td>{convertDate(transaction.date)}</td>
-                <td>
-                  {transaction.type.charAt(0).toUpperCase() +
-                    transaction.type.slice(1)}
-                </td>
+                <td>{StringUtils.capitalise(transaction.type)}</td>
                 <td>{StringUtils.capitalise(transaction.category)}</td>
                 <td>£{transaction.amount.toFixed(2)}</td>
-                <td>{transaction.description.slice(0, 18)}</td>
+                <td>
+                  <td>
+                    <div className="overflow-clip w-36 whitespace-nowrap hover:overflow-x-scroll hover:w-36">
+                      {transaction.description}
+                    </div>
+                  </td>
+                </td>
                 <td>£{transaction?.balance?.toFixed(2)}</td>
                 <td>
                   <button
+                    className="flex"
                     type="button"
                     onClick={() => handleDelete(transaction._id)}
                   >
-                    Delete
+                    <svg
+                      className="w-4 h-4 text-red-600 dark:text-white"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18 17.94 6M18 18 6.06 6"
+                      />
+                    </svg>
                   </button>
                 </td>
               </tr>

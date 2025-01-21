@@ -22,7 +22,7 @@ export default function Dropdown<T extends string | number>({ value, setValue, o
     <div className={`relative ${size ? size : "w-min"}`}>
       {/* Dropdown Trigger */}
       <div
-        className="flex items-center justify-between bg-gray-100 p-1  rounded cursor-pointer"
+        className="flex items-center justify-between bg-gray-100 p-1 rounded cursor-pointer"
         onClick={toggleDropdown}
       >
         <span>{value}</span>
@@ -35,7 +35,7 @@ export default function Dropdown<T extends string | number>({ value, setValue, o
           {options.map((option, index) => (
             <li
               key={index}
-              className={"px-4 py-2"}
+              className="px-4 py-2"
               onClick={() => handleOptionSelect(option)}
             >
               {option}
