@@ -146,9 +146,9 @@ export default function TransactionTable({
         </thead>
         <tbody>
           <tr>
-            <td className="max-w-fit">
+            <td>
               <input
-                className="dark:bg-gray-900 bg-gray-50 rounded max-w-30"
+                className="dark:bg-gray-900 bg-gray-50 border rounded max-w- h-7"
                 type="date"
                 name="date"
                 id="date"
@@ -177,7 +177,7 @@ export default function TransactionTable({
             </td>
             <td>
               <input
-                className="dark:bg-gray-900 bg-gray-50 rounded max-w-24"
+                className="dark:bg-gray-900 bg-gray-50 rounded max-w-24 border h-7 flex items-center px-1"
                 type="number"
                 name="amount"
                 id="amount"
@@ -188,7 +188,7 @@ export default function TransactionTable({
             </td>
             <td>
               <input
-                className="dark:bg-gray-900 bg-gray-50 rounded"
+                className="dark:bg-gray-900 bg-gray-50 rounded border h-7 flex items-center px-1"
                 type="text"
                 name="description"
                 id="description"
@@ -200,7 +200,7 @@ export default function TransactionTable({
             </td>
             <td>
               <button
-                className="dark:bg-gray-900 bg-blue-50 w-16 rounded"
+                className="dark:bg-gray-900 bg-blue-50 w-16 rounded border h-7 flex items-center justify-center"
                 type="submit"
               >
                 Add
@@ -210,7 +210,7 @@ export default function TransactionTable({
           {transactions &&
             transactions.map((transaction, index) => (
               <tr key={index} className="border-b">
-                <td>{convertDate(transaction.date)}</td>
+                <td className="p-1">{convertDate(transaction.date)}</td>
                 <td>{StringUtils.capitalise(transaction.type)}</td>
                 <td>{StringUtils.capitalise(transaction.category)}</td>
                 <td>£{transaction.amount.toFixed(2)}</td>

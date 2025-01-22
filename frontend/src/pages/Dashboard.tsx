@@ -33,6 +33,7 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
       categories: {},
     },
   });
+
   const [year, setYear] = useState("2025");
   const [month, setMonth] = useState("January");
   const months = [
@@ -114,35 +115,41 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
     fetchData();
   }, [endDate, navigate, startDate, token]);
 
-  console.log(data);
-
-  const expensesData = [];
-  let expenesesSum = 0;
-  for (const [key, value] of Object.entries(data.expenses.categories)) {
-    expenesesSum += value;
-    if (expensesData.length < 6) {
-      expensesData.push({ name: StringUtils.capitalise(key), value: value });
-    } else {
-      break;
+  const processCategoryTotals = (expenseData: { [key: string]: number }) => {
+    const formattedCategories = [];
+  
+    // Capitalise category names and push them with their values
+    for (const [categoryName, categoryValue] of Object.entries(expenseData)) {
+      formattedCategories.push({
+        name: StringUtils.capitalise(categoryName),
+        value: categoryValue,
+      });
     }
-  }
-  expensesData.sort((a, b) => b.value - a.value);
-  expensesData.push({
-    name: "Other",
-    value: data.expenses.total - expenesesSum,
-  });
-  const incomeData = [];
+  
+    // Sort categories by value in descending order
+    formattedCategories.sort((a, b) => b.value - a.value);
+  
+    // Sum the values of categories beyond the top 6
+    const sumOfRemainingCategories = formattedCategories
+      .slice(5)
+      .reduce((total, category) => total + category.value, 0);
+  
+    // Extract the top 6 categories
+    const topCategories = formattedCategories.slice(0, 5);
+  
+    // Add the "Other" category if there are remaining values
+    if (sumOfRemainingCategories > 0) {
+      topCategories.push({ name: "Other", value: sumOfRemainingCategories });
+    }
+  
+    return topCategories;
+  };
 
-  for (const [key, value] of Object.entries(data.income.categories)) {
-    incomeData.push({ name: StringUtils.capitalise(key), value: value });
-  }
-  incomeData.sort((a, b) => b.value - a.value);
-  const savingsData = [];
+  
+  const expensesData = processCategoryTotals(data.expenses.categories);
+  const incomeData = processCategoryTotals(data.income.categories);
+  const savingsData = processCategoryTotals(data.savings.categories);
 
-  for (const [key, value] of Object.entries(data.savings.categories)) {
-    savingsData.push({ name: StringUtils.capitalise(key), value: value });
-  }
-  savingsData.sort((a, b) => b.value - a.value);
 
   return (
     <>

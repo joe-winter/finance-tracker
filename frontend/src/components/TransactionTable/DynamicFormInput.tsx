@@ -29,7 +29,7 @@ export default function DynamicFormInput({
     setIsOpen(false);
   };
   return (
-    <div className="bg-gray-50">
+    <div className="flex bg-gray-50 border rounded min-h-7 items-center">
       <div className="flex rounded">
         <input
           className="bg-gray-50 placeholder:p-1"
