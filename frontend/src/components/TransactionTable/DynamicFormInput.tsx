@@ -51,7 +51,7 @@ export default function DynamicFormInput({
         )}
       </div>
       {choices && isOpen && (
-        <ul className="absolute bg-white border rounded shadow-md mt-2 w-full max-h-60 overflow-auto z-40">
+        <ul className="absolute bg-white border dark:bg-gray-900 rounded shadow-md mt-2 w-full max-h-60 overflow-auto z-40">
           {choices &&
             choices.map((choice, index) => (
               <li key={index}>
