@@ -1,4 +1,10 @@
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { ChevronDown } from "@/assets/Icons";
 import StringUtils from "@/utils/stringUtils";
 interface DynamicFormInput {
@@ -18,21 +24,23 @@ export default function DynamicFormInput({
 }: DynamicFormInput) {
   const [isOpen, setIsOpen] = useState(false);
 
-  // reset input on if input not in options
-  if (choices && value !== "" && !choices.includes(value)) {
-    console.log("hello there");
-    onChange("");
-  }
+  // resets input value if input value is no longer in options
+  useEffect(() => {
+    if (choices && value !== "" && !choices.includes(value)) {
+      console.log("hello there");
+      onChange("");
+    }
+  }, [choices, onChange, value]);
 
   const handleOptionSelect = (choice: string) => {
     onChange(choice);
     setIsOpen(false);
   };
   return (
-    <div className="flex bg-gray-50 dark:bg-gray-900 border rounded min-h-7 items-center">
+    <div className="relative flex bg-gray-50 dark:bg-gray-700 border dark:border-gray-600 rounded min-h-7 items-center">
       <div className="flex rounded">
         <input
-          className="bg-gray-50 placeholder:p-1"
+          className="bg-gray-50 dark:bg-gray-700 placeholder:p-1"
           type="text"
           name=""
           id=""
@@ -51,7 +59,7 @@ export default function DynamicFormInput({
         )}
       </div>
       {choices && isOpen && (
-        <ul className="absolute bg-white border dark:bg-gray-900 rounded shadow-md mt-2 w-full max-h-60 overflow-auto z-40">
+        <ul className="absolute top-full bg-white border dark:bg-gray-700 dark:border-gray-600 rounded shadow-md mt-2 w-full max-h-60 overflow-auto z-40">
           {choices &&
             choices.map((choice, index) => (
               <li key={index}>

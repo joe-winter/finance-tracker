@@ -148,7 +148,7 @@ export default function TransactionTable({
           <tr>
             <td>
               <input
-                className="dark:bg-gray-900 bg-gray-50 border rounded max-w- h-7"
+                className="dark:bg-gray-700 bg-gray-50 border rounded h-7 dark:border-gray-600"
                 type="date"
                 name="date"
                 id="date"
@@ -177,7 +177,7 @@ export default function TransactionTable({
             </td>
             <td>
               <input
-                className="dark:bg-gray-900 bg-gray-50 rounded max-w-24 border h-7 flex items-center px-1"
+                className="dark:bg-gray-700 bg-gray-50 rounded max-w-24 border dark:border-gray-600 h-7 flex items-center px-1"
                 type="number"
                 name="amount"
                 id="amount"
@@ -188,7 +188,7 @@ export default function TransactionTable({
             </td>
             <td>
               <input
-                className="dark:bg-gray-900 bg-gray-50 rounded border h-7 flex items-center px-1"
+                className="dark:bg-gray-700 bg-gray-50 rounded border h-7 dark:border-gray-600 flex items-center px-1"
                 type="text"
                 name="description"
                 id="description"
@@ -200,7 +200,7 @@ export default function TransactionTable({
             </td>
             <td>
               <button
-                className="dark:bg-gray-900 bg-blue-50 w-16 rounded border h-7 flex items-center justify-center"
+                className="dark:bg-gray-700 bg-blue-50 w-16 rounded border h-7  dark:border-gray-600 flex items-center justify-center"
                 type="submit"
               >
                 Add
@@ -209,7 +209,7 @@ export default function TransactionTable({
           </tr>
           {transactions &&
             transactions.map((transaction, index) => (
-              <tr key={index} className="border-b">
+              <tr key={index} className="border-b dark:border-gray-600">
                 <td className="p-1">{convertDate(transaction.date)}</td>
                 <td>{StringUtils.capitalise(transaction.type)}</td>
                 <td>{StringUtils.capitalise(transaction.category)}</td>
@@ -229,7 +229,7 @@ export default function TransactionTable({
                     onClick={() => handleDelete(transaction._id)}
                   >
                     <svg
-                      className="w-4 h-4 text-red-600 dark:text-white"
+                      className="w-4 h-4 text-red-600"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"

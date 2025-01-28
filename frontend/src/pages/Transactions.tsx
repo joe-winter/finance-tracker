@@ -148,7 +148,7 @@ export default function Transactions({ isOpen, setIsOpen }: TransactionProps) {
       >
         Transactions
       </h2>
-      <section className="bg-white rounded-lg shadow p-2 m-4">
+      <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-2 m-4">
         <div className=" overflow-x-auto w-full">
           <TransactionTable
             transactions={dataToDisplay}
