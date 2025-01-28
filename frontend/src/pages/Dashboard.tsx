@@ -163,7 +163,7 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
         Dashboard
       </h2>
 
-      <section className="bg-white rounded-lg shadow p-2 m-4 flex">
+      <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-2 m-4 flex">
         <div className="flex items-center gap-4 w-full">
           <div className="flex items-center flex-grow">
             <span className="p-2 font-medium">Year:</span>
@@ -185,7 +185,7 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
           </div>
         </div>
       </section>
-      <section className="bg-white rounded-lg shadow p-2 m-4 overflow-auto">
+      <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-2 m-4 overflow-auto">
         <h3 className="font-semibold text-xl">Expenses</h3>
         <PieChartTotals
           data={expensesData}
@@ -193,7 +193,7 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
           total={data.expenses.total}
         />
       </section>
-      <section className="bg-white rounded-lg shadow p-2 m-4 overflow-auto">
+      <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-2 m-4 overflow-auto">
         <h3 className="font-semibold text-xl">Income</h3>
         <PieChartTotals
           data={incomeData}
@@ -201,7 +201,7 @@ export default function Dashboard({ isOpen, setIsOpen }: DashboardProps) {
           total={data.income.total}
         />
       </section>
-      <section className="bg-white rounded-lg shadow p-2 m-4 overflow-auto">
+      <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-2 m-4 overflow-auto">
         <h3 className="font-semibold text-xl">Savings</h3>
         <PieChartTotals
           data={savingsData}

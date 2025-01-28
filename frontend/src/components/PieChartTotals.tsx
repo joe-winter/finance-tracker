@@ -23,6 +23,7 @@ export default function PieChartTotals({ data, colors, total }: PieChartProps) {
               <Cell
                 key={`cell-${index}`}
                 fill={colors[index % colors.length]}
+                stroke=""
               />
             ))}
           </Pie>
@@ -37,7 +38,7 @@ export default function PieChartTotals({ data, colors, total }: PieChartProps) {
             ></div>
             <div className="flex justify-between w-full">
               <span className="font-medium">{expenses.name}</span>
-              <span className="text-gray-600 justify-end">
+              <span className="text-gray-600 dark:text-gray-400 justify-end">
                 £{expenses.value.toLocaleString()}
               </span>
             </div>
