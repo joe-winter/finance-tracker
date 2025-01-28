@@ -65,7 +65,7 @@ export default function DynamicFormInput({
               <li key={index}>
                 <button
                   type="button"
-                  className="px-4 py-2"
+                  className="px-4 py-2 whitespace-nowrap"
                   onClick={() => handleOptionSelect(choice)}
                 >
                   {StringUtils.capitalise(choice)}

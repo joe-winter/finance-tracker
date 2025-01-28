@@ -1,3 +1,4 @@
+import { Plus } from "@/assets/Icons";
 import { UserService } from "@/services/user";
 import {
   ChangeEvent,
@@ -57,15 +58,19 @@ export default function CategoryForm({
   return (
     <form onSubmit={handleSubmit}>
       <label htmlFor={type}></label>
-      <input
-        type="text"
-        value={inputValue}
-        placeholder={placeholder}
-        id={type}
-        name={type}
-        onChange={handleChange}
-      />
-      <button type="submit">+</button>
+      <div className="flex bg-gray-50 dark:bg-gray-700 border dark:border-gray-600 rounded items-center">
+        <input
+          className="bg-gray-100 dark:bg-gray-700 placeholder:p-1 p-1"
+          type="text"
+          value={inputValue}
+          placeholder={placeholder}
+          id={type}
+          name={type}
+          onChange={handleChange}
+        />
+        <button className="p-1"type="submit"><Plus/></button>
+      </div>
+    
     </form>
   );
 }
