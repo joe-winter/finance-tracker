@@ -69,10 +69,10 @@ describe("Settings Page", () => {
   it("it should have input fields and add buttons for each type", () => {
     render(<Settings />);
 
-    const expensesInputEl = screen.getByPlaceholderText("Enter expense here");
+    const expensesInputEl = screen.getByPlaceholderText("Enter expense categories");
     expect(expensesInputEl).toBeInTheDocument();
 
-    const buttonEls = screen.getAllByRole("button");
-    expect(buttonEls[5]).toHaveTextContent("+");
+    const buttonEls = screen.getAllByTestId("plus")
+    expect(buttonEls.length).toEqual(3)
   });
 });

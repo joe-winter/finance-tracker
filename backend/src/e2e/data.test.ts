@@ -123,7 +123,7 @@ describe("/data", () => {
         const response = await request(app)
         .get("/data/totals")
         .set("Authorization", `Bearer ${token}`)
-        .query({startDate: "2024-01-10", endDate: "2024-01-15"})
+        .query({startDate: "2024-01-10", endDate: "2024-01-16"})
   
         expect(response.statusCode).toEqual(200)
   

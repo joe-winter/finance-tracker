@@ -111,6 +111,7 @@ export const Plus = () => (
     height="24"
     fill="none"
     viewBox="0 0 24 24"
+    data-testid="plus"
   >
     <path
       stroke="currentColor"
