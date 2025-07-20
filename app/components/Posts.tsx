@@ -5,7 +5,7 @@ import { trpc } from '../_trpc/client'
 
 export default function Posts() {
   // Use the `getPosts` query from the TRPC client
-  const getPosts = trpc.getPosts.useQuery()
+  const getPosts = trpc.post.getPosts.useQuery()
   const { isLoading, data } = getPosts
 
   return (

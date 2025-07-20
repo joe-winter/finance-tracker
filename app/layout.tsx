@@ -12,6 +12,7 @@ import "./globals.css";
 import TRPCProvider from "@/app/_trpc/Provider";
 import { ThemeProvider } from "./components/theme-provider";
 import { ModeToggle } from "./components/theme-toggle";
+import { Nav } from "./components/nav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,6 +48,7 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               <header className="flex justify-end items-center p-4 gap-4 h-16">
+                <Nav/>
                 <ModeToggle />
                 <SignedOut>
                   <SignInButton />

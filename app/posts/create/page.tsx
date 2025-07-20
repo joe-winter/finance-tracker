@@ -12,7 +12,7 @@ export default function NewPost() {
   // Use Clerk's `useAuth()` hook to get the user's ID
   const { userId, isLoaded } = useAuth();
   // Use the `createPosts` mutation from the TRPC client
-  const createPostMutation = trpc.createPosts.useMutation();
+  const createPostMutation = trpc.post.createPosts.useMutation();
 
   // Check if Clerk is loaded
   if (!isLoaded) {

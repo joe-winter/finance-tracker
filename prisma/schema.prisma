@@ -19,3 +19,26 @@ model Post {
   content  String?
   authorId String
 }
+
+model Test {
+  id       Int     @id @default(autoincrement())
+  title    String
+  content  String?
+  authorId String
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  SAVING
+}
+
+model Transaction {
+  id        String          @id @default(nanoid())
+  type      TransactionType
+  amount    Decimal
+  date      DateTime
+  createdBy String
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @default(now()) @updatedAt
+}
