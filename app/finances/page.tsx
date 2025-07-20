@@ -7,8 +7,8 @@ export default function Finances() {
 
   return (
     <div>
-      {getTransactions.data?.map((el, index) => (
-        <div key={index}>{el.amount}</div>
+      {getTransactions.data?.map((el) => (
+        <div key={el.id}>{el.amount}</div>
       ))}
     </div>
   );

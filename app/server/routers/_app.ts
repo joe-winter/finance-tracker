@@ -3,10 +3,10 @@ import { postRouter } from "./posts";
 import { transactionRouter } from "./transactions";
 
 export const appRouter = router({
-  healthcheck: publicProcedure.query(() => "yay!"),
+	healthcheck: publicProcedure.query(() => "yay!"),
 
-  post: postRouter,
-  transaction: transactionRouter,
+	post: postRouter,
+	transaction: transactionRouter,
 });
 
 export type AppRouter = typeof appRouter;
