@@ -1,9 +1,16 @@
 "use client";
 
-import { trpc } from "../_trpc/client";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { TransactionType } from "@prisma/client";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import CurrencyInput from "react-currency-input-field";
+import { useForm } from "react-hook-form";
+import z from "zod";
+import { cn } from "@/lib/utils";
+import { trpc } from "../_trpc/client";
+import { Button } from "../components/ui/button";
+import { Calendar } from "../components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -12,18 +19,11 @@ import {
   FormLabel,
   FormMessage,
 } from "../components/ui/form";
-import { Input } from "../components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "../components/ui/popover";
-import { Button } from "../components/ui/button";
-import { cn } from "@/lib/utils";
-import { Calendar } from "../components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import CurrencyInput from "react-currency-input-field";
 import {
   Select,
   SelectContent,
@@ -31,20 +31,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
-import { TransactionType } from "@prisma/client";
-import { useState } from "react";
-import z from "zod";
 
 const formSchema = z.object({
   type: z.enum(Object.values(TransactionType)),
   amount: z.number().min(0),
   date: z.date(),
+  categoryId: z.string(),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
 export default function Finances() {
   const utils = trpc.useUtils();
   const getTransactions = trpc.transaction.getTransactions.useQuery();
+  const getCategories = trpc.category.getCategories.useQuery();
   const createMutation = trpc.transaction.createTransaction.useMutation();
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -153,17 +152,48 @@ export default function Finances() {
                 >
                   <FormControl>
                     <SelectTrigger className="w-full capitalize">
-                      <SelectValue />
+                      <SelectValue placeholder="Select" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {Object.values(TransactionType).map((type, index) => (
+                    {Object.values(TransactionType).map((type) => (
                       <SelectItem
                         value={type}
-                        key={index}
+                        key={type}
                         className="capitalize"
                       >
                         {type.toLowerCase()}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="categoryId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full capitalize">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {getCategories.data?.map((category) => (
+                      <SelectItem
+                        value={category.id}
+                        key={category.id}
+                        className="capitalize"
+                      >
+                        {category.name}
                       </SelectItem>
                     ))}
                   </SelectContent>

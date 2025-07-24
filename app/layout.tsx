@@ -39,7 +39,7 @@ export default function RootLayout({
       <TRPCProvider>
         <html lang="en" suppressHydrationWarning>
           <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased max-w-4xl`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col items-center`}
           >
             <ThemeProvider
               attribute="class"
@@ -58,7 +58,7 @@ export default function RootLayout({
                   <UserButton />
                 </SignedIn>
               </header>
-              {children}
+              <div className="w-full max-w-4xl">{children}</div>
             </ThemeProvider>
           </body>
         </html>

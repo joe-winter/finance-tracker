@@ -6,13 +6,14 @@
     "useIgnoreFile": false
   },
   "files": {
-    "ignoreUnknown": false,
-    "includes": [""],
+    "ignoreUnknown": true,
+    "includes": ["**/*.{ts,tsx,js,jsx,json}"],
     "maxSize": 5000000
   },
   "formatter": {
     "enabled": true,
-    "indentStyle": "tab"
+    "indentStyle": "tab",
+    "includes": ["**/*.{ts,tsx,js,jsx,json}"]
   },
   "linter": {
     "enabled": true,
