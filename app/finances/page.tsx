@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import { TransactionTable } from "../components/finances/transactions-table";
 
 const formSchema = z.object({
   type: z.enum(Object.values(TransactionType)),
@@ -205,9 +206,7 @@ export default function Finances() {
           <Button type="submit">Submit</Button>
         </form>
       </Form>
-      {getTransactions.data?.map((el) => (
-        <div key={el.id}>{el.amount}</div>
-      ))}
+      {<TransactionTable data={getTransactions.data ?? []} />}
     </div>
   );
 }

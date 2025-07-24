@@ -17,8 +17,17 @@ export type TransactionSchema = z.infer<typeof transactionSchema>;
 
 export const transactionRouter = router({
   getTransactions: protectedProcedure.query(async ({ ctx }) => {
-    // return await prisma.transaction.findMany()
     return await prisma.transaction.findMany({
+      select: {
+        date: true,
+        type: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        amount: true,
+      },
       where: { userId: ctx.auth.userId },
     });
   }),

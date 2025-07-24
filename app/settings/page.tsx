@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { trpc } from "../_trpc/client";
+import { CategoriesBadge } from "../components/settings/categories-badge";
 import { Button } from "../components/ui/button";
 import {
   Form,
@@ -25,6 +26,7 @@ export default function Settings() {
   const utils = trpc.useUtils();
   const getCategories = trpc.category.getCategories.useQuery();
   const createMutation = trpc.category.createCategory.useMutation();
+  const deleteMutation = trpc.category.deleteCategory.useMutation();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,6 +40,17 @@ export default function Settings() {
         utils.category.getCategories.invalidate();
       },
     });
+  };
+
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(
+      { id },
+      {
+        onSuccess: () => {
+          utils.category.getCategories.invalidate();
+        },
+      }
+    );
   };
   return (
     <div>
@@ -62,9 +75,15 @@ export default function Settings() {
           <Button type="submit">Submit</Button>
         </form>
       </Form>
-      {getCategories.data?.map((el) => (
-        <div key={el.id}>{el.name}</div>
-      ))}
+      <div className="flex gap-4">
+        {getCategories.data?.map((el) => (
+          <CategoriesBadge
+            key={el.id}
+            category={el}
+            handleDelete={handleDelete}
+          />
+        ))}
+      </div>
     </div>
   );
 }

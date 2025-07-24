@@ -21,6 +21,14 @@ export const categoryRouter = router({
         data: { name: input.name, userId: ctx.auth.userId },
       });
     }),
+
+  deleteCategory: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      return await prisma.category.delete({
+        where: { id: input.id, userId: ctx.auth.userId },
+      });
+    }),
 });
 
 export type CategoryRouter = typeof categoryRouter;
