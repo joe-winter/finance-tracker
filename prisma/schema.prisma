@@ -24,6 +24,7 @@ model Transaction {
   id             String       @id @default(nanoid())
   amount         Decimal
   date           DateTime
+  description    String
   userId         String
   categoryId     String
   category       Category     @relation(fields: [categoryId], references: [id])
@@ -49,7 +50,7 @@ model DailyBalance {
   id          String        @id @default(nanoid())
   userId      String
   balance     Decimal
-  date        DateTime
+  date        DateTime      @db.Date
   Transaction Transaction[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @default(now()) @updatedAt

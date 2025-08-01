@@ -45,6 +45,7 @@ import { Textarea } from "../components/ui/textarea";
 const formSchema = z.object({
   amount: z.number().min(0),
   date: z.date(),
+  description: z.string().min(1).max(500),
   categoryId: z.string(),
 });
 
@@ -59,6 +60,7 @@ export default function Finances() {
     defaultValues: {
       amount: 0,
       date: new Date(),
+      description: "",
     },
   });
 
@@ -215,7 +217,7 @@ export default function Finances() {
               </div>
               <FormField
                 control={form.control}
-                name="amount"
+                name="description"
                 render={({ field }) => (
                   <FormItem className="size-full">
                     <FormLabel>Description</FormLabel>
