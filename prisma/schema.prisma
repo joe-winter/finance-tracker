@@ -14,20 +14,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id       Int     @id @default(autoincrement())
-  title    String
-  content  String?
-  authorId String
-}
-
-model Test {
-  id       Int     @id @default(autoincrement())
-  title    String
-  content  String?
-  authorId String
-}
-
 enum TransactionType {
   INCOME
   EXPENSE
@@ -35,24 +21,38 @@ enum TransactionType {
 }
 
 model Transaction {
-  id         String          @id @default(nanoid())
-  type       TransactionType
-  amount     Decimal
-  date       DateTime
-  userId     String
-  categoryId String
-  category   Category        @relation(fields: [categoryId], references: [id])
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @default(now()) @updatedAt
+  id             String       @id @default(nanoid())
+  amount         Decimal
+  date           DateTime
+  userId         String
+  categoryId     String
+  category       Category     @relation(fields: [categoryId], references: [id])
+  dailyBalanceId String
+  dailyBalance   DailyBalance @relation(fields: [dailyBalanceId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now()) @updatedAt
 }
 
 model Category {
-  id           String        @id @default(nanoid())
+  id           String          @id @default(nanoid())
   name         String
   userId       String
+  type         TransactionType
   transactions Transaction[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @default(now()) @updatedAt
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now()) @updatedAt
 
   @@unique([name, userId])
+}
+
+model DailyBalance {
+  id          String        @id @default(nanoid())
+  userId      String
+  balance     Decimal
+  date        DateTime
+  Transaction Transaction[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+
+  @@unique([userId, date])
 }
