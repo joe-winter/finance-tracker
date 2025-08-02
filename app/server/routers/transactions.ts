@@ -2,7 +2,7 @@ import z from "zod";
 import prisma from "@/lib/prisma";
 import { protectedProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
-import { startOfDay } from "date-fns";
+import { endOfDay } from "date-fns";
 
 export const transactionSchema = z.object({
   amount: z.number().min(0),
@@ -17,36 +17,46 @@ export const transactionSchema = z.object({
 export type TransactionSchema = z.infer<typeof transactionSchema>;
 
 export const transactionRouter = router({
-  getTransactions: protectedProcedure.query(async ({ ctx }) => {
-    return await prisma.transaction.findMany({
-      select: {
-        date: true,
-        amount: true,
-        description: true,
-        category: {
-          select: {
-            name: true,
-            type: true,
+  getTransactions: protectedProcedure
+    .input(
+      z.object({
+        skip: z.number().default(0).optional(),
+        take: z.number().default(10).optional(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      return await prisma.transaction.findMany({
+        skip: input.skip,
+        take: input.take,
+        select: {
+          id: true,
+          amount: true,
+          description: true,
+          category: {
+            select: {
+              name: true,
+              type: true,
+            },
+          },
+          dailyBalance: {
+            select: {
+              balance: true,
+              date: true,
+            },
           },
         },
-        dailyBalance: {
-          select: {
-            balance: true,
-          },
+        where: { userId: ctx.auth.userId },
+        orderBy: {
+          date: "desc",
         },
-      },
-      where: { userId: ctx.auth.userId },
-      orderBy: {
-        date: "desc",
-      },
-    });
-  }),
+      });
+    }),
   createTransaction: protectedProcedure
     .input(transactionSchema)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.auth.userId;
       const { date, amount, categoryId, description } = input;
-      const normalizedDate = startOfDay(date);
+      const normalizedDate = endOfDay(date);
       const category = await prisma.category.findUnique({
         select: { id: true, type: true },
         where: { id: input.categoryId },
@@ -127,6 +137,46 @@ export const transactionRouter = router({
             userId,
             categoryId,
             dailyBalanceId: balance.id,
+          },
+        });
+      });
+    }),
+  deleteTransaction: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.auth.userId;
+
+      return await prisma.$transaction(async (tx) => {
+        const transaction = await tx.transaction.delete({
+          where: {
+            id: input.id,
+          },
+          select: {
+            amount: true,
+            category: {
+              select: {
+                type: true,
+              },
+            },
+            dailyBalance: {
+              select: {
+                date: true,
+              },
+            },
+          },
+        });
+
+        await tx.dailyBalance.updateMany({
+          data: {
+            balance: {
+              ...(transaction.category.type === "INCOME"
+                ? { decrement: transaction.amount }
+                : { increment: transaction.amount }),
+            },
+          },
+          where: {
+            userId,
+            date: { gte: transaction.dailyBalance.date },
           },
         });
       });

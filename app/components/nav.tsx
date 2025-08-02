@@ -16,7 +16,7 @@ export function Nav() {
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link href="/dashboard">Dashbaord</Link>
+            <Link href="/dashboard">Dashboard</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
