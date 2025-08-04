@@ -10,3 +10,5 @@ export type DeleteCategoryOutput = RouterOutput["category"]["deleteCategory"];
 
 export type GetTransactionsOutput =
   RouterOutput["transaction"]["getTransactions"];
+
+export type GetCategories = RouterOutput["category"]["getCategories"];

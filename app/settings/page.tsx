@@ -1,21 +1,29 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import z from "zod";
 import { trpc } from "../_trpc/client";
 import { CategoriesBadge } from "../components/settings/categories-badge";
-import { Button } from "../components/ui/button";
+import { TransactionType } from "@prisma/client";
+import { Fragment, useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../components/ui/alert-dialog";
+import type { GetCategories } from "@/lib/types";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "../components/ui/form";
-import { Input } from "../components/ui/input";
-import { TransactionType } from "@prisma/client";
 import {
   Select,
   SelectContent,
@@ -23,131 +31,175 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
-
-const formSchema = z.object({
-  name: z.string().min(1).max(30),
-  type: z.enum(Object.values(TransactionType)),
-});
-
-type FormSchema = z.infer<typeof formSchema>;
+import { Button } from "../components/ui/button";
 
 export default function Settings() {
+  const [editCategory, setEditCategory] = useState<string | null>(null);
+  const [deleteCategory, setDeleteCategory] = useState<
+    GetCategories[number] | null
+  >(null);
   const utils = trpc.useUtils();
-  const getCategoriesByType = trpc.category.getCategoriesByType.useQuery();
-  const createMutation = trpc.category.createCategory.useMutation();
+  const getCategories = trpc.category.getCategories.useQuery();
+  const getTransactionsByCategory =
+    trpc.transaction.getTransactionByCategoryCount.useQuery(
+      {
+        categoryId: deleteCategory?.id,
+      },
+      { enabled: !!deleteCategory, refetchOnWindowFocus: false }
+    );
   const deleteMutation = trpc.category.deleteCategory.useMutation();
+  const formSchema = z
+    .object({
+      newId: z.string().optional(),
+      oldId: z.string(),
+    })
+    .check((ctx) => {
+      if (
+        getTransactionsByCategory.data &&
+        getTransactionsByCategory.data > 0 &&
+        !ctx.value.newId
+      ) {
+        ctx.issues.push({
+          code: "invalid_value",
+          input: ctx.value.newId,
+          values: [],
+          path: ["newId"],
+          message: "Must select a category",
+        });
+      }
+    });
+
+  type FormSchema = z.infer<typeof formSchema>;
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      type: TransactionType.EXPENSE,
+      oldId: deleteCategory?.id,
     },
   });
 
+  const handleEdit = (categoryId: string) => {
+    setEditCategory(categoryId === editCategory ? null : categoryId);
+  };
+
+  const handleDelete = (category: GetCategories[number]) => {
+    setDeleteCategory(category.id === deleteCategory?.id ? null : category);
+    form.setValue("oldId", category.id);
+  };
+
   const handleSubmit = (data: FormSchema) => {
-    createMutation.mutate(data, {
-      onSuccess: () => {
-        utils.category.getCategoriesByType.invalidate();
+    deleteMutation.mutate(data, {
+      onSettled: () => {
+        utils.category.getCategories.invalidate();
+        setDeleteCategory(null);
       },
     });
   };
 
-  const handleDelete = (id: string) => {
-    deleteMutation.mutate(
-      { id },
-      {
-        onSuccess: () => {
-          utils.category.getCategoriesByType.invalidate();
-        },
-      }
-    );
-  };
   return (
-    <div>
-      <Form {...form}>
-        <form
-          className="grid grid-cols-3 gap-4"
-          onSubmit={form.handleSubmit(handleSubmit)}
-        >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Category Name</FormLabel>
-                <FormControl>
-                  <Input {...field} maxLength={30} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className="w-full capitalize">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {Object.values(TransactionType).map((type) => (
-                      <SelectItem
-                        value={type}
-                        key={type}
-                        className="capitalize"
-                      >
-                        {type.toLowerCase()}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit">Submit</Button>
-        </form>
-      </Form>
-      <div className="flex flex-col gap-4">
-        <p>Income</p>
-        <div className="flex gap-4">
-          {getCategoriesByType.data?.INCOME?.map((category) => (
-            <CategoriesBadge
-              key={category.id}
-              category={category}
-              handleDelete={handleDelete}
-            />
-          ))}
+    <>
+      <div className=" flex flex-col gap-4 px-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold text-lg">Categories</h2>
         </div>
-        <p>Expense</p>
-        <div className="flex gap-4">
-          {getCategoriesByType.data?.EXPENSE?.map((category) => (
-            <CategoriesBadge
-              key={category.id}
-              category={category}
-              handleDelete={handleDelete}
-            />
-          ))}
-        </div>
-        <p>Saving</p>
-        <div className="flex gap-4">
-          {getCategoriesByType.data?.SAVING?.map((category) => (
-            <CategoriesBadge
-              key={category.id}
-              category={category}
-              handleDelete={handleDelete}
-            />
+        <div className="flex flex-col gap-4">
+          {Object.values(TransactionType).map((type) => (
+            <Fragment key={type}>
+              <p className="capitalize">{type.toLowerCase()}</p>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {getCategories.data
+                  ?.filter((category) => category.type === type)
+                  .map((category) => (
+                    <CategoriesBadge
+                      key={category.id}
+                      category={category}
+                      isEdit={category.id === editCategory}
+                      isDisabled={
+                        !!editCategory && editCategory !== category.id
+                      }
+                      onEdit={() => handleEdit(category.id)}
+                      onDelete={() => handleDelete(category)}
+                    />
+                  ))}
+              </div>
+            </Fragment>
           ))}
         </div>
       </div>
-    </div>
+      <AlertDialog
+        open={!!deleteCategory}
+        onOpenChange={() => {
+          setDeleteCategory(null);
+          form.reset();
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Category</AlertDialogTitle>
+            <AlertDialogDescription>
+              {getTransactionsByCategory.isPending
+                ? "Checking for transactions..."
+                : !!getTransactionsByCategory.data &&
+                  getTransactionsByCategory.data > 0
+                ? "This category has existing transactions. Please reassign them before deletion."
+                : "No transactions found for this category. It can be safely deleted."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <Form {...form}>
+            <form
+              className="flex flex-col gap-4"
+              onSubmit={form.handleSubmit(handleSubmit, (e) => {
+                console.log("Error", e);
+              })}
+            >
+              {getTransactionsByCategory.data &&
+              getTransactionsByCategory.data > 0 ? (
+                <FormField
+                  control={form.control}
+                  name="newId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Select New Category</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value ?? ""}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full capitalize">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {getCategories.data?.map((category) => {
+                            if (
+                              category.type === deleteCategory?.type &&
+                              category.id !== deleteCategory.id
+                            ) {
+                              return (
+                                <SelectItem
+                                  key={category.id}
+                                  value={category.id}
+                                >
+                                  {category.name}
+                                </SelectItem>
+                              );
+                            }
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                ""
+              )}
+              <AlertDialogFooter>
+                <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
+                <Button type="submit">Delete</Button>
+              </AlertDialogFooter>
+            </form>
+          </Form>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

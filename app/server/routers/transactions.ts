@@ -51,6 +51,26 @@ export const transactionRouter = router({
         },
       });
     }),
+  getTransactionByCategoryCount: protectedProcedure
+    .input(
+      z.object({
+        categoryId: z.nanoid().optional(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      if (!input.categoryId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No Category ID given",
+        });
+      }
+      return await prisma.transaction.count({
+        where: {
+          userId: ctx.auth.userId,
+          categoryId: input.categoryId,
+        },
+      });
+    }),
   createTransaction: protectedProcedure
     .input(transactionSchema)
     .mutation(async ({ input, ctx }) => {
@@ -177,6 +197,138 @@ export const transactionRouter = router({
           where: {
             userId,
             date: { gte: transaction.dailyBalance.date },
+          },
+        });
+      });
+    }),
+  editTransaction: protectedProcedure
+    .input(transactionSchema.extend({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.auth.userId;
+      const { date, amount, categoryId, description, id } = input;
+      const normalizedDate = endOfDay(date);
+
+      const transaction = await prisma.transaction.findUnique({
+        where: { id },
+        select: {
+          dailyBalanceId: true,
+          amount: true,
+          date: true,
+          category: { select: { type: true, id: true } },
+        },
+      });
+
+      if (!transaction) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Transaction not found",
+        });
+      }
+
+      const category = await prisma.category.findUnique({
+        select: { id: true, type: true },
+        where: { id: input.categoryId },
+      });
+
+      if (!category?.id) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Category not found",
+        });
+      }
+
+      return await prisma.$transaction(async (tx) => {
+        const transaction = await tx.transaction.delete({
+          where: {
+            id,
+          },
+          select: {
+            amount: true,
+            category: {
+              select: {
+                type: true,
+              },
+            },
+            dailyBalance: {
+              select: {
+                date: true,
+              },
+            },
+          },
+        });
+
+        await tx.dailyBalance.updateMany({
+          data: {
+            balance: {
+              ...(transaction.category.type === "INCOME"
+                ? { decrement: transaction.amount }
+                : { increment: transaction.amount }),
+            },
+          },
+          where: {
+            userId,
+            date: { gte: transaction.dailyBalance.date },
+          },
+        });
+
+        const latestBalance = await tx.dailyBalance.findFirst({
+          select: { balance: true },
+          where: {
+            userId,
+            date: { lte: normalizedDate },
+          },
+          orderBy: { date: "desc" },
+        });
+
+        const balanceChange = category.type === "INCOME" ? amount : -amount;
+        const initialBalance = latestBalance?.balance
+          ? latestBalance.balance.add(balanceChange)
+          : balanceChange;
+
+        const balance = await tx.dailyBalance.upsert({
+          where: {
+            userId_date: {
+              userId,
+              date: normalizedDate,
+            },
+          },
+          create: {
+            userId,
+            balance: initialBalance,
+            date: normalizedDate,
+          },
+          update: {
+            balance: {
+              ...(category.type === "INCOME"
+                ? { increment: amount }
+                : { decrement: amount }),
+            },
+          },
+          select: { id: true },
+        });
+
+        await tx.dailyBalance.updateMany({
+          data: {
+            balance: {
+              ...(category.type === "INCOME"
+                ? { increment: amount }
+                : { decrement: amount }),
+            },
+          },
+          where: {
+            userId,
+            date: { gt: normalizedDate },
+          },
+        });
+
+        return await tx.transaction.create({
+          data: {
+            amount,
+            date: normalizedDate,
+            description,
+            userId,
+            categoryId,
+            dailyBalanceId: balance.id,
           },
         });
       });
