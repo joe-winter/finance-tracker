@@ -10,7 +10,14 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { EditIcon, MoreHorizontalIcon, TrashIcon } from "lucide-react";
+import {
+  EditIcon,
+  HandCoinsIcon,
+  MoreHorizontalIcon,
+  PiggyBankIcon,
+  TrashIcon,
+  TrendingDownIcon,
+} from "lucide-react";
 import { DataTable } from "./data-table";
 import { trpc } from "@/app/_trpc/client";
 
@@ -40,7 +47,16 @@ export default function TransactionTable() {
       accessorKey: "type",
       header: "Type",
       cell: ({ row }) => (
-        <div className="capitalize">
+        <div className="capitalize flex items-center gap-2">
+          {row.original.category.type === "INCOME" && (
+            <HandCoinsIcon className="size-4" />
+          )}
+          {row.original.category.type === "EXPENSE" && (
+            <TrendingDownIcon className="size-4" />
+          )}
+          {row.original.category.type === "SAVING" && (
+            <PiggyBankIcon className="size-4" />
+          )}
           {row.original.category.type.toLowerCase()}
         </div>
       ),
@@ -53,11 +69,20 @@ export default function TransactionTable() {
     {
       accessorKey: "amount",
       header: "Amount",
+      cell: ({ row }) =>
+        new Intl.NumberFormat("en-GB", {
+          style: "currency",
+          currency: "GBP",
+        }).format(Number(row.original.amount)),
     },
     {
       accessorKey: "balance",
       header: "Balance",
-      cell: ({ row }) => row.original.dailyBalance.balance,
+      cell: ({ row }) =>
+        new Intl.NumberFormat("en-GB", {
+          style: "currency",
+          currency: "GBP",
+        }).format(Number(row.original.dailyBalance.balance)),
     },
     {
       accessorKey: "description",

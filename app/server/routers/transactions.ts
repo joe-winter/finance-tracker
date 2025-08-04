@@ -5,7 +5,14 @@ import { TRPCError } from "@trpc/server";
 import { endOfDay } from "date-fns";
 
 export const transactionSchema = z.object({
-  amount: z.number().min(0),
+  amount: z
+    .string()
+    .regex(/^(0|[1-9]\d*)\.\d{1,2}$/, {
+      message: "Must be a number with exactly 2 decimal places",
+    })
+    .refine((val) => parseFloat(val) > 0, {
+      message: "Money amount must be greater than 0",
+    }),
   date: z.preprocess((arg) => {
     if (typeof arg === "string") return new Date(arg);
     return arg;
@@ -77,6 +84,7 @@ export const transactionRouter = router({
       const userId = ctx.auth.userId;
       const { date, amount, categoryId, description } = input;
       const normalizedDate = endOfDay(date);
+      const amountNumber = parseFloat(amount);
       const category = await prisma.category.findUnique({
         select: { id: true, type: true },
         where: { id: input.categoryId },
@@ -102,7 +110,8 @@ export const transactionRouter = router({
         },
       });
 
-      const balanceChange = category.type === "INCOME" ? amount : -amount;
+      const balanceChange =
+        category.type === "INCOME" ? amountNumber : -amountNumber;
 
       const initialBalance = latestBalance?.balance
         ? latestBalance.balance.add(balanceChange)
@@ -125,8 +134,8 @@ export const transactionRouter = router({
             userId,
             balance: {
               ...(category.type === "INCOME"
-                ? { increment: amount }
-                : { decrement: amount }),
+                ? { increment: amountNumber }
+                : { decrement: amountNumber }),
             },
             date: normalizedDate,
           },
@@ -139,8 +148,8 @@ export const transactionRouter = router({
           data: {
             balance: {
               ...(category.type === "INCOME"
-                ? { increment: amount }
-                : { decrement: amount }),
+                ? { increment: amountNumber }
+                : { decrement: amountNumber }),
             },
           },
           where: {
@@ -151,7 +160,7 @@ export const transactionRouter = router({
 
         return await tx.transaction.create({
           data: {
-            amount,
+            amount: amountNumber,
             date: normalizedDate,
             description,
             userId,

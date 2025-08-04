@@ -43,7 +43,14 @@ import {
 import { useState } from "react";
 
 const formSchema = z.object({
-  amount: z.number().min(0),
+  amount: z
+    .string()
+    .regex(/^(0|[1-9]\d*)\.\d{1,2}$/, {
+      message: "Must be a number with exactly 2 decimal places",
+    })
+    .refine((val) => parseFloat(val) > 0, {
+      message: "Money amount must be greater than 0",
+    }),
   date: z.date(),
   description: z.string().min(1).max(500),
   categoryId: z.string(),
@@ -59,7 +66,7 @@ export default function TransactionForm() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: 0,
+      amount: "",
       date: new Date(),
       description: "",
     },
@@ -108,17 +115,15 @@ export default function TransactionForm() {
                         "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
                         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
                       )}
-                      value={field.value === 0 ? undefined : field.value}
-                      onValueChange={(value) => {
-                        field.onChange(value ? parseFloat(value) : 0);
-                      }}
+                      value={field.value}
+                      onValueChange={field.onChange}
                       onBlur={field.onBlur}
                       placeholder="Enter amount"
                       prefix="£"
                       step={0.01}
                       decimalsLimit={2}
-                      allowDecimals={true}
                       allowNegativeValue={false}
+                      decimalScale={2}
                     />
                   </FormControl>
                   <FormMessage />
