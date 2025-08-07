@@ -2,14 +2,14 @@ import TransactionTable from "../components/finances/transactions-table";
 import NewDialog from "../components/finances/new-dialog";
 
 export default async function Finances() {
-  return (
-    <div className="flex flex-col gap-4 p-4">
-      <div className="flex items-center justify-between">
-        <h2 className="font-semibold text-lg">Transactions</h2>
+	return (
+		<div className="flex flex-col gap-4 p-4">
+			<div className="flex items-center justify-between">
+				<h2 className="font-semibold text-lg">Transactions</h2>
 
-        <NewDialog />
-      </div>
-      <TransactionTable />
-    </div>
-  );
+				<NewDialog />
+			</div>
+			<TransactionTable />
+		</div>
+	);
 }

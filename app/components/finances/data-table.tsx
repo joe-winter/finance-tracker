@@ -5,6 +5,8 @@ import {
 	flexRender,
 	getCoreRowModel,
 	getPaginationRowModel,
+	getSortedRowModel,
+	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -29,6 +31,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../ui/select";
+import { useState } from "react";
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -39,11 +42,17 @@ export function DataTable<TData, TValue>({
 	columns,
 	data,
 }: DataTableProps<TData, TValue>) {
+	const [sorting, setSorting] = useState<SortingState>([]);
 	const table = useReactTable({
 		data,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
+		onSortingChange: setSorting,
+		getSortedRowModel: getSortedRowModel(),
+		state: {
+			sorting,
+		},
 	});
 
 	return (
@@ -100,7 +109,7 @@ export function DataTable<TData, TValue>({
 			</div>
 			<div className="flex items-center justify-between px-2">
 				<div className="flex items-center space-x-2">
-					<p className="text-sm font-medium">Rows per page</p>
+					<p className="font-medium text-sm">Rows per page</p>
 					<Select
 						value={`${table.getState().pagination.pageSize}`}
 						onValueChange={(value) => {
@@ -120,7 +129,7 @@ export function DataTable<TData, TValue>({
 					</Select>
 				</div>
 				<div className="flex items-center space-x-6 lg:space-x-8">
-					<div className="flex w-[100px] items-center justify-center text-sm font-medium">
+					<div className="flex w-[100px] items-center justify-center font-medium text-sm">
 						Page {table.getState().pagination.pageIndex + 1} of{" "}
 						{table.getPageCount()}
 					</div>

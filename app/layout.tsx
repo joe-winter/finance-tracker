@@ -39,7 +39,7 @@ export default function RootLayout({
 			<TRPCProvider>
 				<html lang="en" suppressHydrationWarning>
 					<body
-						className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col items-center`}
+						className={`${geistSans.variable} ${geistMono.variable} flex flex-col items-center antialiased`}
 					>
 						<ThemeProvider
 							attribute="class"
@@ -47,7 +47,7 @@ export default function RootLayout({
 							enableSystem
 							disableTransitionOnChange
 						>
-							<header className="flex justify-end items-center p-4 gap-4 h-16">
+							<header className="flex h-16 items-center justify-end gap-4 p-4">
 								<Nav />
 								<ModeToggle />
 								<SignedOut>
