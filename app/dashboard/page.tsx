@@ -1,34 +1,42 @@
 "use client";
 
-import prisma from "@/lib/prisma";
 import { trpc } from "../_trpc/client";
 import z from "zod";
 import { PieChartLegend } from "../components/dashboard/pie-chart";
+import { ChartPieSeparatorNone } from "../components/dashboard/test";
+import type { GetTransactionTotalsByCategoryOutput } from "@/lib/types";
+import { TransactionType } from "@prisma/client";
 
 const formSchema = z.object({
-	startDate: z.date(),
-	endDate: z.date(),
+  startDate: z.date(),
+  endDate: z.date(),
 });
 
-export default function Dashboard() {
-	const totals = trpc.dashboard.getTransactionTotalsByCategory.useQuery();
+const chartColors = {
+  EXPENSE: "red",
+  INCOME: "green",
+  SAVING: "blue",
+};
 
-	const chartData = totals.data
-		?.filter((el) => el.totalAmount !== 0)
-		.map((el, index) => ({
-			label:
-				el.categoryName +
-				" " +
-				new Intl.NumberFormat("en-GB", {
-					style: "currency",
-					currency: "GBP",
-				}).format(Number(el.totalAmount)),
-			value: el.totalAmount,
-			fill: `var(--chart-${index + 1})`,
-		}));
-	return (
-		<div className="flex flex-col gap-2 px-4">
-			{chartData && <PieChartLegend data={chartData} />}
-		</div>
-	);
+const getChartColors = (data: GetTransactionTotalsByCategoryOutput) => {
+  return data.map((el, index) => ({
+    label: el.name,
+    value: Number(el.sum),
+    fill: `var(--chart-${chartColors[el.type]}-${index + 1})`,
+    type: el.type,
+  }));
+};
+
+export default function Dashboard() {
+  const totals = trpc.dashboard.getTransactionTotalsByCategory.useQuery();
+
+  const data = Object.groupBy(totals.data ?? [], ({ type }) => type);
+
+  return (
+    <div className="flex flex-col gap-4 px-4">
+      {data.EXPENSE && <PieChartLegend data={getChartColors(data.EXPENSE)} />}
+      {data.INCOME && <PieChartLegend data={getChartColors(data.INCOME)} />}
+      {data.SAVING && <PieChartLegend data={getChartColors(data.SAVING)} />}
+    </div>
+  );
 }

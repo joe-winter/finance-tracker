@@ -14,3 +14,5 @@ export type GetTransactionOutput =
   RouterOutput["transaction"]["getTransaction"];
 
 export type GetCategories = RouterOutput["category"]["getCategories"];
+export type GetTransactionTotalsByCategoryOutput =
+  RouterOutput["dashboard"]["getTransactionTotalsByCategory"];
