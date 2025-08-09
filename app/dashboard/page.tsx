@@ -2,7 +2,6 @@
 
 import { trpc } from "../_trpc/client";
 import type { GetTransactionTotalsByCategoryOutput } from "@/lib/types";
-import { TransactionType } from "@prisma/client";
 import {
   endOfMonth,
   getMonth,
@@ -19,8 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
-import { PieChartSkeleton } from "../components/dashboard/pie-chart-skeleton";
 import { PieChartCard } from "../components/dashboard/pie-chart-card";
+import { TransactionType } from "@prisma/client";
 
 const chartColors = {
   EXPENSE: "red",
@@ -114,10 +113,17 @@ export default function Dashboard() {
           </SelectContent>
         </Select>
       </div>
-
-      <PieChartCard data={data.EXPENSE && getChartColors(data.EXPENSE)} />
-      <PieChartCard data={data.INCOME && getChartColors(data.INCOME)} />
-      <PieChartCard data={data.SAVING && getChartColors(data.SAVING)} />
+      {charts.map((chart) => {
+        const chartData = data[chart.type];
+        return (
+          <PieChartCard
+            key={chart.title}
+            data={chartData && getChartColors(chartData)}
+            title={chart.title}
+            date={date}
+          />
+        );
+      })}
     </div>
   );
 }
