@@ -57,6 +57,8 @@ export default function TransactionTable() {
       accessorKey: "date",
       header: "Date",
       cell: ({ row }) => format(row.original.dailyBalance.date, "PPP"),
+      sortUndefined: "last",
+      sortDescFirst: false,
     },
     {
       accessorKey: "type",

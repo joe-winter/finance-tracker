@@ -11,54 +11,61 @@ interface CategoryBalance {
 }
 
 export const dashboardRouter = router({
-  getTransactionTotalsByCategory: protectedProcedure.query(
-    async ({ ctx }): Promise<CategoryBalance[]> => {
+  getTransactionTotalsByCategory: protectedProcedure
+    .input(
+      z.object({
+        startDate: z.coerce.date(),
+        endDate: z.coerce.date(),
+      })
+    )
+    .query(async ({ ctx, input }): Promise<CategoryBalance[]> => {
       return await prisma.$queryRaw<CategoryBalance[]>`
-        SELECT * FROM (
+        WITH CategoryTotals AS (
           SELECT 
-            r."type",
+            c.id as "categoryId",
+            c.name,
+            c.type,
+            COALESCE(SUM(t.amount), 0) as total_amount,
+            ROW_NUMBER() OVER (
+              PARTITION BY c.type
+              ORDER BY COALESCE(SUM(t.amount), 0) DESC
+            ) as rank
+          FROM "Category" c
+          LEFT JOIN "Transaction" t ON c.id = t."categoryId"
+          WHERE c."userId" = ${ctx.auth.userId}
+            AND (t.id IS NULL OR (
+              t."userId" = ${ctx.auth.userId}
+              AND t.amount > 0
+              AND t.date >= ${input.startDate}
+              AND t.date <= ${input.endDate}
+            ))
+          GROUP BY c.id, c.name, c.type
+        ),
+        GroupedCategories AS (
+          SELECT 
+            type,
             CASE 
-              WHEN r.rank <= 5 THEN r."categoryId"
+              WHEN rank <= 5 THEN "categoryId"::TEXT
               ELSE NULL 
             END as "categoryId",
             CASE 
-              WHEN r.rank <= 5 THEN r."name"
+              WHEN rank <= 5 THEN name
               ELSE 'Other' 
-            END as "name",
-            SUM(r."sum") as "sum"
-          FROM (
-            SELECT 
-              c.id as "categoryId",
-              c.name as "name",
-              c.type as "type",
-              COALESCE(SUM(t.amount), 0)::DECIMAL as "sum",
-              ROW_NUMBER() OVER (
-                PARTITION BY c.type
-                ORDER BY COALESCE(SUM(t.amount), 0) DESC
-              ) as rank
-            FROM "Category" c
-            LEFT JOIN "Transaction" t 
-              ON c.id = t."categoryId" 
-              AND t."userId" = ${ctx.auth.userId}
-              AND t."amount" > 0
-            GROUP BY c.id, c.name, c.type
-          ) r
-          GROUP BY 
-            r."type",
-            CASE 
-              WHEN r.rank <= 5 THEN r."categoryId"
-              ELSE NULL 
-            END,
-            CASE 
-              WHEN r.rank <= 5 THEN r."name"
-              ELSE 'Other' 
-            END
-        ) final
-        WHERE final."sum" > 0
-        ORDER BY final."type", final."sum" DESC
+            END as name,
+            total_amount
+          FROM CategoryTotals
+          WHERE total_amount > 0
+        )
+        SELECT 
+          type,
+          "categoryId",
+          name,
+          SUM(total_amount)::TEXT as sum
+        FROM GroupedCategories
+        GROUP BY type, "categoryId", name
+        ORDER BY type, SUM(total_amount) DESC
       `;
-    }
-  ),
+    }),
 });
 
 export type DashboardRouter = typeof dashboardRouter;
