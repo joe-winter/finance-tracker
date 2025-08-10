@@ -9,6 +9,7 @@ import {
 import { PieChartSkeleton } from "./pie-chart-skeleton";
 import { PieChartLegend } from "./pie-chart-legend";
 import { format } from "date-fns";
+import { PieChartNoData } from "./pie-chart-no-data";
 
 export const description = "A pie chart with a legend";
 
@@ -42,7 +43,9 @@ export function PieChartCard({
           <PieChartSkeleton />
         ) : data ? (
           <PieChartLegend data={data} />
-        ) : null}
+        ) : (
+          <PieChartNoData />
+        )}
       </CardContent>
     </Card>
   );

@@ -121,6 +121,7 @@ export default function Dashboard() {
             data={chartData && getChartColors(chartData)}
             title={chart.title}
             date={date}
+            isLoading={totals.isPending}
           />
         );
       })}

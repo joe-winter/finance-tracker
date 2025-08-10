@@ -13,6 +13,7 @@ import TRPCProvider from "@/app/_trpc/Provider";
 import { ThemeProvider } from "./components/theme-provider";
 import { ModeToggle } from "./components/theme-toggle";
 import { Nav } from "./components/nav";
+import { shadcn } from "@clerk/themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={{ theme: shadcn }}>
       <TRPCProvider>
         <html lang="en" suppressHydrationWarning>
           <body
