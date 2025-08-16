@@ -1,9 +1,9 @@
+import { TRPCError } from "@trpc/server";
+import { isValid, parseISO } from "date-fns";
 import z from "zod";
 import prisma from "@/lib/prisma";
-import { protectedProcedure, router } from "../trpc";
-import { TRPCError } from "@trpc/server";
-import { endOfDay, isSameDay } from "date-fns";
 
+import { protectedProcedure, router } from "../trpc";
 export const transactionSchema = z.object({
   amount: z
     .string()
@@ -13,10 +13,13 @@ export const transactionSchema = z.object({
     .refine((val) => parseFloat(val) > 0, {
       message: "Money amount must be greater than 0",
     }),
-  date: z.preprocess((arg) => {
-    if (typeof arg === "string") return new Date(arg);
-    return arg;
-  }, z.date()),
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in yyyy-mm-dd format")
+    .refine(
+      (dateString) => isValid(parseISO(dateString)),
+      "Must be a valid date"
+    ),
   description: z.string().min(1).max(500),
   categoryId: z.string(),
 });
@@ -31,7 +34,7 @@ export const transactionRouter = router({
     // 		take: z.number().default(10).optional(),
     // 	}),
     // )
-    .query(async ({ input, ctx }) => {
+    .query(async ({ ctx }) => {
       return await prisma.transaction.findMany({
         // skip: input.skip,
         // take: input.take,
@@ -130,7 +133,6 @@ export const transactionRouter = router({
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.auth.userId;
       const { date, amount, categoryId, description } = input;
-      const normalizedDate = endOfDay(date);
       const amountNumber = parseFloat(amount);
       const category = await prisma.category.findUnique({
         select: { id: true, type: true },
@@ -150,7 +152,7 @@ export const transactionRouter = router({
         },
         where: {
           userId,
-          date: { lte: normalizedDate },
+          date: { lte: date },
         },
         orderBy: {
           date: "desc",
@@ -169,13 +171,13 @@ export const transactionRouter = router({
           where: {
             userId_date: {
               userId,
-              date: normalizedDate,
+              date: date,
             },
           },
           create: {
             userId,
             balance: initialBalance,
-            date: normalizedDate,
+            date: date,
           },
           update: {
             userId,
@@ -184,7 +186,7 @@ export const transactionRouter = router({
                 ? { increment: amountNumber }
                 : { decrement: amountNumber }),
             },
-            date: normalizedDate,
+            date: date,
           },
           select: {
             id: true,
@@ -201,14 +203,14 @@ export const transactionRouter = router({
           },
           where: {
             userId,
-            date: { gt: normalizedDate },
+            date: { gt: date },
           },
         });
 
         return await tx.transaction.create({
           data: {
             amount: amountNumber,
-            date: normalizedDate,
+            date: date,
             description,
             userId,
             categoryId,
@@ -262,7 +264,6 @@ export const transactionRouter = router({
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.auth.userId;
       const { date, amount, categoryId, description, id } = input;
-      const normalizedDate = endOfDay(date);
 
       const transaction = await prisma.transaction.findUnique({
         where: { id },
@@ -331,7 +332,7 @@ export const transactionRouter = router({
           select: { balance: true },
           where: {
             userId,
-            date: { lte: normalizedDate },
+            date: { lte: date },
           },
           orderBy: { date: "desc" },
         });
@@ -345,13 +346,13 @@ export const transactionRouter = router({
           where: {
             userId_date: {
               userId,
-              date: normalizedDate,
+              date: date,
             },
           },
           create: {
             userId,
             balance: initialBalance,
-            date: normalizedDate,
+            date: date,
           },
           update: {
             balance: {
@@ -373,14 +374,14 @@ export const transactionRouter = router({
           },
           where: {
             userId,
-            date: { gt: normalizedDate },
+            date: { gt: date },
           },
         });
 
         return await tx.transaction.create({
           data: {
             amount,
-            date: normalizedDate,
+            date: date,
             description,
             userId,
             categoryId,

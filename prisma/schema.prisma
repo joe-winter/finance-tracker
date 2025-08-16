@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["relationJoins"]
@@ -14,24 +8,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum TransactionType {
-  INCOME
-  EXPENSE
-  SAVING
-}
-
 model Transaction {
   id             String       @id @default(nanoid())
   amount         Decimal
-  date           DateTime
+  date           DateTime     @db.Date
   description    String
   userId         String
   categoryId     String
-  category       Category     @relation(fields: [categoryId], references: [id])
   dailyBalanceId String
-  dailyBalance   DailyBalance @relation(fields: [dailyBalanceId], references: [id])
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @default(now()) @updatedAt
+  category       Category     @relation(fields: [categoryId], references: [id])
+  dailyBalance   DailyBalance @relation(fields: [dailyBalanceId], references: [id])
 }
 
 model Category {
@@ -39,9 +27,9 @@ model Category {
   name         String
   userId       String
   type         TransactionType
-  transactions Transaction[]
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @default(now()) @updatedAt
+  transactions Transaction[]
 
   @@unique([name, userId])
 }
@@ -51,9 +39,15 @@ model DailyBalance {
   userId      String
   balance     Decimal
   date        DateTime      @db.Date
-  Transaction Transaction[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @default(now()) @updatedAt
+  Transaction Transaction[]
 
   @@unique([userId, date])
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  SAVING
 }
