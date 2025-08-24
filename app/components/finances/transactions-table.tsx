@@ -1,15 +1,7 @@
 "use client";
 
-import type { GetTransactionsOutput } from "@/lib/types";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
 import {
 	EditIcon,
 	HandCoinsIcon,
@@ -18,9 +10,17 @@ import {
 	TrashIcon,
 	TrendingDownIcon,
 } from "lucide-react";
-import { DataTable } from "./data-table";
-import { trpc } from "@/app/_trpc/client";
 import { useState } from "react";
+import { trpc } from "@/app/_trpc/client";
+import type { GetTransactionsOutput } from "@/lib/types";
+import { Button } from "../ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { DataTable } from "./data-table";
 import EditDialog from "./edit-dialog";
 
 export default function TransactionTable() {

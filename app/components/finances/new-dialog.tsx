@@ -1,14 +1,27 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format, isValid, parseISO } from "date-fns";
+import { TransactionType } from "@prisma/client";
+import { format, isValid } from "date-fns";
 import { CalendarIcon, PlusIcon } from "lucide-react";
+import { useState } from "react";
 import CurrencyInput from "react-currency-input-field";
 import { useForm } from "react-hook-form";
 import z from "zod";
+import { trpc } from "@/app/_trpc/client";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "../ui/dialog";
 import {
 	Form,
 	FormControl,
@@ -28,19 +41,6 @@ import {
 	SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
-import { trpc } from "@/app/_trpc/client";
-import { TransactionType } from "@prisma/client";
-import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "../ui/dialog";
-import { useState } from "react";
 
 const formSchema = z.object({
 	amount: z
@@ -51,13 +51,7 @@ const formSchema = z.object({
 		.refine((val) => parseFloat(val) > 0, {
 			message: "Money amount must be greater than 0",
 		}),
-	date: z
-		.string()
-		.regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in yyyy-mm-dd format")
-		.refine(
-			(dateString) => isValid(parseISO(dateString)),
-			"Must be a valid date",
-		),
+	date: z.date(),
 	description: z.string().min(1).max(500),
 	categoryId: z.string(),
 });
@@ -82,7 +76,7 @@ export default function NewDialog() {
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			amount: "",
-			date: "",
+			date: new Date(),
 			description: "",
 		},
 	});
@@ -175,7 +169,7 @@ export default function NewDialog() {
 												mode="single"
 												selected={new Date(field.value)}
 												onSelect={(value) => {
-													field.onChange(dateToString(value));
+													field.onChange(value);
 													setCalendarOpen(false);
 												}}
 												captionLayout="dropdown"

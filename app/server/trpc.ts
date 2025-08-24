@@ -1,7 +1,8 @@
 import { initTRPC, TRPCError } from "@trpc/server";
+import SuperJSON from "superjson";
 import type { Context } from "./context";
 
-const t = initTRPC.context<Context>().create();
+const t = initTRPC.context<Context>().create({ transformer: SuperJSON });
 // Check if the user is signed in
 // Otherwise, throw an UNAUTHORIZED code
 const isAuthed = t.middleware(({ next, ctx }) => {

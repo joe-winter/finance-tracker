@@ -11,7 +11,7 @@ datasource db {
 model Transaction {
   id             String       @id @default(nanoid())
   amount         Decimal
-  date           DateTime     @db.Date
+  date           DateTime
   description    String
   userId         String
   categoryId     String
@@ -38,7 +38,7 @@ model DailyBalance {
   id          String        @id @default(nanoid())
   userId      String
   balance     Decimal
-  date        DateTime      @db.Date
+  date        DateTime
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @default(now()) @updatedAt
   Transaction Transaction[]
