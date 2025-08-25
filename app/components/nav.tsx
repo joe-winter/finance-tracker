@@ -1,35 +1,43 @@
-"use client";
-
-import Link from "next/link";
-
 import {
-	NavigationMenu,
-	NavigationMenuItem,
-	NavigationMenuLink,
-	NavigationMenuList,
-	navigationMenuTriggerStyle,
-} from "@/app/components/ui/navigation-menu";
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
+import { ChartNoAxesColumnIcon } from "lucide-react";
+import { NavMenu } from "./nav-menu";
+import { NavSheet } from "./nav-sheet";
+import { ModeToggle } from "./theme-toggle";
 
-export function Nav() {
-	return (
-		<NavigationMenu viewport={false}>
-			<NavigationMenuList>
-				<NavigationMenuItem>
-					<NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-						<Link href="/dashboard">Dashboard</Link>
-					</NavigationMenuLink>
-				</NavigationMenuItem>
-				<NavigationMenuItem>
-					<NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-						<Link href="/finances">Finances</Link>
-					</NavigationMenuLink>
-				</NavigationMenuItem>
-				<NavigationMenuItem>
-					<NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-						<Link href="/settings">Settings</Link>
-					</NavigationMenuLink>
-				</NavigationMenuItem>
-			</NavigationMenuList>
-		</NavigationMenu>
-	);
-}
+export const Nav = () => {
+  return (
+    <nav className="h-16 w-full">
+      <div className="flex h-full items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="flex gap-3">
+          <ChartNoAxesColumnIcon />
+          <h2 className="font-semibold">Finance Tracker</h2>
+        </div>
+        <div className="flex items-center gap-8">
+          <NavMenu className="hidden sm:block" />
+        </div>
+        <div className="flex items-center gap-3">
+          <ModeToggle />
+
+          <div className="hidden items-center sm:flex">
+            <SignedOut>
+              <SignInButton />
+              <SignUpButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </div>
+          <div className="sm:hidden">
+            <NavSheet />
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};

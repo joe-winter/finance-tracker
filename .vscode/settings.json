@@ -12,6 +12,10 @@
   "typescript.suggest.autoImports": true,
   "typescript.preferences.includePackageJsonAutoImports": "auto",
   "typescript.suggest.includeAutomaticOptionalChainCompletions": true,
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "@radix-ui",
+    "lucide-react"
+  ],
   "typescript.suggest.includeCompletionsForImportStatements": true,
   "[postcss]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
