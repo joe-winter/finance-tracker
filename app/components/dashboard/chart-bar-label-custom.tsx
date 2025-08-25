@@ -1,16 +1,7 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
 import {
   type ChartConfig,
   ChartContainer,
@@ -30,6 +21,26 @@ interface PieChartLegendProps {
   data: ChartData[];
 }
 
+const wrapText = (text: string, maxLength: number = 15) => {
+  if (text.length <= maxLength) return text;
+
+  const words = text.split(" ");
+  const lines = [];
+  let currentLine = "";
+
+  for (const word of words) {
+    if ((currentLine + word).length <= maxLength) {
+      currentLine += (currentLine ? " " : "") + word;
+    } else {
+      if (currentLine) lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+
+  return lines.join("\n");
+};
+
 export function ChartBarMixed({ data }: PieChartLegendProps) {
   const chartConfig = {
     value: { label: "Categories" },
@@ -43,22 +54,21 @@ export function ChartBarMixed({ data }: PieChartLegendProps) {
     ),
   } satisfies ChartConfig;
   return (
-    <ChartContainer config={chartConfig}>
+    <ChartContainer config={chartConfig} className="aspect-auto h-full">
       <BarChart
         accessibilityLayer
         data={data}
-        layout="vertical"
         margin={{
           left: 10,
+          top: 10,
         }}
-        className="h-full"
       >
-        <YAxis
+        <XAxis
           dataKey="label"
           type="category"
-          interval={0}
           tickLine={false}
           tickMargin={10}
+          interval={0}
           axisLine={false}
           tickFormatter={(value) => {
             const label =
@@ -69,7 +79,7 @@ export function ChartBarMixed({ data }: PieChartLegendProps) {
               : label;
           }}
         />
-        <XAxis dataKey="value" type="number" hide />
+        <YAxis dataKey="value" type="number" hide scale="sqrt" />
         <ChartTooltip
           cursor={false}
           content={

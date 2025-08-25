@@ -43,7 +43,7 @@ export function ChartCard({
         <CardTitle>Pie Chart - {title}</CardTitle>
         <CardDescription>{format(date, "MMMM - y")}</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
+      <CardContent className="min-h-80 flex-1 pb-0">
         {type === "pie" ? (
           isLoading ? (
             <PieChartSkeleton />

@@ -24,12 +24,6 @@ import {
   SelectValue,
 } from "../components/ui/select";
 
-const chartColors = {
-  EXPENSE: "red",
-  INCOME: "green",
-  SAVING: "blue",
-};
-
 const charts = [
   { type: TransactionType.EXPENSE, title: "Expenses" },
   { type: TransactionType.INCOME, title: "Income" },
@@ -129,7 +123,7 @@ export default function Dashboard() {
           return (
             <ChartCard
               key={chart.title}
-              type={"pie"}
+              type={chart.type === "EXPENSE" ? "bar" : "pie"}
               data={chartData && getChartColors(chartData)}
               title={chart.title}
               date={date}

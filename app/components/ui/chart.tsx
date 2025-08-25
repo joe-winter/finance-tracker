@@ -174,7 +174,7 @@ function ChartTooltipContent({
   return (
     <div
       className={cn(
-        "grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
+        "grid items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
         className
       )}
     >
@@ -223,7 +223,7 @@ function ChartTooltipContent({
                   )}
                   <div
                     className={cn(
-                      "flex flex-1 justify-between leading-none",
+                      "flex flex-1 justify-between gap-1.5 leading-none",
                       nestLabel ? "items-end" : "items-center"
                     )}
                   >
