@@ -1,40 +1,40 @@
-import type { NavigationMenuProps } from "@radix-ui/react-navigation-menu";
+"use client";
+
 import { GaugeIcon, SettingsIcon, WalletIcon } from "lucide-react";
 import Link from "next/link";
-import {
-	NavigationMenu,
-	NavigationMenuItem,
-	NavigationMenuLink,
-	NavigationMenuList,
-} from "./ui/navigation-menu";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
-export const NavMenu = (props: NavigationMenuProps) => (
-	<NavigationMenu {...props}>
-		<NavigationMenuList className="gap-6 data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-start">
-			<NavigationMenuItem>
-				<NavigationMenuLink asChild>
-					<Link href="/dashboard" className="flex-row items-center gap-2">
-						<GaugeIcon className="stroke-foreground" />
-						<span>Dashboard</span>
-					</Link>
-				</NavigationMenuLink>
-			</NavigationMenuItem>
-			<NavigationMenuItem>
-				<NavigationMenuLink asChild>
-					<Link href="/finances" className="flex-row items-center gap-2">
-						<WalletIcon className="stroke-foreground" />
-						<span>Finances</span>
-					</Link>
-				</NavigationMenuLink>
-			</NavigationMenuItem>
-			<NavigationMenuItem>
-				<NavigationMenuLink asChild>
-					<Link href="/settings" className="flex-row items-center gap-2">
-						<SettingsIcon className="stroke-foreground" />
-						<span>Settings</span>
-					</Link>
-				</NavigationMenuLink>
-			</NavigationMenuItem>
-		</NavigationMenuList>
-	</NavigationMenu>
-);
+const pages = [
+  { name: "Dashboard", path: "/dashboard", icon: GaugeIcon },
+  { name: "Finances", path: "/finances", icon: WalletIcon },
+  { name: "Settings", path: "/settings", icon: SettingsIcon },
+];
+
+export const NavMenu = () => {
+  const pathname = usePathname();
+  return (
+    <div className="hidden gap-8 md:flex">
+      {pages.map((page) => {
+        const isActive = pathname === page.path;
+        return (
+          <Link
+            href={page.path}
+            key={page.name}
+            className="flex flex-row items-center gap-1"
+          >
+            <page.icon className="size-4 stroke-foreground" />
+            <span
+              className={cn(
+                "text-sm",
+                isActive ? "font-bold" : "font-semibold"
+              )}
+            >
+              {page.name}
+            </span>
+          </Link>
+        );
+      })}
+    </div>
+  );
+};
