@@ -1,6 +1,6 @@
 "use client";
 
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, XAxis, YAxis } from "recharts";
 
 import {
   type ChartConfig,
@@ -20,26 +20,6 @@ interface ChartData {
 interface PieChartLegendProps {
   data: ChartData[];
 }
-
-const wrapText = (text: string, maxLength: number = 15) => {
-  if (text.length <= maxLength) return text;
-
-  const words = text.split(" ");
-  const lines = [];
-  let currentLine = "";
-
-  for (const word of words) {
-    if ((currentLine + word).length <= maxLength) {
-      currentLine += (currentLine ? " " : "") + word;
-    } else {
-      if (currentLine) lines.push(currentLine);
-      currentLine = word;
-    }
-  }
-  if (currentLine) lines.push(currentLine);
-
-  return lines.join("\n");
-};
 
 export function ChartBarMixed({ data }: PieChartLegendProps) {
   const chartConfig = {
@@ -68,12 +48,12 @@ export function ChartBarMixed({ data }: PieChartLegendProps) {
           type="category"
           tickLine={false}
           tickMargin={10}
-          interval={0}
+          interval="preserveEnd"
           axisLine={false}
           tickFormatter={(value) => {
             const label =
               chartConfig[value as keyof typeof chartConfig]?.label || "";
-            const maxLength = 10; // max characters before truncating
+            const maxLength = 8; // max characters before truncating
             return label.length > maxLength
               ? `${label.slice(0, maxLength - 3)}…`
               : label;

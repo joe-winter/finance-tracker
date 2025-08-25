@@ -4,22 +4,22 @@ import prisma from "@/lib/prisma";
 import { protectedProcedure, router } from "../trpc";
 
 interface CategoryBalance {
-  type: TransactionType;
-  categoryId: string | null;
-  name: string;
-  sum: string;
+	type: TransactionType;
+	categoryId: string | null;
+	name: string;
+	sum: string;
 }
 
 export const dashboardRouter = router({
-  getTransactionTotalsByCategory: protectedProcedure
-    .input(
-      z.object({
-        startDate: z.coerce.date(),
-        endDate: z.coerce.date(),
-      })
-    )
-    .query(async ({ ctx, input }): Promise<CategoryBalance[]> => {
-      return await prisma.$queryRaw<CategoryBalance[]>`
+	getTransactionTotalsByCategory: protectedProcedure
+		.input(
+			z.object({
+				startDate: z.coerce.date(),
+				endDate: z.coerce.date(),
+			}),
+		)
+		.query(async ({ ctx, input }): Promise<CategoryBalance[]> => {
+			return await prisma.$queryRaw<CategoryBalance[]>`
         WITH CategoryTotals AS (
           SELECT 
             c.id as "categoryId",
@@ -65,7 +65,7 @@ export const dashboardRouter = router({
         GROUP BY type, "categoryId", name
         ORDER BY type, CASE WHEN name = 'Other' THEN 1 ELSE 0 END
       `;
-    }),
+		}),
 });
 
 export type DashboardRouter = typeof dashboardRouter;
