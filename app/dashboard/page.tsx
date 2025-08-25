@@ -1,130 +1,144 @@
 "use client";
 
-import { trpc } from "../_trpc/client";
-import type { GetTransactionTotalsByCategoryOutput } from "@/lib/types";
-import {
-	endOfMonth,
-	getMonth,
-	getYear,
-	setMonth,
-	setYear,
-	startOfMonth,
-} from "date-fns";
-import { useState } from "react";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "../components/ui/select";
-import { PieChartCard } from "../components/dashboard/pie-chart-card";
 import { TransactionType } from "@prisma/client";
+import {
+  endOfMonth,
+  getMonth,
+  getYear,
+  setMonth,
+  setYear,
+  startOfMonth,
+} from "date-fns";
+import { PlusIcon } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import type { GetTransactionTotalsByCategoryOutput } from "@/lib/types";
+import { trpc } from "../_trpc/client";
+import { ChartCard } from "../components/dashboard/chart-card";
+import { Button } from "../components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 
 const chartColors = {
-	EXPENSE: "red",
-	INCOME: "green",
-	SAVING: "blue",
+  EXPENSE: "red",
+  INCOME: "green",
+  SAVING: "blue",
 };
 
 const charts = [
-	{ type: TransactionType.EXPENSE, title: "Expenses" },
-	{ type: TransactionType.INCOME, title: "Income" },
-	{ type: TransactionType.SAVING, title: "Savings" },
+  { type: TransactionType.EXPENSE, title: "Expenses" },
+  { type: TransactionType.INCOME, title: "Income" },
+  { type: TransactionType.SAVING, title: "Savings" },
 ];
 
 const months = [
-	{ value: 0, label: "January" },
-	{ value: 1, label: "February" },
-	{ value: 2, label: "March" },
-	{ value: 3, label: "April" },
-	{ value: 4, label: "May" },
-	{ value: 5, label: "June" },
-	{ value: 6, label: "July" },
-	{ value: 7, label: "August" },
-	{ value: 8, label: "September" },
-	{ value: 9, label: "October" },
-	{ value: 10, label: "November" },
-	{ value: 11, label: "December" },
+  { value: 0, label: "January" },
+  { value: 1, label: "February" },
+  { value: 2, label: "March" },
+  { value: 3, label: "April" },
+  { value: 4, label: "May" },
+  { value: 5, label: "June" },
+  { value: 6, label: "July" },
+  { value: 7, label: "August" },
+  { value: 8, label: "September" },
+  { value: 9, label: "October" },
+  { value: 10, label: "November" },
+  { value: 11, label: "December" },
 ];
 
 const getChartColors = (data: GetTransactionTotalsByCategoryOutput) => {
-	return data.map((el, index) => ({
-		label: `${el.name} - ${new Intl.NumberFormat("en-GB", {
-			style: "currency",
-			currency: "GBP",
-		}).format(Number(el.sum))}`,
-		value: Number(el.sum),
-		fill: `var(--chart-${chartColors[el.type]}-${index + 1})`,
-		type: el.type,
-	}));
+  return data.map((el, index) => ({
+    // label: `${el.name} ${new Intl.NumberFormat("en-GB", {
+    //   style: "currency",
+    //   currency: "GBP",
+    // }).format(Number(el.sum))}`,
+    label: el.name,
+    value: Number(el.sum),
+    fill: `var(--chart-${el.type.toLowerCase()}-${index + 1})`,
+    type: el.type,
+  }));
 };
 
 const currentYear = getYear(new Date());
 const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
 
 export default function Dashboard() {
-	const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date());
 
-	const totals = trpc.dashboard.getTransactionTotalsByCategory.useQuery({
-		startDate: startOfMonth(date),
-		endDate: endOfMonth(date),
-	});
+  const totals = trpc.dashboard.getTransactionTotalsByCategory.useQuery({
+    startDate: startOfMonth(date),
+    endDate: endOfMonth(date),
+  });
 
-	console.log(date);
+  const data = Object.groupBy(totals.data ?? [], ({ type }) => type);
 
-	const data = Object.groupBy(totals.data ?? [], ({ type }) => type);
-
-	return (
-		<div className="flex flex-col gap-4 px-4">
-			<div className="flex gap-4">
-				<Select
-					defaultValue={getMonth(new Date()).toString()}
-					onValueChange={(value) => {
-						setDate((prev) => setMonth(prev, Number(value)));
-					}}
-				>
-					<SelectTrigger className="w-full">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						{months.map((month) => (
-							<SelectItem value={month.value.toString()} key={month.value}>
-								{month.label}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-				<Select
-					defaultValue={getYear(new Date()).toString()}
-					onValueChange={(value) => {
-						setDate((prev) => setYear(prev, Number(value)));
-					}}
-				>
-					<SelectTrigger className="w-full">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						{years.map((year) => (
-							<SelectItem value={year.toString()} key={year}>
-								{year}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</div>
-			{charts.map((chart) => {
-				const chartData = data[chart.type];
-				return (
-					<PieChartCard
-						key={chart.title}
-						data={chartData && getChartColors(chartData)}
-						title={chart.title}
-						date={date}
-						isLoading={totals.isPending}
-					/>
-				);
-			})}
-		</div>
-	);
+  return (
+    <div className="flex flex-col gap-4 p-4">
+      <div className="flex items-center justify-between">
+        <h2 className="font-semibold text-lg">Dashboard</h2>
+        <Button asChild variant="outline">
+          <Link href="/transaction">
+            Add Transaction <PlusIcon className="size-4" />
+          </Link>
+        </Button>
+      </div>
+      <div className="grid grid-cols-3 gap-4">
+        <div className="col-span-full flex gap-4">
+          <Select
+            defaultValue={getMonth(new Date()).toString()}
+            onValueChange={(value) => {
+              setDate((prev) => setMonth(prev, Number(value)));
+            }}
+          >
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {months.map((month) => (
+                <SelectItem value={month.value.toString()} key={month.value}>
+                  {month.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select
+            defaultValue={getYear(new Date()).toString()}
+            onValueChange={(value) => {
+              setDate((prev) => setYear(prev, Number(value)));
+            }}
+          >
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {years.map((year) => (
+                <SelectItem value={year.toString()} key={year}>
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        {charts.map((chart) => {
+          const chartData = data[chart.type];
+          return (
+            <ChartCard
+              key={chart.title}
+              type={"pie"}
+              data={chartData && getChartColors(chartData)}
+              title={chart.title}
+              date={date}
+              isLoading={totals.isPending}
+              className="col-span-full md:col-span-1"
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
 }
