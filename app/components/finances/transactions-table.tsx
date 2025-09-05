@@ -57,7 +57,7 @@ export default function TransactionTable() {
     {
       accessorKey: "date",
       header: ({ column }) => <DataTableHeader column={column} title="Date" />,
-      cell: ({ row }) => format(new Date(row.original.date), "PPP"),
+      cell: ({ row }) => format(row.original.date, "PPP"),
 
       sortUndefined: "last",
       // sortDescFirst: false,
@@ -148,10 +148,7 @@ export default function TransactionTable() {
   ];
   return (
     <>
-      <DataTable<GetTransactionsOutput[number], GetTransactionsOutput[number]>
-        columns={columns}
-        data={getTransactions.data ?? []}
-      />
+      <DataTable columns={columns} data={getTransactions.data ?? []} />
       {isEditOpen && getTransaction.data && (
         <EditDialog
           data={getTransaction.data}
