@@ -148,7 +148,10 @@ export default function TransactionTable() {
   ];
   return (
     <>
-      <DataTable columns={columns} data={getTransactions.data ?? []} />
+      <DataTable<GetTransactionsOutput[number], GetTransactionsOutput[number]>
+        columns={columns}
+        data={getTransactions.data ?? []}
+      />
       {isEditOpen && getTransaction.data && (
         <EditDialog
           data={getTransaction.data}
