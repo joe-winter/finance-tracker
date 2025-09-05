@@ -44,11 +44,7 @@ const months = [
 
 const getChartColors = (data: GetTransactionTotalsByCategoryOutput) => {
 	return data.map((el, index) => ({
-		// label: `${el.name} ${new Intl.NumberFormat("en-GB", {
-		//   style: "currency",
-		//   currency: "GBP",
-		// }).format(Number(el.sum))}`,
-		label: el.name,
+		label: el.name ?? "",
 		value: Number(el.sum),
 		fill: `var(--chart-${el.type.toLowerCase()}-${index + 1})`,
 		type: el.type,

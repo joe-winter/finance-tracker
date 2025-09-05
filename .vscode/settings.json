@@ -19,5 +19,26 @@
   "typescript.suggest.includeCompletionsForImportStatements": true,
   "[postcss]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "sqltools.connections": [
+    {
+      "pgOptions": {
+        "ssl": {
+          "rejectUnauthorized": true
+        }
+      },
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "ep-sweet-cell-absjk2ls-pooler.eu-west-2.aws.neon.tech",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "Finance Tracker DB",
+      "database": "neondb",
+      "username": "neondb_owner"
+    }
+  ],
+  "[sql]": {
+    "editor.defaultFormatter": "mtxr.sqltools"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

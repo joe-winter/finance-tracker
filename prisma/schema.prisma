@@ -1,25 +1,24 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["relationJoins"]
+  previewFeatures = ["relationJoins", "typedSQL"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Transaction {
-  id             String       @id @default(nanoid())
-  amount         Decimal
-  date           DateTime
-  description    String
-  userId         String
-  categoryId     String
-  dailyBalanceId String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @default(now()) @updatedAt
-  category       Category     @relation(fields: [categoryId], references: [id])
-  dailyBalance   DailyBalance @relation(fields: [dailyBalanceId], references: [id])
+  id          String   @id @default(nanoid())
+  amount      Decimal
+  date        DateTime @db.Date
+  description String
+  userId      String
+  categoryId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  category    Category @relation(fields: [categoryId], references: [id])
 }
 
 model Category {
@@ -32,18 +31,6 @@ model Category {
   transactions Transaction[]
 
   @@unique([name, userId])
-}
-
-model DailyBalance {
-  id          String        @id @default(nanoid())
-  userId      String
-  balance     Decimal
-  date        DateTime
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @default(now()) @updatedAt
-  Transaction Transaction[]
-
-  @@unique([userId, date])
 }
 
 enum TransactionType {

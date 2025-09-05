@@ -1,5 +1,3 @@
-// @filename: client.ts
-
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@/app/server/routers/_app";
 

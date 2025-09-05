@@ -10,47 +10,47 @@ import { Nav } from "./components/nav";
 import { ThemeProvider } from "./components/theme-provider";
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+	variable: "--font-geist-sans",
+	subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+	variable: "--font-geist-mono",
+	subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Finance Tracker",
-  description: "Finance tracker created with Next JS",
+	title: "Finance Tracker",
+	description: "Finance tracker created with Next JS",
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <ClerkProvider appearance={{ theme: shadcn }}>
-      <TRPCProvider>
-        <html lang="en" suppressHydrationWarning>
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} flex flex-col items-center antialiased`}
-          >
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <header className="flex h-16 w-full max-w-6xl items-center justify-end gap-4 p-4">
-                <Nav />
-              </header>
-              <div className="mb-20 w-full max-w-5xl">{children}</div>
-              <BottomNav />
-            </ThemeProvider>
-          </body>
-        </html>
-      </TRPCProvider>
-    </ClerkProvider>
-  );
+	return (
+		<ClerkProvider appearance={{ theme: shadcn }}>
+			<TRPCProvider>
+				<html lang="en" suppressHydrationWarning>
+					<body
+						className={`${geistSans.variable} ${geistMono.variable} flex flex-col items-center antialiased`}
+					>
+						<ThemeProvider
+							attribute="class"
+							defaultTheme="system"
+							enableSystem
+							disableTransitionOnChange
+						>
+							<header className="flex h-16 w-full max-w-6xl items-center justify-end gap-4 p-4">
+								<Nav />
+							</header>
+							<div className="mb-20 w-full max-w-5xl">{children}</div>
+							<BottomNav />
+						</ThemeProvider>
+					</body>
+				</html>
+			</TRPCProvider>
+		</ClerkProvider>
+	);
 }

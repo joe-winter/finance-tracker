@@ -75,7 +75,7 @@ export default function EditDialog({ data, handleClose, isOpen }: EditDialog) {
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			amount: data.amount.toString(),
-			date: data.dailyBalance.date ?? "",
+			date: data.date ?? "",
 			description: data.description,
 			categoryId: data.category.id,
 			id: data.id,
