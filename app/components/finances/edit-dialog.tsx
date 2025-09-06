@@ -81,8 +81,6 @@ export default function EditDialog({ data, handleClose, isOpen }: EditDialog) {
 		},
 	});
 
-	console.log("form state", form.formState);
-
 	const handleSubmit = (data: FormSchema) => {
 		editMutation.mutate(data, {
 			onSettled: () => {
@@ -107,9 +105,7 @@ export default function EditDialog({ data, handleClose, isOpen }: EditDialog) {
 				</DialogHeader>
 				<Form {...form}>
 					<form
-						onSubmit={form.handleSubmit(handleSubmit, (err) => {
-							console.log(err);
-						})}
+						onSubmit={form.handleSubmit(handleSubmit)}
 						className="grid gap-4"
 					>
 						<FormField

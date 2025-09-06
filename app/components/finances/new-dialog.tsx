@@ -74,11 +74,6 @@ export default function NewDialog() {
 	});
 
 	const handleSubmit = (data: FormSchema) => {
-		console.log(data.date);
-		console.log(data.date.toDateString());
-		console.log(data.date.toISOString());
-		console.log(data.date.toString());
-		console.log(format(data.date, "PPP mm:HH"));
 		createMutation.mutate(data, {
 			onSettled: () => {
 				utils.transaction.getTransactions.invalidate();

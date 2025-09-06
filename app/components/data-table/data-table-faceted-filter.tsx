@@ -33,7 +33,6 @@ export function DataTableFacetedFilter<TData, TValue>({
 	multiple,
 }: DataTableFacetedFilterProps<TData, TValue>) {
 	const [open, setOpen] = React.useState(false);
-	console.log("options", options);
 
 	const columnFilterValue = column?.getFilterValue();
 	const selectedValues = new Set(
