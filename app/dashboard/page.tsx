@@ -111,7 +111,13 @@ export default function Dashboard() {
 					return (
 						<ChartCard
 							key={chart.title}
-							type={chart.type === "EXPENSE" ? "bar" : "pie"}
+							type={
+								chart.type === "EXPENSE" &&
+								data.EXPENSE?.length &&
+								data.EXPENSE?.length > 3
+									? "bar"
+									: "pie"
+							}
 							data={chartData && getChartColors(chartData)}
 							title={chart.title}
 							date={date}

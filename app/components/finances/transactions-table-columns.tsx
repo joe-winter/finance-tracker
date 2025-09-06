@@ -78,6 +78,7 @@ export const getTransactionTableColumns = ({
 				icon: CircleDashedIcon,
 			},
 			enableColumnFilter: true,
+			enableGlobalFilter: true,
 		},
 		{
 			accessorKey: "name",
@@ -98,6 +99,7 @@ export const getTransactionTableColumns = ({
 				icon: CircleDashedIcon,
 			},
 			enableColumnFilter: true,
+			enableGlobalFilter: true,
 		},
 		{
 			accessorKey: "amount",
@@ -127,6 +129,7 @@ export const getTransactionTableColumns = ({
 					{row.original.description}
 				</p>
 			),
+			enableGlobalFilter: true,
 		},
 		{
 			id: "actions",

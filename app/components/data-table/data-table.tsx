@@ -47,6 +47,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [globalFilter, setGlobalFilter] = useState<string>("");
 	const table = useReactTable({
 		data,
 		columns,
@@ -56,9 +57,12 @@ export function DataTable<TData, TValue>({
 		getSortedRowModel: getSortedRowModel(),
 		onColumnFiltersChange: setColumnFilters,
 		getFilteredRowModel: getFilteredRowModel(),
+		globalFilterFn: "includesString",
+		onGlobalFilterChange: setGlobalFilter,
 		state: {
 			sorting,
 			columnFilters,
+			globalFilter,
 		},
 	});
 

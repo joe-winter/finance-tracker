@@ -1,8 +1,8 @@
+import { TransactionType } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import z from "zod";
 import prisma from "@/lib/prisma";
 import { protectedProcedure, router } from "../trpc";
-import { TransactionType } from "@prisma/client";
-import { TRPCError } from "@trpc/server";
 
 export const categorySchema = z.object({
 	name: z.string().min(1).max(30),

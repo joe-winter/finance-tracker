@@ -165,9 +165,18 @@ export default function EditDialog({ data, handleClose, isOpen }: EditDialog) {
 										<PopoverContent className="w-auto p-0" align="start">
 											<Calendar
 												mode="single"
-												selected={new Date(field.value)}
-												onSelect={(value) => {
-													field.onChange(value);
+												selected={field.value}
+												onSelect={(date) => {
+													if (!date) return;
+													field.onChange(
+														new Date(
+															Date.UTC(
+																date.getFullYear(),
+																date.getMonth(),
+																date.getDate(),
+															),
+														),
+													);
 													setCalendarOpen(false);
 												}}
 												captionLayout="dropdown"

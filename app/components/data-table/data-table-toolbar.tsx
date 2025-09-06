@@ -1,14 +1,13 @@
 "use client";
 
 import type { Column, Table } from "@tanstack/react-table";
-import { X } from "lucide-react";
+import { SearchIcon, X } from "lucide-react";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { DataTableDateFilter } from "./data-table-date-filter";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
-// import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 // import { DataTableSliderFilter } from "./data-table-slider-filter";
 import { DataTableViewOptions } from "./data-table-view-options";
 
@@ -44,6 +43,20 @@ export function DataTableToolbar<TData>({
 			{...props}
 		>
 			<div className="flex flex-1 flex-wrap items-center gap-2">
+				<div className="*:not-first:mt-2">
+					<div className="relative">
+						<Input
+							id="global-filter"
+							className="peer h-8 w-40 ps-9 lg:w-56"
+							placeholder={"Search ..."}
+							value={(table.getState().globalFilter as string) ?? ""}
+							onChange={(event) => table.setGlobalFilter(event.target.value)}
+						/>
+						<div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
+							<SearchIcon size={16} aria-hidden="true" />
+						</div>
+					</div>
+				</div>
 				{columns.map((column) => (
 					<DataTableToolbarFilter key={column.id} column={column} />
 				))}
