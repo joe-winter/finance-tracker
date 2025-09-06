@@ -41,7 +41,6 @@ import {
 	SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
-import { dateToString } from "./new-dialog";
 
 const formSchema = z.object({
 	amount: z
@@ -172,7 +171,7 @@ export default function EditDialog({ data, handleClose, isOpen }: EditDialog) {
 												mode="single"
 												selected={new Date(field.value)}
 												onSelect={(value) => {
-													field.onChange(dateToString(value));
+													field.onChange(value);
 													setCalendarOpen(false);
 												}}
 												captionLayout="dropdown"
