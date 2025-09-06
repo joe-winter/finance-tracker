@@ -17,45 +17,45 @@ export const transactionSchema = z.object({
   categoryId: z.string(),
 });
 
-function normalizeDate(date: Date): Date {
-  console.log("=== normalizeDate Debug ===");
-  console.log("Input date (raw):", date);
-  console.log("Input date ISO string:", date.toISOString());
+// function normalizeDate(date: Date): Date {
+//   console.log("=== normalizeDate Debug ===");
+//   console.log("Input date (raw):", date);
+//   console.log("Input date ISO string:", date.toISOString());
 
-  // Server timezone info
-  console.log(
-    "Server timezone:",
-    Intl.DateTimeFormat().resolvedOptions().timeZone
-  );
-  console.log("Server timezone offset (minutes):", date.getTimezoneOffset());
+//   // Server timezone info
+//   console.log(
+//     "Server timezone:",
+//     Intl.DateTimeFormat().resolvedOptions().timeZone
+//   );
+//   console.log("Server timezone offset (minutes):", date.getTimezoneOffset());
 
-  // Extracted components (in server timezone)
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDate();
-  console.log("Extracted components (server TZ):", { year, month, day });
-  console.log(
-    "Month name:",
-    new Date(year, month, 1).toLocaleString("default", { month: "long" })
-  );
+//   // Extracted components (in server timezone)
+//   const year = date.getFullYear();
+//   const month = date.getMonth();
+//   const day = date.getDate();
+//   console.log("Extracted components (server TZ):", { year, month, day });
+//   console.log(
+//     "Month name:",
+//     new Date(year, month, 1).toLocaleString("default", { month: "long" })
+//   );
 
-  // Create UTC date with those components
-  const utcDate = new Date(Date.UTC(year, month, day));
-  console.log("Created UTC date:", utcDate);
-  console.log("Created UTC ISO string:", utcDate.toISOString());
+//   // Create UTC date with those components
+//   const utcDate = new Date(Date.UTC(year, month, day));
+//   console.log("Created UTC date:", utcDate);
+//   console.log("Created UTC ISO string:", utcDate.toISOString());
 
-  // Show what this looks like in different timezones
-  console.log("UTC date as local string:", utcDate.toLocaleDateString());
-  console.log("UTC date components:", {
-    utcYear: utcDate.getUTCFullYear(),
-    utcMonth: utcDate.getUTCMonth(),
-    utcDay: utcDate.getUTCDate(),
-  });
+//   // Show what this looks like in different timezones
+//   console.log("UTC date as local string:", utcDate.toLocaleDateString());
+//   console.log("UTC date components:", {
+//     utcYear: utcDate.getUTCFullYear(),
+//     utcMonth: utcDate.getUTCMonth(),
+//     utcDay: utcDate.getUTCDate(),
+//   });
 
-  console.log("=========================");
+//   console.log("=========================");
 
-  return utcDate;
-}
+//   return utcDate;
+// }
 export type TransactionSchema = z.infer<typeof transactionSchema>;
 
 export const transactionRouter = router({
@@ -128,12 +128,12 @@ export const transactionRouter = router({
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.auth.userId;
       const { date, amount, categoryId, description } = input;
-      const normalizedDate = normalizeDate(date);
+      // const normalizedDate = normalizeDate(date);
 
       return await prisma.transaction.create({
         data: {
           amount,
-          date: normalizedDate,
+          date,
           description,
           userId,
           categoryId,
