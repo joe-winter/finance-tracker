@@ -1,11 +1,13 @@
 "use client";
 
 import type { Column, Table } from "@tanstack/react-table";
-import { SearchIcon, X } from "lucide-react";
+import { X } from "lucide-react";
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { ExpandableSearch } from "../expandable-search";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { Scroller } from "../ui/scroller";
 import { DataTableDateFilter } from "./data-table-date-filter";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 // import { DataTableSliderFilter } from "./data-table-slider-filter";
@@ -42,36 +44,50 @@ export function DataTableToolbar<TData>({
 			)}
 			{...props}
 		>
-			<div className="flex flex-1 flex-wrap items-center gap-2">
-				<div className="*:not-first:mt-2">
-					<div className="relative">
-						<Input
-							id="global-filter"
-							className="peer h-8 w-40 ps-9 lg:w-56"
-							placeholder={"Search ..."}
-							value={(table.getState().globalFilter as string) ?? ""}
-							onChange={(event) => table.setGlobalFilter(event.target.value)}
-						/>
-						<div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
-							<SearchIcon size={16} aria-hidden="true" />
-						</div>
-					</div>
-				</div>
-				{columns.map((column) => (
-					<DataTableToolbarFilter key={column.id} column={column} />
-				))}
-				{isFiltered && (
-					<Button
-						aria-label="Reset filters"
-						variant="outline"
-						size="sm"
-						className="border-dashed"
-						onClick={onReset}
+			<div className="flex flex-1 items-center gap-2">
+				<ExpandableSearch
+					placeholder={"Search ..."}
+					value={(table.getState().globalFilter as string) ?? ""}
+					onChange={(event) => table.setGlobalFilter(event.target.value)}
+					onClear={() => table.resetGlobalFilter()}
+				/>
+				{/* This is to make the scroll fill out its width. Nice trick from stack overflow. https://stackoverflow.com/questions/78341914/how-can-i-make-the-shadcn-ui-scrollarea-take-full-width-and-add-a-scroll-when-th */}
+				{/* <div className="flex w-full">
+          <ScrollArea className="w-0 flex-1">
+            <div className="flex gap-2">
+              {columns.map((column) => (
+                <DataTableToolbarFilter key={column.id} column={column} />
+              ))}
+            </div>
+            <ScrollBar orientation="horizontal" className="w-full" />
+          </ScrollArea>
+        </div> */}
+				<div className="flex w-full">
+					<Scroller
+						orientation="horizontal"
+						className="w-0 flex-1"
+						hideScrollbar
+						asChild
 					>
-						<X />
-						Reset
-					</Button>
-				)}
+						<div className="flex gap-2">
+							{columns.map((column) => (
+								<DataTableToolbarFilter key={column.id} column={column} />
+							))}
+							{isFiltered && (
+								<Button
+									aria-label="Reset filters"
+									variant="outline"
+									size="sm"
+									className="border-dashed"
+									onClick={onReset}
+								>
+									<X />
+									Reset
+								</Button>
+							)}
+						</div>
+					</Scroller>
+				</div>
 			</div>
 			<div className="flex items-center gap-2">
 				{children}

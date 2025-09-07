@@ -34,6 +34,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "../ui/table";
+import { DataTableSortList } from "./data-table-sort-list";
 import { DataTableToolbar } from "./data-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
@@ -68,7 +69,9 @@ export function DataTable<TData, TValue>({
 
 	return (
 		<div className="flex flex-col gap-4">
-			{<DataTableToolbar table={table} />}
+			<DataTableToolbar table={table}>
+				<DataTableSortList table={table} align="end" />
+			</DataTableToolbar>
 			<div className="overflow-hidden rounded-md border">
 				<Table>
 					<TableHeader>
