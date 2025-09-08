@@ -5,8 +5,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { shadcn } from "@clerk/themes";
 import TRPCProvider from "@/app/_trpc/Provider";
-import { BottomNav } from "./components/bottom-nav";
-import { Nav } from "./components/nav";
 import { ThemeProvider } from "./components/theme-provider";
 
 const geistSans = Geist({
@@ -34,7 +32,7 @@ export default function RootLayout({
 			<TRPCProvider>
 				<html lang="en" suppressHydrationWarning>
 					<body
-						className={`${geistSans.variable} ${geistMono.variable} flex flex-col items-center antialiased`}
+						className={`${geistSans.variable} ${geistMono.variable} flex h-dvh flex-col items-center antialiased`}
 					>
 						<ThemeProvider
 							attribute="class"
@@ -42,11 +40,7 @@ export default function RootLayout({
 							enableSystem
 							disableTransitionOnChange
 						>
-							<header className="flex h-16 w-full max-w-6xl items-center justify-end gap-4 p-4">
-								<Nav />
-							</header>
-							<div className="mb-20 w-full max-w-5xl">{children}</div>
-							<BottomNav />
+							{children}
 						</ThemeProvider>
 					</body>
 				</html>

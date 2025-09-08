@@ -10,16 +10,16 @@ import {
 	startOfMonth,
 } from "date-fns";
 import { useState } from "react";
-import type { GetTransactionTotalsByCategoryOutput } from "@/lib/types";
-import { trpc } from "../_trpc/client";
-import { ChartCard } from "../components/dashboard/chart-card";
+import { trpc } from "@/app/_trpc/client";
+import { ChartCard } from "@/app/components/dashboard/chart-card";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../components/ui/select";
+} from "@/app/components/ui/select";
+import type { GetTransactionTotalsByCategoryOutput } from "@/lib/types";
 
 const charts = [
 	{ type: TransactionType.EXPENSE, title: "Expenses" },

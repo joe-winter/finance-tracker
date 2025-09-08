@@ -1,5 +1,5 @@
-import NewDialog from "../components/finances/new-dialog";
-import TransactionTable from "../components/finances/transactions-table";
+import NewDialog from "@/app/components/finances/new-dialog";
+import TransactionTable from "@/app/components/finances/transactions-table";
 
 export default async function Finances() {
 	return (

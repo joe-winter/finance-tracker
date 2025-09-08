@@ -3,12 +3,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TransactionType } from "@prisma/client";
 import { Fragment, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Form, useForm } from "react-hook-form";
 import z from "zod";
-import type { GetCategories } from "@/lib/types";
-import { trpc } from "../_trpc/client";
-import { CategoriesBadge } from "../components/settings/categories-badge";
-import NewDialog from "../components/settings/new-dialog";
+import { trpc } from "@/app/_trpc/client";
+import NewDialog from "@/app/components/finances/new-dialog";
+import { CategoriesBadge } from "@/app/components/settings/categories-badge";
 import {
 	AlertDialog,
 	AlertDialogCancel,
@@ -17,22 +16,22 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "../components/ui/alert-dialog";
-import { Button } from "../components/ui/button";
+} from "@/app/components/ui/alert-dialog";
+import { Button } from "@/app/components/ui/button";
 import {
-	Form,
 	FormControl,
 	FormField,
 	FormItem,
 	FormLabel,
-} from "../components/ui/form";
+} from "@/app/components/ui/form";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../components/ui/select";
+} from "@/app/components/ui/select";
+import type { GetCategories } from "@/lib/types";
 
 export default function Settings() {
 	const [editCategory, setEditCategory] = useState<string | null>(null);
